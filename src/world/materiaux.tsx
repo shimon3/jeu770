@@ -63,6 +63,8 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     laiton: new THREE.MeshStandardMaterial({ color: '#c9a24a', metalness: 0.9, roughness: 0.3 }),
     vertLampadaire: new THREE.MeshStandardMaterial({ color: '#2c4a3a', metalness: 0.5, roughness: 0.5 }),
     vitrail: new THREE.MeshStandardMaterial({ map: vitrail, color: '#9fb4c0', metalness: 0.4, roughness: 0.15 }),
+    // Même verre au plomb, translucide : fenêtres des pièces modélisées (on voit dehors)
+    vitrailClair: new THREE.MeshStandardMaterial({ map: vitrail, color: '#c9d6dc', metalness: 0.1, roughness: 0.1, transparent: true, opacity: 0.38, depthWrite: false }),
     vitre: new THREE.MeshStandardMaterial({ color: '#33424c', metalness: 0.6, roughness: 0.1 }),
     vitreEclairee: new THREE.MeshStandardMaterial({ color: '#e8d6a8', emissive: '#f0d090', emissiveIntensity: 0.5 }),
     tronc: new THREE.MeshStandardMaterial({ color: '#4a3b2e', roughness: 1 }),

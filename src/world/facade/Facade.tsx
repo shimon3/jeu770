@@ -14,7 +14,9 @@ const RETRAIT_VITRE = 0.18
 // ---------------------------------------------------------------------------
 // Fenêtre à meneaux de pierre et verre au plomb (Commons 2) : encadrement à
 // harpes, appui saillant, meneaux, imposte éventuelle.
-function fenetre(f: FenetreDef): Piece[] {
+// `transparente` : pièce modélisée derrière (verre translucide, pas de fond sombre)
+function fenetre(f: FenetreDef, transparente = false): Piece[] {
+  const verre = transparente ? 'vitrailClair' : 'vitrail'
   const pc: Piece[] = []
   const { x, y, w, h, cols, transom } = f
   const meneau = 0.1
@@ -26,10 +28,10 @@ function fenetre(f: FenetreDef): Piece[] {
     if (yImposte) {
       const hb = yImposte - y - 0.05
       const hh = y + h - yImposte - 0.05
-      pc.push({ t: [lj, hb, 0.03], p: [cx, y + hb / 2, -RETRAIT_VITRE], m: 'vitrail', col: true, ombre: false })
-      pc.push({ t: [lj, hh, 0.03], p: [cx, y + h - hh / 2, -RETRAIT_VITRE], m: 'vitrail', col: true, ombre: false })
+      pc.push({ t: [lj, hb, 0.03], p: [cx, y + hb / 2, -RETRAIT_VITRE], m: verre, col: true, ombre: false })
+      pc.push({ t: [lj, hh, 0.03], p: [cx, y + h - hh / 2, -RETRAIT_VITRE], m: verre, col: true, ombre: false })
     } else {
-      pc.push({ t: [lj, h, 0.03], p: [cx, y + h / 2, -RETRAIT_VITRE], m: 'vitrail', col: true, ombre: false })
+      pc.push({ t: [lj, h, 0.03], p: [cx, y + h / 2, -RETRAIT_VITRE], m: verre, col: true, ombre: false })
     }
     if (c > 0) pc.push({ t: [meneau, h, 0.22], p: [cx - lj / 2 - meneau / 2, y + h / 2, -0.09], m: 'pierre' })
   }
@@ -46,7 +48,7 @@ function fenetre(f: FenetreDef): Piece[] {
     for (const s of [-1, 1]) pc.push({ t: [0.14, pas * 0.92, 0.1], p: [x + s * (w / 2 + 0.27), y + pas * (k + 0.5), 0.02], m: 'pierre' })
   }
   // Fond sombre derrière le vitrail (l'intérieur n'est pas modélisé)
-  pc.push({ t: [w, h, 0.02], p: [x, y + h / 2, -EP + 0.02], m: 'noir', ombre: false })
+  if (!transparente) pc.push({ t: [w, h, 0.02], p: [x, y + h / 2, -EP + 0.02], m: 'noir', ombre: false })
   return pc
 }
 
@@ -276,7 +278,8 @@ export function Facade() {
       pc.push({ geo: new THREE.CylinderGeometry(0.055, 0.055, FACADE.egoutCentre - 0.3, 8), p: [x, (FACADE.egoutCentre + 0.3) / 2, 0.1], m: 'zinc' })
       pc.push({ t: [0.24, 0.3, 0.24], p: [x, FACADE.egoutCentre - 0.1, 0.1], m: 'zinc' })
     }
-    for (const f of FENETRES) pc.push(...fenetre(f))
+    // Fenêtres 0 et 1 : bureau du Rebbe (rez-de-chaussée) et salon de l'étage, modélisés
+    FENETRES.forEach((f, i) => pc.push(...fenetre(f, i <= 1)))
     for (const s of [-1, 1]) pc.push(...petiteFenetre(xPorte + s * PORTE.petiteFenetreEcart, y0 + 1.0))
     pc.push(...oriel())
     pc.push(...encadrementPorte())

@@ -22,6 +22,7 @@ export function sauvegarder(): boolean {
   const s = useGame.getState()
   return ecrireSauvegarde({
     missions: s.missions,
+    inventaire: s.inventaire,
     langue: s.langue,
     son: s.son,
     position: [...joueur.position],

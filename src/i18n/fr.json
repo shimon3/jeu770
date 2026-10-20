@@ -139,5 +139,22 @@
   "mission.retrouver-livre.rappel": "Le livre rouge dépasse d'une des bibliothèques du mur du fond.",
   "mission.retrouver-livre.fin": "Merci, je peux reprendre mon étude !",
   "panneau.versMaison": "Maison du Rabbi — 770",
-  "panneau.versZal": "Grand Zal"
+  "panneau.versZal": "Grand Zal",
+  "zone.bureau-rebbe": "Bureau du Rebbe",
+  "zone.antichambre": "Antichambre — Gan Eden HaTa'hton",
+  "zone.couloir": "Couloir",
+  "zone.petit-zal": "Petit zal",
+  "zone.appartement": "Appartement de l'étage",
+  "action.ouvrirPorteCle": "Ouvrir avec la clé",
+  "action.fermerPorteCle": "Refermer à clé",
+  "action.prendreCle": "Prendre la clé de l'étage",
+  "action.remettreCle": "Remettre la clé dans l'armoire",
+  "action.lireBibliotheque": "Regarder la bibliothèque",
+  "message.porteFermeeCle": "Fermée à clé. La clé de l'étage est rangée dans une armoire de l'antichambre, au rez-de-chaussée.",
+  "message.clePrise": "Vous avez pris la clé de l'étage.",
+  "message.cleRemise": "Clé remise dans l'armoire.",
+  "bibliotheque.titre": "Bibliothèque du bureau",
+  "bibliotheque.exemple": "Liste d'exemple, non relevée sur les rayonnages réels.",
+  "maison.bureauPlaque": "Le bureau du Rebbe, au rez-de-chaussée du 770, à gauche de l'entrée. La pièce a été laissée telle quelle ; on y prie le Chabbat. Lambris de chêne, bibliothèques vitrées, grand bureau à plateau de verre, fauteuil de cuir, et la petite table ronde sculptée du Rebbe Maharash. La fenêtre à petits carreaux donne sur Eastern Parkway. Mobilier d'après des photos de 2025 ; disposition exacte : reconstitution artistique.",
+  "maison.appartementPlaque": "L'étage du 770 abritait l'appartement du Rabbi précédent. Son aménagement dans ce jeu est une reconstitution artistique : aucune photo de l'intérieur n'a été vérifiée."
 }

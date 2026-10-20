@@ -22,16 +22,21 @@ type Props = {
   angleOuverture: number // radians, signé (rotation autour de y)
   modele?: Modele
   verrouillee?: string // clé du message affiché si la porte ne s'ouvre pas
+  ouverteInitiale?: boolean
+  fixe?: boolean // porte laissée ouverte, sans interaction
+  cle?: string // objet d'inventaire nécessaire pour ouvrir ou fermer
+  messageSansCle?: string
   rotationY?: number // orientation de la porte fermée
 }
 
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
 
-export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, rotationY = 0 }: Props) {
+export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, rotationY = 0, ouverteInitiale = false, fixe = false, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
   const corps = useRef<RapierRigidBody>(null)
-  const [ouverte, setOuverte] = useState(false)
-  const angle = useRef(0)
+  const [ouverte, setOuverte] = useState(ouverteInitiale)
+  const angle = useRef(ouverteInitiale ? angleOuverture : 0)
+  const aLaCle = useGame((s) => (cle ? s.inventaire.includes(cle) : true))
   const m = useMateriaux()
 
   // Point d'interaction : milieu de la porte fermée
@@ -43,11 +48,21 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   useInteractif(
     id,
     centre,
-    1.7,
-    () => (verrouillee ? t('action.porteVerrouillee') : ouverte ? t('action.fermerPorte') : t('action.ouvrirPorte')),
+    fixe ? 0 : 1.7,
+    () =>
+      verrouillee || !aLaCle
+        ? t('action.porteVerrouillee')
+        : cle
+          ? ouverte ? t('action.fermerPorteCle') : t('action.ouvrirPorteCle')
+          : ouverte ? t('action.fermerPorte') : t('action.ouvrirPorte'),
     () => {
+      if (fixe) return
       if (verrouillee) {
         useGame.getState().set({ panneau: { type: 'message', cle: verrouillee } })
+        return
+      }
+      if (cle && !useGame.getState().inventaire.includes(cle)) {
+        useGame.getState().set({ panneau: { type: 'message', cle: messageSansCle } })
         return
       }
       setOuverte((o) => !o)
@@ -99,7 +114,7 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   }
 
   return (
-    <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={charniere} rotation={[0, rotationY, 0]}>
+    <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={charniere} rotation={[0, rotationY + (ouverteInitiale ? angleOuverture : 0), 0]}>
       <mesh position={[(sens * largeur) / 2, hauteur / 2, 0]} material={modele === 'principale' ? m.chene : m.cheneFonce} castShadow receiveShadow>
         <boxGeometry args={[largeur, hauteur, epaisseur]} />
       </mesh>

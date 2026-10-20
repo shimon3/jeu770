@@ -272,11 +272,11 @@ export function Hall() {
       <pointLight position={[0.3, Y1 - 1.3, -4.2]} intensity={14} distance={14} decay={1.6} color="#ffd9a0" />
       <pointLight position={[0.0, Y2 - 1.1, -4.5]} intensity={10} distance={12} decay={1.6} color="#ffd9a0" />
 
-      {/* Portes intérieures, fermées dans cette phase */}
-      <Porte id="porte-antichambre" charniere={[xMin - EPI / 2, Y0, BAIES.antichambre.z1 - 0.05]} largeur={LP} hauteur={HP} sens={1} rotationY={Math.PI / 2} angleOuverture={0} verrouillee="message.porteAntichambre" />
-      <Porte id="porte-ouest-etage" charniere={[xMin - EPI / 2, Y1, BAIES.ouestEtage.z1 - 0.05]} largeur={LP} hauteur={HP} sens={1} rotationY={Math.PI / 2} angleOuverture={0} verrouillee="message.porteFermee" />
-      <Porte id="porte-fond-rdc" charniere={[BAIES.fondRdc.x1 - 0.05, Y0, zMin - EPI / 2]} largeur={LP} hauteur={HP} sens={-1} angleOuverture={0} verrouillee="message.porteFermee" />
-      <Porte id="porte-fond-etage" charniere={[BAIES.fondEtage.x1 - 0.05, Y1, zMin - EPI / 2]} largeur={LP} hauteur={HP} sens={-1} angleOuverture={0} verrouillee="message.porteFermee" />
+      {/* Portes intérieures : l'étage est fermé à clé (clé dans l'armoire de l'antichambre) */}
+      <Porte id="porte-antichambre" charniere={[xMin - EPI / 2, Y0, BAIES.antichambre.z1 - 0.05]} largeur={LP} hauteur={HP} sens={1} rotationY={Math.PI / 2} angleOuverture={1.5} />
+      <Porte id="porte-ouest-etage" charniere={[xMin - EPI / 2, Y1, BAIES.ouestEtage.z1 - 0.05]} largeur={LP} hauteur={HP} sens={1} rotationY={Math.PI / 2} angleOuverture={1.5} cle="cle-etage" />
+      <Porte id="porte-fond-rdc" charniere={[BAIES.fondRdc.x1 - 0.05, Y0, zMin - EPI / 2]} largeur={LP} hauteur={HP} sens={-1} angleOuverture={-1.5} />
+      <Porte id="porte-fond-etage" charniere={[BAIES.fondEtage.x1 - 0.05, Y1, zMin - EPI / 2]} largeur={LP} hauteur={HP} sens={-1} angleOuverture={-1.5} cle="cle-etage" />
     </>
   )
 }

@@ -12,6 +12,7 @@ import { useGame } from '../state/store'
 import { Complexe784 } from './complexe/Complexe784'
 import { PanneauxDirection } from './rue/PanneauxDirection'
 import { GrandZal } from './grand-zal/GrandZal'
+import { MaisonRabbi } from './maison/MaisonRabbi'
 import { PnjZal } from '../npc/PnjZal'
 import * as THREE from 'three'
 
@@ -59,6 +60,7 @@ export function Monde({ cle }: { cle: number }) {
             <Voisins />
             <Facade />
             <Hall />
+            <MaisonRabbi />
             <Complexe784 />
             <PanneauxDirection />
             <GrandZal />

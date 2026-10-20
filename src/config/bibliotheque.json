@@ -1,0 +1,38 @@
+{
+  "_doc": "Titres affichés par la bibliothèque du bureau (touche E). Liste d'EXEMPLE, non relevée sur les rayonnages réels : à modifier librement. 'fr' et 'he' : titre affiché selon la langue.",
+  "exemple": true,
+  "titres": [
+    {
+      "fr": "Tanya",
+      "he": "תניא"
+    },
+    {
+      "fr": "Likkouté Torah",
+      "he": "לקוטי תורה"
+    },
+    {
+      "fr": "Torah Or",
+      "he": "תורה אור"
+    },
+    {
+      "fr": "Choul'han Aroukh de l'Admour HaZaken",
+      "he": "שולחן ערוך אדמו\"ר הזקן"
+    },
+    {
+      "fr": "'Houmach",
+      "he": "חומש"
+    },
+    {
+      "fr": "Talmud de Babylone",
+      "he": "תלמוד בבלי"
+    },
+    {
+      "fr": "Michné Torah",
+      "he": "משנה תורה"
+    },
+    {
+      "fr": "Tehilim",
+      "he": "תהלים"
+    }
+  ]
+}

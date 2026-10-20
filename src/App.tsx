@@ -61,7 +61,11 @@ export default function App() {
     const st = useGame.getState()
     const s = lireSauvegarde()
     // On commence toujours sur le trottoir ; « Continuer » reprend les missions
-    st.set({ missions: !nouvelle && s ? s.missions : {}, depart: DEPART_PAR_DEFAUT })
+    st.set({
+      missions: !nouvelle && s ? s.missions : {},
+      inventaire: !nouvelle && s && Array.isArray(s.inventaire) ? s.inventaire : [],
+      depart: DEPART_PAR_DEFAUT,
+    })
     st.set({ ecran: 'jeu', pause: false, panneau: null, siege: null, vue: '3e' })
     setCle((c) => c + 1)
     demarrerAmbiance()

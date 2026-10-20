@@ -3,11 +3,13 @@ import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { MISSIONS } from '../missions/missions'
 import tefilot from '../config/tefilot.json'
+import bibliotheque from '../config/bibliotheque.json'
 
 export function Panneaux() {
   const t = useT()
   const panneau = useGame((s) => s.panneau)
   const missions = useGame((s) => s.missions)
+  const langue = useGame((s) => s.langue)
   if (!panneau) return null
   const fermer = () => useGame.getState().set({ panneau: null })
 
@@ -73,6 +75,19 @@ export function Panneaux() {
         )
       break
     }
+    case 'bibliotheque':
+      titre = t('bibliotheque.titre')
+      corps = (
+        <>
+          <ul>
+            {bibliotheque.titres.map((l, i) => (
+              <li key={i}>{langue === 'he' ? l.he : l.fr}</li>
+            ))}
+          </ul>
+          {bibliotheque.exemple && <p className="source">{t('bibliotheque.exemple')}</p>}
+        </>
+      )
+      break
     case 'message':
       corps = <p>{t(panneau.cle)}</p>
       break

@@ -82,6 +82,86 @@
       "artistique": true
     },
     {
+      "id": "bureau-rebbe",
+      "min": [
+        -7.85,
+        0.8,
+        -5.2
+      ],
+      "max": [
+        -3.525,
+        4.6,
+        -0.45
+      ],
+      "interieur": true,
+      "calme": true,
+      "artistique": true
+    },
+    {
+      "id": "antichambre",
+      "min": [
+        -7.85,
+        0.8,
+        -8.6
+      ],
+      "max": [
+        -2.15,
+        4.6,
+        -0.45
+      ],
+      "interieur": true,
+      "calme": false,
+      "artistique": true
+    },
+    {
+      "id": "couloir",
+      "min": [
+        -1.6,
+        0.8,
+        -12.0
+      ],
+      "max": [
+        0.6,
+        4.6,
+        -8.7
+      ],
+      "interieur": true,
+      "calme": false,
+      "artistique": true
+    },
+    {
+      "id": "petit-zal",
+      "min": [
+        -7.85,
+        0.8,
+        -21.55
+      ],
+      "max": [
+        7.85,
+        4.6,
+        -12.0
+      ],
+      "interieur": true,
+      "calme": true,
+      "artistique": true
+    },
+    {
+      "id": "appartement",
+      "min": [
+        -7.85,
+        4.6,
+        -21.55
+      ],
+      "max": [
+        7.85,
+        8.0,
+        -0.45
+      ],
+      "interieur": true,
+      "calme": false,
+      "artistique": true
+    },
+    {
       "id": "cour",
       "min": [
         -9.0,

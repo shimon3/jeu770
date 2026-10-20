@@ -12,6 +12,7 @@ export type Panneau =
   | { type: 'journal' }
   | { type: 'message'; cle: string }
   | { type: 'dialogue'; nomCle: string; cle: string }
+  | { type: 'bibliotheque' }
   | null
 
 export type Interactif = {
@@ -41,6 +42,8 @@ type GameState = {
   cible: string | null
   siege: Siege | null
   missions: Record<string, EtatMission>
+  // Objets portés par le joueur (ex. 'cle-etage')
+  inventaire: string[]
   notifications: Notification[]
   debugPhysique: boolean
   // Position de départ (nouvelle partie ou sauvegarde)
@@ -70,6 +73,7 @@ export const useGame = create<GameState>((set, get) => ({
   cible: null,
   siege: null,
   missions: {},
+  inventaire: [],
   notifications: [],
   debugPhysique: false,
   depart: DEPART_PAR_DEFAUT,
