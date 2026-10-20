@@ -161,5 +161,10 @@
   "commandes.fermer": "Fermer la porte la plus proche",
   "commandes.fermerTouches": "F",
   "tactile.joystick": "Posez le pouce ici pour marcher",
-  "tactile.aide": "Sur écran tactile : posez le pouce à gauche pour marcher (à fond pour courir), glissez le doigt à droite pour tourner la caméra. Boutons : E interagir, F fermer la porte, V vue, J journal, ☰ menu."
+  "tactile.aide": "Sur écran tactile : joystick en bas à gauche pour marcher (poussé à fond pour courir), glissez le doigt sur la moitié droite pour tourner la caméra. Boutons : E agir, F fermer la porte, V vue, J journal, ⤒ saut (dehors), ☰ menu en bas au centre.",
+  "tactile.e": "Agir",
+  "tactile.f": "Fermer",
+  "tactile.v": "Vue",
+  "tactile.j": "Journal",
+  "tactile.saut": "Saut"
 }

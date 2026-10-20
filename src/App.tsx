@@ -10,7 +10,7 @@ import { appliquerLangue } from './i18n'
 import { DEPART_PAR_DEFAUT, useGame } from './state/store'
 import { lireSauvegarde } from './missions/sauvegarde'
 import { sauvegarder } from './missions/missions'
-import { installerEntrees, toucheAction, viderEntrees } from './player/entrees'
+import { estTactile, installerEntrees, toucheAction, viderEntrees } from './player/entrees'
 import { demarrerAmbiance, reglerAmbiance } from './audio/ambiance'
 import { zoneParId } from './world/zones'
 import { actionJeu, type Action } from './ui/actions'
@@ -20,7 +20,12 @@ function canvas(): HTMLCanvasElement | null {
   return document.querySelector('#scene canvas')
 }
 
+// Appareil tactile : jamais de verrouillage du pointeur (sur Android, il
+// affiche un message sur le curseur et n'a aucune utilité)
+const TACTILE = estTactile()
+
 function verrouiller() {
+  if (TACTILE) return
   const c = canvas()
   if (!c || document.pointerLockElement === c) return
   try {
@@ -48,6 +53,11 @@ export default function App() {
   }, [])
 
   useEffect(() => appliquerLangue(langue), [langue])
+
+  // Mode tactile : bloque défilement et zoom du navigateur pendant le jeu (styles.css)
+  useEffect(() => {
+    document.documentElement.classList.toggle('mode-tactile', TACTILE)
+  }, [])
 
   useEffect(() => {
     const z = zoneParId(zone)
@@ -88,6 +98,7 @@ export default function App() {
 
   // Verrouillage du pointeur : sa perte (Échap) ouvre le menu
   useEffect(() => {
+    if (TACTILE) return
     const changement = () => {
       const v = document.pointerLockElement === canvas()
       setVerrouille(v)

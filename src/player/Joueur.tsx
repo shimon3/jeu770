@@ -176,7 +176,7 @@ export function Joueur() {
       // Au clavier : vitesse pleine ; au joystick : proportionnelle à l'inclinaison
       if (bouge) v.normalize().multiplyScalar(joystick.actif ? vitesse * Math.min(1, Math.max(0.35, Math.hypot(av, lat))) : vitesse)
 
-      if (s.sol && !bloque && touche('sauter') && !zone.calme) s.vy = SAUT
+      if (s.sol && !bloque && (touche('sauter') || joystick.saut) && !zone.calme) s.vy = SAUT
       s.vy -= GRAVITE * dt
       if (s.sol && s.vy < 0) s.vy = -2
 

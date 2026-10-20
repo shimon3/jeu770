@@ -120,3 +120,26 @@ Tests réalisés dans Chrome (`npm run dev`) en pilotant le jeu par événements
 
 ### Non testé
 - Sur un vrai téléphone (iPhone, Android) : sensations, performances, orientation portrait.
+
+## Correction des commandes mobiles (branche `mobile-correctifs`, NON fusionnée)
+
+Signalé sur Android/Chrome (viewport 360 × 641, DPR 3) : boutons trop bas ou masqués, message Android sur le curseur, joystick peu visible.
+
+### Corrections
+- Aucun appel à `requestPointerLock()` sur appareil tactile (démarrage, reprise, clic sur la scène) ; la perte de verrouillage ne met plus le jeu en pause sur mobile.
+- Joystick fixe toujours visible en bas à gauche ; saisissable dans toute la moitié gauche ; remise à zéro au relâchement, à l'annulation, à la perte de capture et en arrière-plan.
+- Boutons étiquetés E Agir, F Fermer, V Vue, J Journal, et ⤒ Saut seulement hors lieux de calme ; menu ☰ en bas au centre.
+- **Clic fantôme corrigé** : les boutons agissaient au contact du doigt ; le clic qui suit tombait sur le panneau qui venait de s'ouvrir (le menu se refermait aussitôt). Ils agissent maintenant au clic.
+- Safe-area (`env(safe-area-inset-*)`, `viewport-fit=cover`), unités `dvh`, tailles adaptatives (`clamp`, `vmin`) ; pas de défilement, rebond ni zoom pendant le jeu ; HUD repositionné en mode tactile (invite au-dessus des commandes, bouton « Fermer la porte » du HUD masqué au profit de F).
+
+### Tests automatisés (Playwright, ÉMULATION tactile Chromium — pas un vrai téléphone)
+`npm run test:mobile` : 20 tests réussis sur 7 formats (360×641, 360×780, 375×667, 390×844 en portrait ; 641×360, 844×390 en paysage ; PC 1280×720).
+- Disposition : commandes et HUD dans le viewport, sans chevauchement, en français, en hébreu (RTL) et dans le grand Zal.
+- Aucun verrouillage du pointeur, pas de pause au démarrage ni après tapotement.
+- Joystick dans les 4 directions, arrêt au relâchement ; caméra au doigt ; joystick + caméra à deux doigts.
+- E (dialogue + mission sauvegardée), J, V, F (porte), saut présent dehors et absent dans le Zal, menu puis reprise.
+- Escalier du hall monté au joystick.
+- PC : pas de commandes tactiles, aide clavier présente, verrouillage du pointeur demandé.
+
+### Reste à tester sur le vrai téléphone Android
+Sensibilité du joystick et de la caméra, fluidité (ombres allégées), barre d'adresse Chrome qui apparaît/disparaît, mode plein écran / navigation par gestes, rotation portrait ↔ paysage en cours de partie.

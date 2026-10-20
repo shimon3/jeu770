@@ -48,7 +48,8 @@ export function toucheAction(e: KeyboardEvent): string | null {
 
 // --- Commandes tactiles (téléphone, tablette) ---
 // Joystick : x à droite, y vers l'avant, valeurs dans [-1, 1].
-export const joystick = { x: 0, y: 0, actif: false }
+// `saut` : bouton de saut tactile maintenu
+export const joystick = { x: 0, y: 0, actif: false, saut: false }
 // Glissement du doigt pour la caméra, accumulé entre deux images (pixels).
 export const glissementCamera = { dx: 0, dy: 0 }
 
