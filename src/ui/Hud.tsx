@@ -4,6 +4,9 @@ import { zoneParId } from '../world/zones'
 import { MISSIONS } from '../missions/missions'
 import { useEffect, useState } from 'react'
 import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
+import { estTactile } from '../player/entrees'
+
+const TACTILE = estTactile()
 
 export function Hud({ verrouille }: { verrouille: boolean }) {
   const t = useT()
@@ -65,10 +68,12 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
         </button>
       )}
       {vue === '1re' && <div className="viseur" />}
-      <div className="hud-aide">
-        {t(vue === '1re' ? 'hud.vue1' : 'hud.vue3')} · {t('hud.aide')}
-      </div>
-      {!verrouille && !pause && !panneau && <div className="hud-clic">{t('accueil.cliquer')}</div>}
+      {!TACTILE && (
+        <div className="hud-aide">
+          {t(vue === '1re' ? 'hud.vue1' : 'hud.vue3')} · {t('hud.aide')}
+        </div>
+      )}
+      {!TACTILE && !verrouille && !pause && !panneau && <div className="hud-clic">{t('accueil.cliquer')}</div>}
     </div>
   )
 }

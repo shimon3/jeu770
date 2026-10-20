@@ -291,3 +291,122 @@ kbd {
   flex-direction: column;
   margin-bottom: 16px;
 }
+
+/* Commandes tactiles */
+.tactile {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tactile-joystick,
+.tactile-camera {
+  position: absolute;
+  top: 25%;
+  bottom: 0;
+  pointer-events: auto;
+  touch-action: none;
+}
+.tactile-joystick {
+  left: 0;
+  width: 45%;
+}
+.tactile-camera {
+  right: 0;
+  width: 55%;
+}
+.joystick-indice {
+  position: absolute;
+  left: 24px;
+  bottom: 28px;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.35);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 10px;
+}
+.joystick-base {
+  position: fixed;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: rgba(18, 16, 14, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  display: grid;
+  place-items: center;
+}
+.joystick-bouton {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(217, 165, 74, 0.85);
+}
+.tactile-boutons {
+  position: absolute;
+  right: 16px;
+  bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  gap: 12px;
+  pointer-events: auto;
+}
+.tactile-boutons button,
+.tactile-menu {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: rgba(18, 16, 14, 0.6);
+  touch-action: none;
+}
+.tactile-boutons .tactile-e {
+  background: rgba(217, 165, 74, 0.9);
+  color: #1b150b;
+}
+.tactile-menu {
+  position: absolute;
+  top: 70px;
+  inset-inline-start: 16px;
+  width: 48px;
+  height: 48px;
+  pointer-events: auto;
+}
+.aide-tactile {
+  color: var(--encre-douce);
+  line-height: 1.5;
+}
+
+/* Petits écrans */
+@media (max-width: 640px) {
+  .hud {
+    font-size: 0.8rem;
+  }
+  .hud-mission {
+    width: min(210px, 52%);
+    padding: 8px 10px;
+  }
+  .hud-zone {
+    max-width: 45%;
+  }
+  .hud-action {
+    bottom: 200px;
+  }
+  .hud-fermer {
+    bottom: 250px;
+  }
+  .panneau,
+  .accueil-carte {
+    padding: 18px;
+  }
+  .accueil h1 {
+    font-size: 1.8rem;
+  }
+}

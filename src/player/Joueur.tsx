@@ -3,7 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
 import { Avatar, type Anim } from './Avatar'
-import { touche } from './entrees'
+import { glissementCamera, joystick, touche } from './entrees'
 import { joueur, useGame } from '../state/store'
 import { zoneEn } from '../world/zones'
 import { evenementMission } from '../missions/missions'
@@ -160,13 +160,21 @@ export function Joueur() {
       if (!bloque) {
         av = (touche('avant') ? 1 : 0) - (touche('arriere') ? 1 : 0)
         lat = (touche('droite') ? 1 : 0) - (touche('gauche') ? 1 : 0)
+        // Joystick tactile (prioritaire s'il est utilisé)
+        if (joystick.actif && (joystick.x !== 0 || joystick.y !== 0)) {
+          av = joystick.y
+          lat = joystick.x
+        }
       }
-      const court = touche('courir') && !zone.calme
+      // Course : touche Maj, ou joystick poussé à fond
+      const aFond = joystick.actif && Math.hypot(joystick.x, joystick.y) > 0.93
+      const court = (touche('courir') || aFond) && !zone.calme
       const vitesse = court ? COURSE : MARCHE
       v.set(fx * av + rx * lat, 0, fz * av + rz * lat)
-      const bouge = v.lengthSq() > 0
+      const bouge = v.lengthSq() > 0.0004
       s.avance = bouge && av > 0
-      if (bouge) v.normalize().multiplyScalar(vitesse)
+      // Au clavier : vitesse pleine ; au joystick : proportionnelle à l'inclinaison
+      if (bouge) v.normalize().multiplyScalar(joystick.actif ? vitesse * Math.min(1, Math.max(0.35, Math.hypot(av, lat))) : vitesse)
 
       if (s.sol && !bloque && touche('sauter') && !zone.calme) s.vy = SAUT
       s.vy -= GRAVITE * dt
@@ -201,6 +209,14 @@ export function Joueur() {
       a.visible = vue === '3e'
     }
 
+    // Glissement du doigt (écran tactile) : comme la souris
+    if (glissementCamera.dx !== 0 || glissementCamera.dy !== 0) {
+      s.yaw -= glissementCamera.dx * 0.006
+      s.pitch = THREE.MathUtils.clamp(s.pitch - glissementCamera.dy * 0.005, -1.25, 1.0)
+      glissementCamera.dx = 0
+      glissementCamera.dy = 0
+      s.tSouris = performance.now()
+    }
     // Caméra automatique : si la souris est immobile depuis 1,2 s, la caméra
     // revient derrière le personnage quand il avance et l'inclinaison revient
     // à la normale. À l'intérieur, elle se rapproche pour ne pas buter sur

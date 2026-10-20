@@ -107,3 +107,16 @@ Tests réalisés dans Chrome (`npm run dev`) en pilotant le jeu par événements
 - Refermer à clé et remettre la clé ; sauvegarde puis rechargement de l'inventaire.
 - Porte du fond de l'étage (même clé) et salle à manger de l'étage.
 - Coût de rendu dans les nouvelles pièces.
+
+## Version mobile (branche `mobile`, fusionnée dans `master`)
+
+### Fait et testé (Chrome, mode tactile forcé par `?tactile=1`, gestes simulés)
+- Détection : téléphone et tablette (pointeur grossier sans survol). Un portable à écran tactile garde les commandes clavier/souris (vérifié sur cette machine : 10 points tactiles, mode ordinateur conservé).
+- Joystick qui apparaît sous le pouce : marche proportionnelle (0,95 m/s pouce léger), course pouce à fond (4,8 m/s) hors lieux de calme.
+- Glissement à droite : rotation de la caméra ; deux doigts simultanés (marcher + tourner) : OK.
+- Boutons E, F, V, J et menu ☰ : OK ; le menu remet le joystick à zéro.
+- Accueil : aide tactile à la place du tableau des touches ; HUD sans aides clavier.
+- Téléphone : carte d'ombres 1024 au lieu de 2048 ; mise en page adaptée aux petits écrans.
+
+### Non testé
+- Sur un vrai téléphone (iPhone, Android) : sensations, performances, orientation portrait.

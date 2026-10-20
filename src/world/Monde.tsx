@@ -9,6 +9,10 @@ import { Voisins } from './rue/Voisins'
 import { Joueur } from '../player/Joueur'
 import { PnjImmobile } from '../npc/PnjImmobile'
 import { useGame } from '../state/store'
+import { estTactile } from '../player/entrees'
+
+// Téléphone et tablette : carte d'ombres plus légère
+const TACTILE = estTactile()
 import { Complexe784 } from './complexe/Complexe784'
 import { PanneauxDirection } from './rue/PanneauxDirection'
 import { GrandZal } from './grand-zal/GrandZal'
@@ -31,7 +35,7 @@ function Soleil() {
       intensity={2.6}
       color="#fff3e0"
       castShadow
-      shadow-mapSize={[2048, 2048]}
+      shadow-mapSize={TACTILE ? [1024, 1024] : [2048, 2048]}
       shadow-camera-left={-46}
       shadow-camera-right={46}
       shadow-camera-top={46}

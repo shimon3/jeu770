@@ -13,7 +13,8 @@ import { sauvegarder } from './missions/missions'
 import { installerEntrees, toucheAction, viderEntrees } from './player/entrees'
 import { demarrerAmbiance, reglerAmbiance } from './audio/ambiance'
 import { zoneParId } from './world/zones'
-import { fermerPorteProche } from './world/Porte'
+import { actionJeu, type Action } from './ui/actions'
+import { ControlesTactiles } from './ui/ControlesTactiles'
 
 function canvas(): HTMLCanvasElement | null {
   return document.querySelector('#scene canvas')
@@ -124,21 +125,7 @@ export default function App() {
         if (st.siege && ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) st.set({ siege: null })
         return
       }
-      if (a === 'e') {
-        if (st.panneau) st.set({ panneau: null })
-        else if (st.siege) st.set({ siege: null })
-        else if (st.cible) st.interactifs.get(st.cible)?.action()
-      } else if (a === 'v') {
-        st.set({ vue: st.vue === '3e' ? '1re' : '3e' })
-      } else if (a === 'j') {
-        st.set({ panneau: st.panneau?.type === 'journal' ? null : { type: 'journal' } })
-      } else if (a === 'm') {
-        st.set({ panneau: { type: 'message', cle: 'bientot.plan' } })
-      } else if (a === 'p') {
-        st.set({ panneau: { type: 'message', cle: 'bientot.programme' } })
-      } else if (a === 'f') {
-        fermerPorteProche()
-      }
+      actionJeu(a as Action)
     }
     window.addEventListener('keydown', touche)
     return () => window.removeEventListener('keydown', touche)
@@ -167,6 +154,7 @@ export default function App() {
         </Canvas>
       </div>
       <Hud verrouille={verrouille} />
+      <ControlesTactiles />
       <Panneaux />
       <Menu onReprendre={reprendre} onLangue={changerLangue} onAccueil={accueil} />
       <Accueil sauvegardeExiste={!!sauvegarde} onJouer={jouer} onLangue={changerLangue} />

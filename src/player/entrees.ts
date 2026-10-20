@@ -45,3 +45,23 @@ export function toucheAction(e: KeyboardEvent): string | null {
   const parCode: Record<string, string> = { KeyE: 'e', KeyV: 'v', KeyM: 'm', KeyP: 'p', KeyJ: 'j', KeyF: 'f' }
   return parCode[e.code] ?? null
 }
+
+// --- Commandes tactiles (téléphone, tablette) ---
+// Joystick : x à droite, y vers l'avant, valeurs dans [-1, 1].
+export const joystick = { x: 0, y: 0, actif: false }
+// Glissement du doigt pour la caméra, accumulé entre deux images (pixels).
+export const glissementCamera = { dx: 0, dy: 0 }
+
+// Vrai sur téléphone et tablette (pointeur grossier, pas de survol).
+// Un portable à écran tactile garde les commandes clavier/souris.
+// `?tactile=1` dans l'adresse force le mode tactile (essais sur ordinateur).
+export function estTactile(): boolean {
+  try {
+    if (new URLSearchParams(window.location.search).get('tactile') === '1') return true
+    const grossier = window.matchMedia('(pointer: coarse)').matches
+    const survol = window.matchMedia('(hover: hover)').matches
+    return grossier && !survol
+  } catch {
+    return false
+  }
+}

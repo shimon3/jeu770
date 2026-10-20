@@ -2,6 +2,9 @@ import { useProgress } from '@react-three/drei'
 import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { Commandes } from './Commandes'
+import { estTactile } from '../player/entrees'
+
+const TACTILE = estTactile()
 
 type Props = {
   sauvegardeExiste: boolean
@@ -38,7 +41,7 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
           <button onClick={onLangue}>{t('accueil.langue')}</button>
         </div>
         <h2>{t('accueil.commandes')}</h2>
-        <Commandes />
+        {TACTILE ? <p className="aide-tactile">{t('tactile.aide')}</p> : <Commandes />}
         <p className="note">{t('accueil.note')}</p>
       </div>
     </div>

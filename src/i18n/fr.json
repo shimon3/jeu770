@@ -159,5 +159,7 @@
   "maison.appartementPlaque": "L'étage du 770 abritait l'appartement du Rabbi précédent. Son aménagement dans ce jeu est une reconstitution artistique : aucune photo de l'intérieur n'a été vérifiée.",
   "hud.fermerPorte": "Fermer la porte",
   "commandes.fermer": "Fermer la porte la plus proche",
-  "commandes.fermerTouches": "F"
+  "commandes.fermerTouches": "F",
+  "tactile.joystick": "Posez le pouce ici pour marcher",
+  "tactile.aide": "Sur écran tactile : posez le pouce à gauche pour marcher (à fond pour courir), glissez le doigt à droite pour tourner la caméra. Boutons : E interagir, F fermer la porte, V vue, J journal, ☰ menu."
 }
