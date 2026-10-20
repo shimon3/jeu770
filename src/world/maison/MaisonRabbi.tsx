@@ -193,6 +193,8 @@ function antichambre(m: MM): PieceLibre[] {
     pc.push({ t: [1.8, 0.45, 0.05], p: [x, Y0 + 0.72, A.zArriere + 0.1], mat: m.bancs })
     for (const dx of [-0.8, 0.8]) pc.push({ t: [0.05, 0.43, 0.38], p: [x + dx, Y0 + 0.21, A.zArriere + 0.3], mat: m.boisFonce })
   }
+  // Plaque de laiton du bureau, sur la cloison côté antichambre
+  pc.push({ t: [0.02, 0.32, 0.42], p: [BUREAU.x1 + 0.085, Y0 + 1.5, BUREAU.porteZ1 + 0.6], mat: m.laiton, ombre: false })
   // Armoire de bois (la clé de l'étage y est rangée)
   pc.push({ t: [1.2, 2.1, 0.55], p: [XO + 0.32, Y0 + 1.05, -6.3], mat: m.boisFonce, col: true })
   pc.push({ t: [0.02, 1.9, 0.5], p: [XO + 0.6, Y0 + 1.05, -6.3], mat: m.cheneFonce, ombre: false })
@@ -292,8 +294,9 @@ export function MaisonRabbi() {
   return (
     <>
       <PiecesLibres pieces={pieces} />
-      {/* Porte du bureau : fermée au départ (demande de l'utilisateur) ; on l'ouvre et la ferme avec E, F ou le bouton ; elle ne se ferme pas seule */}
-      <Porte id="porte-bureau-rebbe" charniere={[BUREAU.x1, Y0, BUREAU.porteZ1 - 0.04]} largeur={0.97} hauteur={2.2} sens={1} rotationY={Math.PI / 2} angleOuverture={1.45} fermetureAuto={false} />
+      {/* Porte du bureau : toujours fermée, impossible à ouvrir (demande de l'utilisateur).
+          L'intérieur reste visible par la fenêtre, depuis la rue. */}
+      <Porte id="porte-bureau-rebbe" charniere={[BUREAU.x1, Y0, BUREAU.porteZ1 - 0.04]} largeur={0.97} hauteur={2.2} sens={1} rotationY={Math.PI / 2} angleOuverture={0} verrouillee="message.bureauFerme" />
       <Interactions />
       <EclairageMaison />
     </>
@@ -301,11 +304,9 @@ export function MaisonRabbi() {
 }
 
 function Interactions() {
-  useInteractif('plaque-bureau', [BUREAU.x1 - 0.3, Y0 + 1.5, BUREAU.porteZ1 + 0.6], 1.5, () => t('action.lirePlaque'), () =>
+  // Plaque du bureau : côté antichambre, à côté de la porte (le bureau est fermé)
+  useInteractif('plaque-bureau', [BUREAU.x1 + 0.35, Y0 + 1.5, BUREAU.porteZ1 + 0.6], 1.4, () => t('action.lirePlaque'), () =>
     useGame.getState().set({ panneau: { type: 'message', cle: 'maison.bureauPlaque' } }),
-  )
-  useInteractif('bibliotheque-bureau', [-5.4, Y0 + 1.4, BUREAU.z0 + 0.6], 1.6, () => t('action.lireBibliotheque'), () =>
-    useGame.getState().set({ panneau: { type: 'bibliotheque' } }),
   )
   useInteractif('plaque-appartement', [-3.0, Y1 + 1.4, -5.1], 1.6, () => t('action.lirePlaque'), () =>
     useGame.getState().set({ panneau: { type: 'message', cle: 'maison.appartementPlaque' } }),

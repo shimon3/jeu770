@@ -166,5 +166,6 @@
   "tactile.f": "Fermer",
   "tactile.v": "Vue",
   "tactile.j": "Journal",
-  "tactile.saut": "Saut"
+  "tactile.saut": "Saut",
+  "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue."
 }
