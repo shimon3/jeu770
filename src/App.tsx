@@ -154,7 +154,7 @@ export default function App() {
       >
         <Canvas
           shadows
-          dpr={[1, 1.75]}
+          dpr={[1, 1.25]}
           gl={{ antialias: true, powerPreference: 'high-performance' }}
           camera={{ fov: 62, near: 0.05, far: 400, position: [0, 3, 16] }}
           onCreated={({ gl }) => {

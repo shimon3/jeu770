@@ -22,7 +22,8 @@ export type Interactif = {
   action: () => void
 }
 
-export type Siege = { position: Vector3Tuple; rotationY: number }
+// `sortie` (optionnelle) : où se relever ; sinon un pas devant le siège
+export type Siege = { position: Vector3Tuple; rotationY: number; sortie?: Vector3Tuple }
 
 export type EtatMission = { etat: 'active' | 'terminee'; etape: number }
 

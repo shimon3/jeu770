@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { ABORDS } from '../../config/dimensions'
+import { ENTREE, ZAL } from '../../config/grandZal'
 import { Invisible, Pieces, type Piece, type V3 } from '../primitives'
 import { useInteractif } from '../interaction'
 import { useMateriaux } from '../materiaux'
@@ -74,8 +75,16 @@ export function Rue() {
     pc.push({ t: [L, 0.4, A.largeurContreAllee], p: [0, -0.2 - A.bordure, (Z_CONTRE + Z_TERRE) / 2], m: 'asphalte', col: true })
     pc.push({ t: [L, 0.4, A.largeurTerrePlein], p: [0, -0.2, (Z_TERRE + Z_CHAUSSEE) / 2], m: 'trottoir', col: true })
     pc.push({ t: [L, 0.4, A.largeurChaussee], p: [0, -0.2 - A.bordure, (Z_CHAUSSEE + Z_FIN) / 2], m: 'asphalte', col: true })
-    // Sol devant les parcelles voisines
-    for (const s of [-1, 1]) pc.push({ t: [L / 2 - 9.4, 0.4, 12], p: [s * (9.4 + (L / 2 - 9.4) / 2), -0.2, Z_TROTTOIR - 6], m: 'trottoir', col: true })
+    // Sol devant les parcelles voisines. À droite (784-788), il est percé
+    // pour la courette de l'escalier du grand Zal et s'arrête à la façade
+    // (le Zal est dessous).
+    pc.push({ t: [L / 2 - 9.4, 0.4, 12], p: [-(9.4 + (L / 2 - 9.4) / 2), -0.2, Z_TROTTOIR - 6], m: 'trottoir', col: true })
+    const solDroit = (x0: number, x1: number, z0: number, z1: number) =>
+      pc.push({ t: [x1 - x0, 0.4, z1 - z0], p: [(x0 + x1) / 2, -0.2, (z0 + z1) / 2], m: 'trottoir', col: true })
+    solDroit(9.4, L / 2, ENTREE.z1, Z_TROTTOIR)
+    solDroit(9.4, ENTREE.hautMarches, ENTREE.z0, ENTREE.z1)
+    solDroit(ENTREE.x1, L / 2, ENTREE.z0, ENTREE.z1)
+    solDroit(ZAL.x1 + 0.3, L / 2, Z_TROTTOIR - 12, ENTREE.z0)
     // Bordures de granit
     for (const z of [Z_CONTRE, Z_TERRE, Z_CHAUSSEE]) pc.push({ t: [L, 0.3, 0.18], p: [0, -0.12, z], m: 'pierre' })
     // Au-delà : terre-plein, contre-allée et immeubles du côté sud (décor)
@@ -117,11 +126,32 @@ export function Rue() {
 
 function SolLointain() {
   const m = useMateriaux()
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.4, 0]} material={m.herbe} receiveShadow>
-      <planeGeometry args={[400, 400]} />
-    </mesh>
-  )
+  // Plan de fond percé au-dessus du grand Zal et de la courette d'accès
+  // (forme dans le plan x / -z, couchée par la rotation)
+  const geo = useMemo(() => {
+    const f = new THREE.Shape()
+    f.moveTo(-200, -200)
+    f.lineTo(200, -200)
+    f.lineTo(200, 200)
+    f.lineTo(-200, 200)
+    f.closePath()
+    const trou = new THREE.Path()
+    const pts: [number, number][] = [
+      [ZAL.shalashX0 - 0.5, ZAL.z1 + 0.1],
+      [ENTREE.hautMarches, ZAL.z1 + 0.1],
+      [ENTREE.hautMarches, ENTREE.z1],
+      [ENTREE.x1, ENTREE.z1],
+      [ENTREE.x1, ZAL.z1 + 0.1],
+      [ZAL.x1 + 0.5, ZAL.z1 + 0.1],
+      [ZAL.x1 + 0.5, ZAL.z0 - 0.5],
+      [ZAL.shalashX0 - 0.5, ZAL.z0 - 0.5],
+    ]
+    pts.forEach(([x, z], i) => (i ? trou.lineTo(x, -z) : trou.moveTo(x, -z)))
+    trou.closePath()
+    f.holes.push(trou)
+    return new THREE.ShapeGeometry(f)
+  }, [])
+  return <mesh geometry={geo} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.4, 0]} material={m.herbe} receiveShadow />
 }
 
 // Banc devant le muret (photo Clio) : on peut s'y asseoir

@@ -7,10 +7,121 @@
       "description": "mission.decouvrir770.description",
       "donneur": "pnj-trottoir",
       "etapes": [
-        { "type": "interagir", "cible": "panneau-histoire", "texte": "mission.decouvrir770.e1" },
-        { "type": "zone", "cible": "hall", "texte": "mission.decouvrir770.e2" },
-        { "type": "interagir", "cible": "tableau-annonces", "texte": "mission.decouvrir770.e3" },
-        { "type": "zone", "cible": "etage", "texte": "mission.decouvrir770.e4" }
+        {
+          "type": "interagir",
+          "cible": "panneau-histoire",
+          "texte": "mission.decouvrir770.e1"
+        },
+        {
+          "type": "zone",
+          "cible": "hall",
+          "texte": "mission.decouvrir770.e2"
+        },
+        {
+          "type": "interagir",
+          "cible": "tableau-annonces",
+          "texte": "mission.decouvrir770.e3"
+        },
+        {
+          "type": "zone",
+          "cible": "etage",
+          "texte": "mission.decouvrir770.e4"
+        }
+      ]
+    },
+    {
+      "id": "descendre-zal",
+      "titre": "mission.descendre-zal.titre",
+      "description": "mission.descendre-zal.description",
+      "donneur": "pnj-entree-zal",
+      "etapes": [
+        {
+          "type": "zone",
+          "cible": "grand-zal",
+          "texte": "mission.descendre-zal.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-zal",
+          "texte": "mission.descendre-zal.e2"
+        }
+      ]
+    },
+    {
+      "id": "siddour-zal",
+      "titre": "mission.siddour-zal.titre",
+      "description": "mission.siddour-zal.description",
+      "donneur": "pnj-zal",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "siddour-perdu",
+          "texte": "mission.siddour-zal.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-zal",
+          "texte": "mission.siddour-zal.e2"
+        }
+      ]
+    },
+    {
+      "id": "rejoindre-bimah",
+      "titre": "mission.rejoindre-bimah.titre",
+      "description": "mission.rejoindre-bimah.description",
+      "donneur": "pnj-zal",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "bimah",
+          "texte": "mission.rejoindre-bimah.e1"
+        }
+      ]
+    },
+    {
+      "id": "preparer-farbrenguen",
+      "titre": "mission.preparer-farbrenguen.titre",
+      "description": "mission.preparer-farbrenguen.description",
+      "donneur": "pnj-zal",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "table-farbrenguen-1",
+          "texte": "mission.preparer-farbrenguen.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "table-farbrenguen-2",
+          "texte": "mission.preparer-farbrenguen.e2"
+        },
+        {
+          "type": "interagir",
+          "cible": "table-farbrenguen-3",
+          "texte": "mission.preparer-farbrenguen.e3"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-zal",
+          "texte": "mission.preparer-farbrenguen.e4"
+        }
+      ]
+    },
+    {
+      "id": "retrouver-livre",
+      "titre": "mission.retrouver-livre.titre",
+      "description": "mission.retrouver-livre.description",
+      "donneur": "pnj-etudiant",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "livre-perdu",
+          "texte": "mission.retrouver-livre.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-etudiant",
+          "texte": "mission.retrouver-livre.e2"
+        }
       ]
     }
   ]

@@ -144,7 +144,10 @@ export function Joueur() {
         // Se lever : un pas devant le siège
         const r = s.siegeAvant.rotationY
         const sp = s.siegeAvant.position
-        nouvelle = { x: sp[0] + Math.sin(r) * 0.75, y: sp[1] + CENTRE + 0.05, z: sp[2] + Math.cos(r) * 0.75 }
+        const so = s.siegeAvant.sortie
+        nouvelle = so
+          ? { x: so[0], y: so[1] + CENTRE + 0.05, z: so[2] }
+          : { x: sp[0] + Math.sin(r) * 0.75, y: sp[1] + CENTRE + 0.05, z: sp[2] + Math.cos(r) * 0.75 }
         rb.setTranslation(nouvelle, true)
       }
       const bloque = st.ecran !== 'jeu' || st.pause || st.panneau !== null
