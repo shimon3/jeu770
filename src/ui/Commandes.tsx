@@ -1,6 +1,6 @@
 import { useT } from '../i18n'
 
-const LIGNES = ['deplacer', 'camera', 'zoom', 'courir', 'sauter', 'interagir', 'vue', 'journal', 'plan', 'programme', 'menu']
+const LIGNES = ['deplacer', 'camera', 'zoom', 'courir', 'sauter', 'interagir', 'fermer', 'vue', 'journal', 'plan', 'programme', 'menu']
 
 export function Commandes() {
   const t = useT()

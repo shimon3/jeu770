@@ -13,6 +13,7 @@ import { sauvegarder } from './missions/missions'
 import { installerEntrees, toucheAction, viderEntrees } from './player/entrees'
 import { demarrerAmbiance, reglerAmbiance } from './audio/ambiance'
 import { zoneParId } from './world/zones'
+import { fermerPorteProche } from './world/Porte'
 
 function canvas(): HTMLCanvasElement | null {
   return document.querySelector('#scene canvas')
@@ -135,6 +136,8 @@ export default function App() {
         st.set({ panneau: { type: 'message', cle: 'bientot.plan' } })
       } else if (a === 'p') {
         st.set({ panneau: { type: 'message', cle: 'bientot.programme' } })
+      } else if (a === 'f') {
+        fermerPorteProche()
       }
     }
     window.addEventListener('keydown', touche)

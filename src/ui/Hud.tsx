@@ -2,6 +2,8 @@ import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { zoneParId } from '../world/zones'
 import { MISSIONS } from '../missions/missions'
+import { useEffect, useState } from 'react'
+import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
 
 export function Hud({ verrouille }: { verrouille: boolean }) {
   const t = useT()
@@ -14,6 +16,12 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const vue = useGame((s) => s.vue)
   const panneau = useGame((s) => s.panneau)
   const notifications = useGame((s) => s.notifications)
+  // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
+  const [porteProche, setPorteProche] = useState(false)
+  useEffect(() => {
+    const id = setInterval(() => setPorteProche(porteOuverteProche()), 200)
+    return () => clearInterval(id)
+  }, [])
   if (ecran !== 'jeu') return null
 
   const z = zoneParId(zone)
@@ -50,6 +58,11 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
         <div className="hud-action">
           <kbd>E</kbd> {it.labelCle()}
         </div>
+      )}
+      {porteProche && !panneau && !pause && (
+        <button className="hud-fermer" onClick={() => fermerPorteProche()}>
+          {t('hud.fermerPorte')} <kbd>F</kbd>
+        </button>
       )}
       {vue === '1re' && <div className="viseur" />}
       <div className="hud-aide">

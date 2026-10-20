@@ -39,9 +39,9 @@ export function viderEntrees() {
 // position physique, car M n'est pas au même endroit en AZERTY et en QWERTY.
 export function toucheAction(e: KeyboardEvent): string | null {
   const k = e.key.toLowerCase()
-  if (['e', 'v', 'm', 'p', 'j'].includes(k)) return k
+  if (['e', 'v', 'm', 'p', 'j', 'f'].includes(k)) return k
   // Repli par position seulement pour un clavier non latin (ex. hébreu)
   if (k.length !== 1 || /[\x20-\x7e]/.test(k)) return null
-  const parCode: Record<string, string> = { KeyE: 'e', KeyV: 'v', KeyM: 'm', KeyP: 'p', KeyJ: 'j' }
+  const parCode: Record<string, string> = { KeyE: 'e', KeyV: 'v', KeyM: 'm', KeyP: 'p', KeyJ: 'j', KeyF: 'f' }
   return parCode[e.code] ?? null
 }

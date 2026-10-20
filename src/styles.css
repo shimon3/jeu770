@@ -199,6 +199,14 @@ kbd {
   border-radius: 8px;
   white-space: nowrap;
 }
+.hud-fermer {
+  position: absolute;
+  bottom: calc(18% + 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  background: var(--fond);
+}
 .hud-aide {
   position: absolute;
   bottom: 14px;

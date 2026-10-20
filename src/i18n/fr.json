@@ -156,5 +156,8 @@
   "bibliotheque.titre": "Bibliothèque du bureau",
   "bibliotheque.exemple": "Liste d'exemple, non relevée sur les rayonnages réels.",
   "maison.bureauPlaque": "Le bureau du Rebbe, au rez-de-chaussée du 770, à gauche de l'entrée. La pièce a été laissée telle quelle ; on y prie le Chabbat. Lambris de chêne, bibliothèques vitrées, grand bureau à plateau de verre, fauteuil de cuir, et la petite table ronde sculptée du Rebbe Maharash. La fenêtre à petits carreaux donne sur Eastern Parkway. Mobilier d'après des photos de 2025 ; disposition exacte : reconstitution artistique.",
-  "maison.appartementPlaque": "L'étage du 770 abritait l'appartement du Rabbi précédent. Son aménagement dans ce jeu est une reconstitution artistique : aucune photo de l'intérieur n'a été vérifiée."
+  "maison.appartementPlaque": "L'étage du 770 abritait l'appartement du Rabbi précédent. Son aménagement dans ce jeu est une reconstitution artistique : aucune photo de l'intérieur n'a été vérifiée.",
+  "hud.fermerPorte": "Fermer la porte",
+  "commandes.fermer": "Fermer la porte la plus proche",
+  "commandes.fermerTouches": "F"
 }

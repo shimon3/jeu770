@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CuboidCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
@@ -29,6 +29,32 @@ type Props = {
   rotationY?: number // orientation de la porte fermée
 }
 
+// Portes actuellement ouvertes (hors porte fixe) : utilisé par la touche F
+// et le bouton « Fermer la porte » du HUD
+export const portesOuvertes = new Map<string, { centre: V3; fermer: () => void }>()
+
+export function porteOuverteProche(): boolean {
+  const p = joueur.position
+  for (const pt of portesOuvertes.values()) if (Math.hypot(pt.centre[0] - p[0], (pt.centre[1] - p[1]) * 0.6, pt.centre[2] - p[2]) < 3) return true
+  return false
+}
+
+// Ferme la porte ouverte la plus proche du joueur (rayon 3 m). Renvoie vrai si une porte a été fermée.
+export function fermerPorteProche(): boolean {
+  const p = joueur.position
+  let meilleure: { fermer: () => void } | null = null
+  let dMin = 3
+  for (const pt of portesOuvertes.values()) {
+    const d = Math.hypot(pt.centre[0] - p[0], (pt.centre[1] - p[1]) * 0.6, pt.centre[2] - p[2])
+    if (d < dMin) {
+      dMin = d
+      meilleure = pt
+    }
+  }
+  meilleure?.fermer()
+  return !!meilleure
+}
+
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
 
@@ -45,6 +71,13 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   const s = Math.sin(rotationY)
   const mi = (sens * largeur) / 2
   const centre: V3 = [charniere[0] + mi * c, charniere[1] + 1.2, charniere[2] - mi * s]
+
+  const [cx, cy, cz] = centre
+  useEffect(() => {
+    if (!ouverte || fixe) return
+    portesOuvertes.set(id, { centre: [cx, cy, cz], fermer: () => setOuverte(false) })
+    return () => void portesOuvertes.delete(id)
+  }, [ouverte, fixe, id, cx, cy, cz])
 
   useInteractif(
     id,
