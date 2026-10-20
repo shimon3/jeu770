@@ -24,6 +24,7 @@ type Props = {
   verrouillee?: string // clé du message affiché si la porte ne s'ouvre pas
   ouverteInitiale?: boolean
   fixe?: boolean // porte laissée ouverte, sans interaction
+  fermetureAuto?: boolean // se referme seule quand le joueur s'éloigne (par défaut : oui)
   cle?: string // objet d'inventaire nécessaire pour ouvrir ou fermer
   messageSansCle?: string
   rotationY?: number // orientation de la porte fermée
@@ -58,7 +59,7 @@ export function fermerPorteProche(): boolean {
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
 
-export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, rotationY = 0, ouverteInitiale = false, fixe = false, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
+export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, rotationY = 0, ouverteInitiale = false, fixe = false, fermetureAuto = true, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
   const corps = useRef<RapierRigidBody>(null)
   const [ouverte, setOuverte] = useState(ouverteInitiale)
   const angle = useRef(ouverteInitiale ? angleOuverture : 0)
@@ -107,7 +108,7 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   useFrame((_, dt) => {
     // Fermeture automatique : quand le joueur est à plus de 2,5 m de la porte
     // (ou à un autre étage) depuis 1,5 s. La porte fixe du bureau reste ouverte.
-    if (ouverte && !fixe) {
+    if (ouverte && !fixe && fermetureAuto) {
       const p = joueur.position
       const loin = Math.hypot(p[0] - centre[0], p[2] - centre[2]) > 2.5 || Math.abs(p[1] - 0.85 - charniere[1]) > 2
       minuterie.current = loin ? minuterie.current + dt : 0

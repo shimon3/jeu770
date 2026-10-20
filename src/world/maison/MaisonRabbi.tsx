@@ -292,8 +292,8 @@ export function MaisonRabbi() {
   return (
     <>
       <PiecesLibres pieces={pieces} />
-      {/* Porte du bureau : laissée ouverte (brief), sans interaction */}
-      <Porte id="porte-bureau-rebbe" charniere={[BUREAU.x1, Y0, BUREAU.porteZ1 - 0.04]} largeur={0.97} hauteur={2.2} sens={1} rotationY={Math.PI / 2} angleOuverture={1.45} ouverteInitiale fixe />
+      {/* Porte du bureau : ouverte au départ (brief) ; on peut la fermer et la rouvrir, elle ne se ferme pas seule */}
+      <Porte id="porte-bureau-rebbe" charniere={[BUREAU.x1, Y0, BUREAU.porteZ1 - 0.04]} largeur={0.97} hauteur={2.2} sens={1} rotationY={Math.PI / 2} angleOuverture={1.45} ouverteInitiale fermetureAuto={false} />
       <Interactions />
       <EclairageMaison />
     </>
