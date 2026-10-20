@@ -1,0 +1,9 @@
+{
+  "_doc": "Horaires affichés sur le tableau d'annonces. Valeurs d'EXEMPLE, à remplacer à la main par les horaires réels. 'cle' renvoie à une traduction tefila.<cle>.",
+  "exemple": true,
+  "horaires": [
+    { "cle": "chacharit", "heure": "10:00" },
+    { "cle": "minha", "heure": "15:15" },
+    { "cle": "arvit", "heure": "21:30" }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "_doc": "Missions définies en données. Les textes passent par i18n (clés). Types d'étape : 'interagir' (cible = id d'un objet interactif) ou 'zone' (cible = id de zone).",
+  "missions": [
+    {
+      "id": "decouvrir-770",
+      "titre": "mission.decouvrir770.titre",
+      "description": "mission.decouvrir770.description",
+      "donneur": "pnj-trottoir",
+      "etapes": [
+        { "type": "interagir", "cible": "panneau-histoire", "texte": "mission.decouvrir770.e1" },
+        { "type": "zone", "cible": "hall", "texte": "mission.decouvrir770.e2" },
+        { "type": "interagir", "cible": "tableau-annonces", "texte": "mission.decouvrir770.e3" },
+        { "type": "zone", "cible": "etage", "texte": "mission.decouvrir770.e4" }
+      ]
+    }
+  ]
+}

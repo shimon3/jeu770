@@ -1,0 +1,13 @@
+{
+  "_doc": "Zones jouables (boîtes alignées sur les axes, en mètres). 'calme' : course et saut désactivés, ambiance plus basse. 'artistique' : disposition non vérifiée par une source, mention affichée en jeu.",
+  "zones": [
+    { "id": "hall", "min": [-2.0, 0.8, -8.6], "max": [3.0, 4.6, -0.3], "interieur": true, "calme": false, "artistique": true },
+    { "id": "etage", "min": [-2.0, 4.6, -8.6], "max": [3.0, 8.0, -0.3], "interieur": true, "calme": false, "artistique": true },
+    { "id": "cour", "min": [-9.0, -1.0, -0.3], "max": [9.0, 6.0, 6.4], "interieur": false, "calme": false, "artistique": false },
+    { "id": "rue", "min": [-60, -5, 6.4], "max": [60, 20, 60], "interieur": false, "calme": false, "artistique": false }
+  ],
+  "contenus": {
+    "hitatUrl": "",
+    "videosCinema": []
+  }
+}
