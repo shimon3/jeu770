@@ -52,6 +52,9 @@ export function Joueur() {
     zone: '',
     siegeAvant: null as ReturnType<typeof useGame.getState>['siege'],
     tCible: 0,
+    tSouris: 0, // dernier mouvement de souris (recentrage automatique)
+    avance: false, // le joueur avance (touche avant)
+    cadreAssis: false,
   })
 
   // Créé dans un effet (et non un useMemo) : compatible avec le double
@@ -76,6 +79,7 @@ export function Joueur() {
     const bouge = (e: MouseEvent) => {
       if (document.pointerLockElement !== gl.domElement) return
       const s = etat.current
+      s.tSouris = performance.now()
       s.yaw -= e.movementX * 0.0022
       s.pitch = THREE.MathUtils.clamp(s.pitch - e.movementY * 0.0022, -1.25, 1.0)
     }
@@ -161,6 +165,7 @@ export function Joueur() {
       const vitesse = court ? COURSE : MARCHE
       v.set(fx * av + rx * lat, 0, fz * av + rz * lat)
       const bouge = v.lengthSq() > 0
+      s.avance = bouge && av > 0
       if (bouge) v.normalize().multiplyScalar(vitesse)
 
       if (s.sol && !bloque && touche('sauter') && !zone.calme) s.vy = SAUT
@@ -196,16 +201,33 @@ export function Joueur() {
       a.visible = vue === '3e'
     }
 
-    // Caméra
+    // Caméra automatique : si la souris est immobile depuis 1,2 s, la caméra
+    // revient derrière le personnage quand il avance et l'inclinaison revient
+    // à la normale. À l'intérieur, elle se rapproche pour ne pas buter sur
+    // les murs.
+    if (vue === '3e' && performance.now() - s.tSouris > 1200 && !st.siege) {
+      if (s.avance) s.yaw = amortirAngle(s.yaw, s.cap + Math.PI, 1 - Math.exp(-dt * 1.8))
+      s.pitch = THREE.MathUtils.damp(s.pitch, zone.interieur ? -0.08 : -0.15, 1.5, dt)
+    }
+    // En s'asseyant, la caméra se place derrière le personnage assis
+    if (st.siege && !s.cadreAssis) {
+      s.yaw = st.siege.rotationY + Math.PI
+      s.cadreAssis = true
+    } else if (!st.siege) s.cadreAssis = false
+    const cfx = -Math.sin(s.yaw)
+    const cfz = -Math.cos(s.yaw)
+    const crx = Math.cos(s.yaw)
+    const crz = -Math.sin(s.yaw)
     const cp = Math.cos(s.pitch)
-    f3.set(fx * cp, Math.sin(s.pitch), fz * cp)
+    f3.set(cfx * cp, Math.sin(s.pitch), cfz * cp)
     if (vue === '1re') {
       camera.position.set(nouvelle.x, nouvelle.y - CENTRE + OEIL, nouvelle.z)
       cible.copy(camera.position).add(f3)
       camera.lookAt(cible)
     } else {
-      pivot.set(nouvelle.x + rx * 0.45, nouvelle.y - CENTRE + 1.6, nouvelle.z + rz * 0.45)
-      let d = s.dist
+      const epaule = zone.interieur ? 0.3 : 0.45
+      pivot.set(nouvelle.x + crx * epaule, nouvelle.y - CENTRE + 1.6, nouvelle.z + crz * epaule)
+      let d = zone.interieur ? Math.min(s.dist, 2.6) : s.dist
       const hit = world.castRay(new rapier.Ray(pivot, { x: -f3.x, y: -f3.y, z: -f3.z }), d + 0.3, true, undefined, undefined, col)
       if (hit) d = Math.max(0.35, hit.timeOfImpact - 0.3)
       s.distCourante = d < s.distCourante ? d : THREE.MathUtils.damp(s.distCourante, d, 4, dt)

@@ -4,7 +4,7 @@ import { CuboidCollider, RigidBody, type RapierRigidBody } from '@react-three/ra
 import * as THREE from 'three'
 import { useInteractif } from './interaction'
 import { useMateriaux } from './materiaux'
-import { useGame } from '../state/store'
+import { joueur, useGame } from '../state/store'
 import { t } from '../i18n'
 import { evenementMission } from '../missions/missions'
 import type { V3 } from './primitives'
@@ -36,6 +36,7 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   const corps = useRef<RapierRigidBody>(null)
   const [ouverte, setOuverte] = useState(ouverteInitiale)
   const angle = useRef(ouverteInitiale ? angleOuverture : 0)
+  const minuterie = useRef(0)
   const aLaCle = useGame((s) => (cle ? s.inventaire.includes(cle) : true))
   const m = useMateriaux()
 
@@ -71,6 +72,17 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   )
 
   useFrame((_, dt) => {
+    // Fermeture automatique : quand le joueur est à plus de 2,5 m de la porte
+    // (ou à un autre étage) depuis 1,5 s. La porte fixe du bureau reste ouverte.
+    if (ouverte && !fixe) {
+      const p = joueur.position
+      const loin = Math.hypot(p[0] - centre[0], p[2] - centre[2]) > 2.5 || Math.abs(p[1] - 0.85 - charniere[1]) > 2
+      minuterie.current = loin ? minuterie.current + dt : 0
+      if (minuterie.current > 1.5) {
+        minuterie.current = 0
+        setOuverte(false)
+      }
+    }
     const cible = ouverte ? angleOuverture : 0
     const avant = angle.current
     angle.current = THREE.MathUtils.damp(angle.current, cible, 4, Math.min(dt, 0.05))
