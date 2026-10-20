@@ -63,8 +63,16 @@ Zal à gauche, 766 à droite » est confirmée.**
 - **Dans le jeu aujourd'hui : 912 m² (salle, 30,4 × 30 m) + 125 m² (aile du
   shalash) ≈ 1 037 m²**, soit environ 30 % de trop.
 
-Référence proposée : salle principale ≈ 28 × 24 m (≈ 670 m², alignée sur les
-empreintes 784-788) + shalash ≈ 130 m² → **≈ 800 m²**, signalé `// ESTIMÉ`.
+**800 m² n'est PAS une cible.** La surface du jeu sera la conséquence de cotes
+justifiées, jamais un chiffre imposé :
+- largeur de la salle : façade cumulée 784 + 788 mesurée sur OpenStreetMap
+  (≈ 28 m, contre 30,4 m aujourd'hui) ;
+- profondeur : conservée à 30 m (estimation actuelle) tant qu'aucune source ne
+  la fixe. L'empreinte OSM (≈ 25 m) ne couvre que les bâtiments hors sol ; le
+  sous-sol peut s'étendre au-delà ;
+- shalash : 125 m² actuels conservés (aucune source).
+La surface obtenue sera calculée et notée dans le registre, avec sa marge
+d'incertitude.
 
 ### 1.4 Niveau, accès, escaliers, portes
 
@@ -175,7 +183,7 @@ Rabbi, bureau), les commandes PC et tactiles, `Porte.tsx`.
 |---|---|---|
 | 1 | Tag `avant-correction` ; repère local du Zal et archivage des cotes de phase 2 | 1 h |
 | 2 | Façades : 784-788 à fenêtres cintrées à gauche, 766 Tudor à droite, rue, panneau, départ, soleil | 1 h 30 |
-| 3 | Zal ≈ 800 m² : enveloppe, colonnes, piliers, bancs, bimah, Aron, place vide au sud-est, PNJ et trajets | 1 h 30 |
+| 3 | Zal recalé sur la largeur mesurée (OSM) : enveloppe, colonnes, piliers, bancs, bimah, Aron, place vide au sud-est, PNJ et trajets | 1 h 30 |
 | 4 | Escalier en contrebas côté Kingston, porte du Zal, zones, sauvegarde | 1 h |
 | 5 | Vérification : escaliers, portes, collisions, 5 missions, place vide, FR/HE, `npm run test:mobile`, `npm run build` | 1 h 30 |
 | 6 | Éléments manquants **sourcés** (grille, détails de façade, bancs, estrades), un commit par élément | 2 à 4 h |
