@@ -58,8 +58,8 @@ Les dossiers `bureau/` et `beit-midrash/` seront examinés image par image au d�
 | Bancs devant le muret | Clio | Bancs de bois devant le muret côté trottoir | Dessin et position |
 | Lampadaires | Clio | Lampadaires à fût vert | Modèle simplifié |
 | Rue (trottoir, contre-allée, terre-plein, chaussée) | Commons 5 ; Clio | Trottoir, contre-allée avec voitures garées, arbres | Toutes les largeurs |
-| Bâtiment voisin de gauche | Clio | Immeuble de brique à bandeaux clairs, plus haut que le 770 | **Volume approximatif** |
-| Bibliothèque (voisin de droite) | Commons 5 ; Clio | Brique, pignon, portail de pierre, terrasse à balustres | **Volume approximatif** |
+| Bâtiment voisin de gauche = **766, bibliothèque** (corrigé en phase 2) | Clio ; OpenStreetMap ; COLlive 11/2025 | Immeuble de brique à bandeaux clairs, plus haut que le 770, à l'ouest du 770 | **Volume approximatif** |
+| Bâtiment voisin de droite = **784-788** (corrigé en phase 2 ; la phase 1 l'appelait à tort « bibliothèque ») | Clio ; OpenStreetMap ; COLlive 11/2025 | Brique, pignon, portail de pierre, parapet à balustres, à l'est du 770 | **Volume approximatif** |
 | Hall : matériaux | anash.org 2021 (couloir) | Plâtre crème, colombages de chêne foncé, escalier de chêne à balustres tournés, poteaux à pommeau, lustre en laiton, appliques, sol moucheté | Teintes |
 | Hall : disposition | Aucune | — | **Reconstitution artistique** : position de l'escalier, des portes, dimensions (5 × 8,2 m). Signalé en jeu. |
 | Porte vers l'antichambre | Shabboshouse.org (texte) | Le bureau est au rez-de-chaussée, à gauche de l'entrée vue de la rue | Emplacement de la porte dans le hall : **reconstitution artistique** |
@@ -75,3 +75,68 @@ Les dossiers `bureau/` et `beit-midrash/` seront examinés image par image au d�
 | Hall → escalier → étage | Escalier en chêne confirmé (anash.org 2021) ; son emplacement par rapport à l'entrée est une **reconstitution artistique** |
 | Hall → antichambre / bureau | À gauche de l'entrée (confirmé par le texte) ; porte fermée en phase 1 |
 | Hall → couloir du fond | Porte fermée, non vérifiée |
+
+---
+
+# Phase 2 — Grand Zal souterrain (mise à jour du 20 octobre 2026)
+
+## 5. Correction d'identification des bâtiments
+
+Coordonnées OpenStreetMap (Nominatim), d'ouest en est : 766 (−73,94307) → 770 (−73,94280) → 784 (−73,94260) → 788 (−73,94243) → Kingston Avenue (−73,94218). Vu depuis le trottoir, **la bibliothèque (766) est à gauche, 784-788 à droite**. Confirmé visuellement par la photo de groupe COLlive du 16/11/2025 (vue frontale : immeuble à fenêtres cintrées à gauche du 770, bâtiment Tudor à pignon à droite).
+
+## 6. Sources consultées pour la phase 2
+
+| Source | Date | Statut | Utilisation |
+|---|---|---|---|
+| chabad.org, « What Is 770 » | — | Lue | Le Zal occupe le sous-sol reconstruit et l'ancien rez-de-chaussée de l'immeuble voisin ; bancs de bois, gradins |
+| chabad.org, « The Revolutionaries » (T. Freeman) | vers 2006, récit après 1991 | Lue | « Depuis la rue, on descend des marches » |
+| ChabadInfo, « Ever Expanding » (Hatomim) | — | Lue | Shalash dans la cour du 770 (1959-1960), achat de 784-788 (1965), travaux (1967), 3 grands piliers marquant les anciennes limites |
+| Wikipedia, « 770 Eastern Parkway » et « New York City synagogue tunnel incident » | — | Lues | Synagogue souterraine surtout sous 784 et 788 ; galerie des femmes à l'étage au-dessus ; un escalier mène à la synagogue |
+| OpenStreetMap (Nominatim) | consulté le 20/10/2026 | Interrogé | Ordre des bâtiments |
+| COLlive, « 770 Shul Prepared for Hakafos » (photographe : filigrane « Mendi ») | 13/10/2025 | 38 photos téléchargées et examinées, aucun portrait affiché | **Référence principale du Zal (Tichri 2025)** |
+| COLlive, « Shluchim Group Photo: Second Gallery » | 16/11/2025 | 110 photos téléchargées ; surtout des foules | Ordre des bâtiments (photo 099) |
+| COLlive, « Photo: An Army of Light » | 16/11/2025 | 3 photos utiles (1 hors sujet supprimée) | Vue d'ensemble |
+| Commons 8 à 11 (Rabbi michel, CC BY-SA 4.0) | 06/04/2020 | Examinées ; aucune ne montre le Rebbe ; n° 10 = place vide | Bimah, bancs, galerie, place vide ; parokhet bleu de 2020 **non utilisé** (autre époque) |
+| anash.org, « 80 Years Since Purchase of 770 » | 02/08/2020 | Texte lu, images non téléchargées | Historique |
+| anash.org, « 770's Tashlich Pond in 5735 » | 02/10/2024 | Texte lu, images **non téléchargées** (sans légendes, risque d'images du Rebbe) | Hors époque, non utilisé |
+| ChabadInfo, « 100 Rare Details » (Dov Ber Hechtman) | 11/2022 | Page accessible ; 103 images **pas encore examinées** | À faire |
+| COLlive : Seli'hot (14/09/2025), Tisha BeAv (03/08/2025), Leil Shishi (17/10/2025), Tsom Guedalia (15/09/2026), Picture of the Day 1714 (19/09/2025) | — | Pages accessibles, images **pas encore examinées** | À faire |
+| PDF « mbhg-e » (1943-1945) | — | **Non consulté** | À faire (texte seulement) |
+| Urban Archive (1965) | — | **Inaccessible** (HTTP 403, protection anti-robots) | — |
+| chabad.org, « Portraits Offer Deeper Revelations » | — | **Exclue** : collection de photos du Rebbe (règle absolue) | — |
+| Images A à D fournies par l'utilisateur | — | **Pas encore reçues** | Disposition des bancs, colonnes, estrades à confirmer |
+
+Toutes les photos d'actualité restent dans `references/` (exclu de git) : référence de modélisation uniquement, jamais publiées ni plaquées en texture.
+
+## 7. Registre des éléments 3D du grand Zal
+
+| Élément 3D | Source(s) | Confirmé | Approximatif / reconstitution artistique |
+|---|---|---|---|
+| Emplacement souterrain sous 784-788 + shalash | Wikipedia ; chabad.org ; ChabadInfo | Sous le niveau de la rue, sous 784 et 788, plus l'ancien shalash dans la cour du 770 | Emprise (30 × 30 m + aile ouest), profondeur (−3,4 m), hauteur (4,5 m) |
+| Accès depuis la rue | The Revolutionaries ; Wikipedia | Un escalier descend de la rue | **Reconstitution artistique** : escalier de 18 marches dans la courette à balustres devant 784 (aucune photo de l'escalier réel) |
+| Sol carrelé | COLlive 2025 (021, 026, 037) ; Commons 8 | Carreaux crème, losanges et bandes saumon | Motif exact et espacement |
+| Colonnes carrées blanches, base évasée | COLlive 2025 ; Commons 8 | Forme, couleur | Grille et nombre |
+| Trois grands piliers | ChabadInfo | Leur existence et leur rôle | Positions |
+| Faux plafond, néons, ventilateurs, lustres de cristal | COLlive 2025 ; Commons 8, 9 | Présents | Nombre et répartition |
+| Galerie lambrissée et vitrée en hauteur | COLlive 2025 (021, 031, 037) ; Commons 8, 9 | Lambris foncé, bandeau de vitres sombres en haut des murs | Identification comme galerie des femmes probable (Wikipedia), non vérifiée sur photo |
+| Plafonds bas périphériques avec bibliothèques | COLlive 2025 (037) | Présents | Profondeur, longueur |
+| Murs de brique peinte en blanc (côté Aron) | COLlive 2025 (005, 016, 038) ; Commons 10 | Présents | Étendue |
+| Bancs à dossier et tablette à livres | Commons 8 | Forme | Nombre, rangées, orientation (en attente des images A à D) |
+| Tables d'étude, pupitres | COLlive 2025 ; The Revolutionaries | Présents | Positions |
+| Gradins | chabad.org (« bleachers ») | Leur existence | **Position et forme : reconstitution artistique** |
+| Bimah | Commons 8 ; COLlive 2025 (032-034) | Enceinte de bois à balustres, sur roulettes, table couverte de bordeaux | Dimensions, position |
+| Aron Kodesh | COLlive 2025 (005, 006, 016) | Bois doré sculpté, couronnement en gradins, pilastres marquetés en chevrons, parokhet **blanc** et cantonnière frangée d'or (Tichri 2025), estrade avec marches et garde-corps | Dimensions ; broderies simplifiées ; aucune inscription (illisible sur les photos de 2025) |
+| Place du Rebbe, **VIDE** | Commons 10 ; COLlive 2025 (020) | Estrade, lambris, fauteuil de velours rouge, pupitre à housse blanche frangée d'or, tapis | Position au sud de l'Aron : ESTIMÉE (« angle sud-est » à l'époque du shalash, ChabadInfo ; estrade à droite de l'Aron sur COLlive 016) |
+| Banderole « יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד » | COLlive 13/10/2025 (photo 036) ; même texte sur Commons 11 | **Texte vérifié sur deux sources** | Position, taille, police |
+| Autres banderoles | COLlive 2025 | Présentes | **Non reproduites** : textes non relevés avec certitude |
+| Horloge murale, panneau EXIT | Commons 9 | Présents | Positions |
+| Bâtiment 784-788 en surface | Clio ; COLlive 11/2025 | Pignon, portail de pierre, parapet à balustres | Volume, fenêtres |
+| Panneau indicateur sur le trottoir | — | — | **Élément de jeu**, n'existe pas dans la réalité |
+
+## 8. Liaisons (phase 2)
+
+| Liaison | Statut |
+|---|---|
+| Rue → courette de 784 → escalier → porte → grand Zal | Descente depuis la rue confirmée ; **emplacement exact : reconstitution artistique** |
+| Salle principale ↔ aile ouest (ancien shalash) | Confirmée (mur abattu en 1967, ChabadInfo) |
+| Hall du 770 ↔ grand Zal | **Non créée** : aucune source ne la décrit |

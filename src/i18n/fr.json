@@ -137,5 +137,7 @@
   "mission.retrouver-livre.e2": "Le rapporter à l'étudiant",
   "mission.retrouver-livre.debut": "Je cherche un livre relié de rouge. Quelqu'un l'a rangé dans les bibliothèques du fond, contre le mur opposé à l'entrée. Vous pourriez le chercher ?",
   "mission.retrouver-livre.rappel": "Le livre rouge dépasse d'une des bibliothèques du mur du fond.",
-  "mission.retrouver-livre.fin": "Merci, je peux reprendre mon étude !"
+  "mission.retrouver-livre.fin": "Merci, je peux reprendre mon étude !",
+  "panneau.versMaison": "Maison du Rabbi — 770",
+  "panneau.versZal": "Grand Zal"
 }

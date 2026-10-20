@@ -60,14 +60,8 @@ export default function App() {
   const jouer = useCallback((nouvelle: boolean) => {
     const st = useGame.getState()
     const s = lireSauvegarde()
-    if (!nouvelle && s) {
-      st.set({
-        missions: s.missions,
-        depart: s.position ? { position: s.position, yaw: s.yaw ?? 0 } : DEPART_PAR_DEFAUT,
-      })
-    } else {
-      st.set({ missions: {}, depart: DEPART_PAR_DEFAUT })
-    }
+    // On commence toujours sur le trottoir ; « Continuer » reprend les missions
+    st.set({ missions: !nouvelle && s ? s.missions : {}, depart: DEPART_PAR_DEFAUT })
     st.set({ ecran: 'jeu', pause: false, panneau: null, siege: null, vue: '3e' })
     setCle((c) => c + 1)
     demarrerAmbiance()

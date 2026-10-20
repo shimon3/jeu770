@@ -102,8 +102,8 @@ export function Rue() {
     // Lampadaires
     for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
     for (const x of [-20, 0, 20]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
-    // Voitures garées le long de la contre-allée
-    ;[-21, -15, 9, 15, 27].forEach((x, i) => pc.push(...voiture(x, Z_CONTRE + 1.2, i)))
+    // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
+    ;[-21, -15, 21, 27, 33].forEach((x, i) => pc.push(...voiture(x, Z_CONTRE + 1.2, i)))
     // Bancs du terre-plein (décor)
     for (const x of [-12, -3, 8]) pc.push(...banc(x, Z_TERRE + 1.0, 0))
     return pc

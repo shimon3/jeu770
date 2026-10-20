@@ -10,6 +10,7 @@ import { Joueur } from '../player/Joueur'
 import { PnjImmobile } from '../npc/PnjImmobile'
 import { useGame } from '../state/store'
 import { Complexe784 } from './complexe/Complexe784'
+import { PanneauxDirection } from './rue/PanneauxDirection'
 import { GrandZal } from './grand-zal/GrandZal'
 import { PnjZal } from '../npc/PnjZal'
 import * as THREE from 'three'
@@ -59,6 +60,7 @@ export function Monde({ cle }: { cle: number }) {
             <Facade />
             <Hall />
             <Complexe784 />
+            <PanneauxDirection />
             <GrandZal />
             <PnjZal id="pnj-entree-zal" position={[14.2, 0, 3.4]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />

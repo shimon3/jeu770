@@ -54,7 +54,9 @@ type GameState = {
 
 let notifId = 0
 
-export const DEPART_PAR_DEFAUT = { position: [0, 1.2, 9.5] as Vector3Tuple, yaw: 0 }
+// Sur le trottoir, entre le 770 et 784-788 : on voit la porte du 770 à gauche
+// et l'escalier du grand Zal à droite
+export const DEPART_PAR_DEFAUT = { position: [7.8, 1.0, 10.8] as Vector3Tuple, yaw: 0 }
 
 export const useGame = create<GameState>((set, get) => ({
   ecran: 'accueil',
