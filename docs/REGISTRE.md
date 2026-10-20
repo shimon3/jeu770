@@ -140,3 +140,20 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 | Rue → courette de 784 → escalier → porte → grand Zal | Descente depuis la rue confirmée ; **emplacement exact : reconstitution artistique** |
 | Salle principale ↔ aile ouest (ancien shalash) | Confirmée (mur abattu en 1967, ChabadInfo) |
 | Hall du 770 ↔ grand Zal | **Non créée** : aucune source ne la décrit |
+
+## 9. Maison du Rabbi : pièces derrière les portes (branche `phase-2b-maison`)
+
+| Élément 3D | Source(s) | Confirmé | Approximatif / reconstitution artistique |
+|---|---|---|---|
+| Bureau du Rebbe : position | shabboshouse.org ; crownheights.info | Rez-de-chaussée, à gauche de l'entrée, fenêtre sur Eastern Parkway | Dimensions de la pièce (4,3 × 4,75 m) |
+| Bureau : mobilier | anash.org 2025 (photos `bureau/02`, `bureau/03`) | Plancher de chêne clair, lambris foncé, bibliothèques vitrées, grand bureau à plateau de verre, **fauteuil de cuir fauve VIDE**, table ronde sculptée sous housse, deux pupitres sous velours noir frangé d'or, classeur vert, stores de bois | Disposition exacte, formes simplifiées |
+| Bureau : lustre, horloge, téléphone des années 1950 | crownheights.info (texte) | Leur présence | Formes et positions |
+| Bibliothèque du bureau (liste de titres) | — | — | **Liste d'exemple** dans `src/config/bibliotheque.json`, signalée en jeu |
+| Antichambre « Gan Eden HaTa'hton » | anash.org (nom) ; couloir 2021 (faux marbre, lustres) | Son nom et son existence | **Forme en L, bancs, armoire : reconstitution artistique** |
+| Couloir du rez-de-chaussée | anash.org 2021 (photos `couloir/`) | Faux marbre brun en soubassement, plâtre, appliques | Position et longueur |
+| Petit zal | chabad.org (« la petite synagogue d'origine reste en usage ») | Son existence dans le 770 | **Emplacement, dimensions, mobilier : reconstitution artistique** |
+| Étage : appartement | chabad.org (appartement du Rabbi précédent) | Sa fonction historique | **Tout l'aménagement : reconstitution artistique sobre, aucun portrait** ; aucune photo de l'intérieur n'a été trouvée ni vérifiée |
+| Clé de l'étage dans une armoire | Demande de l'utilisateur | — | Élément de jeu |
+| Fenêtres translucides (bureau, salon de l'étage) | Commons 2 (verre au plomb) | Verre au plomb en losanges | Transparence : choix de jeu pour voir dehors |
+
+Photo de référence supprimée : `bureau/01` (photo historique de groupe en incrustation, où le Rebbe pourrait figurer).

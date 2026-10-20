@@ -329,7 +329,7 @@ function EclairageMaison() {
   const zone = useGame((s) => s.zone)
   const cible = useRef(0)
   useEffect(() => {
-    cible.current = ZONES_MAISON.includes(zone) ? 1.3 : 0
+    cible.current = ZONES_MAISON.includes(zone) ? 2.4 : 0
   }, [zone])
   useFrame((_, dt) => {
     if (hemi.current) hemi.current.intensity = THREE.MathUtils.damp(hemi.current.intensity, cible.current, 3, dt)

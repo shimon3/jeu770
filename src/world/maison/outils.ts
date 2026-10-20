@@ -48,14 +48,22 @@ export function bibliothequeVitree(axe: 'x' | 'z', x0: number, x1: number, plan:
   const face = plan + sens * (d + 0.01)
   const pos = (u: number, yy: number, w: number): V3 => (axe === 'x' ? [u, yy, w] : [w, yy, u])
   const taille = (l: number, h: number, e: number): V3 => (axe === 'x' ? [l, h, e] : [e, h, l])
+  const hb = 0.95 // placard bas plein
+  const hh = hauteur - hb // vitrine haute
   const pc: PieceLibre[] = [
-    { t: taille(L, hauteur, d), p: pos(c, y + hauteur / 2, centre), mat: bois, col: true },
-    { t: taille(L - 0.1, hauteur - 1.05, 0.01), p: pos(c, y + 0.95 + (hauteur - 1.05) / 2, face - sens * 0.03), mat: livres, ombre: false },
-    { t: taille(L - 0.1, hauteur - 1.05, 0.01), p: pos(c, y + 0.95 + (hauteur - 1.05) / 2, face), mat: verre, ombre: false },
-    { t: taille(L + 0.06, 0.06, d + 0.06), p: pos(c, y + 0.92, centre), mat: bois },
+    { t: taille(L, hb, d), p: pos(c, y + hb / 2, centre), mat: bois, col: true },
+    // Vitrine : fond, côtés, dessus ; livres devant le fond ; vitre en façade
+    { t: taille(L, hh, 0.04), p: pos(c, y + hb + hh / 2, plan + sens * 0.02), mat: bois, col: true },
+    { t: taille(0.05, hh, d), p: pos(x0 + 0.025, y + hb + hh / 2, centre), mat: bois },
+    { t: taille(0.05, hh, d), p: pos(x1 - 0.025, y + hb + hh / 2, centre), mat: bois },
+    { t: taille(L - 0.1, hh - 0.1, 0.01), p: pos(c, y + hb + hh / 2, plan + sens * 0.12), mat: livres, ombre: false },
+    { t: taille(L - 0.1, hh - 0.05, 0.01), p: pos(c, y + hb + hh / 2, face), mat: verre, ombre: false },
+    { t: taille(L + 0.06, 0.06, d + 0.06), p: pos(c, y + hb - 0.03, centre), mat: bois },
     { t: taille(L + 0.08, 0.08, d + 0.08), p: pos(c, y + hauteur + 0.04, centre), mat: bois },
   ]
-  for (let u = x0; u <= x1 + 0.01; u += 0.9) pc.push({ t: taille(0.05, hauteur - 1.0, 0.04), p: pos(Math.min(u, x1), y + 0.95 + (hauteur - 1.0) / 2, face + sens * 0.01), mat: bois, ombre: false })
+  // Tablettes
+  for (let k = 1; k < 3; k++) pc.push({ t: taille(L - 0.1, 0.025, d - 0.06), p: pos(c, y + hb + (hh * k) / 3, centre), mat: bois, ombre: false })
+  for (let u = x0; u <= x1 + 0.01; u += 0.9) pc.push({ t: taille(0.05, hh, 0.04), p: pos(Math.min(u, x1), y + hb + hh / 2, face + sens * 0.01), mat: bois, ombre: false })
   return pc
 }
 

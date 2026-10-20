@@ -93,3 +93,17 @@ Tests réalisés dans Chrome (`npm run dev`) en pilotant le jeu par événements
 
 ### Modifications de fichiers existants (autorisées)
 `Voisins.tsx` (correction et retrait du bâtiment de droite), `Rue.tsx` (sol percé, voiture déplacée), `Monde.tsx` (montage, soleil), `App.tsx` (départ sur le trottoir, densité de pixels), `store.ts` et `Joueur.tsx` (point de sortie optionnel d'un siège), `zones.json`, `missions.json`, `fr.json`, `he.json` (ajouts uniquement).
+
+## Maison du Rabbi — pièces derrière les portes (branche `phase-2b-maison`)
+
+### Testé (Chrome, événements simulés et captures)
+- Porte du hall vers l'antichambre : s'ouvre ; zones antichambre et bureau reconnues.
+- Bureau du Rebbe : rendu vérifié (bibliothèques vitrées garnies, bureau, fauteuil vide, pupitres, fenêtre translucide sur la rue) ; plaque et bibliothèque (E) affichent leur panneau.
+- Étage : sans clé, message « fermée à clé » ; clé prise dans l'armoire de l'antichambre (inventaire mis à jour) ; la porte de l'étage s'ouvre alors ; zone appartement reconnue ; salon rendu.
+- Porte du fond : couloir et petit zal accessibles et reconnus ; petit zal rendu.
+- `npm run build` OK.
+
+### Non testé
+- Refermer à clé et remettre la clé ; sauvegarde puis rechargement de l'inventaire.
+- Porte du fond de l'étage (même clé) et salle à manger de l'étage.
+- Coût de rendu dans les nouvelles pièces.
