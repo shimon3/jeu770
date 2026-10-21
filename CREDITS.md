@@ -18,6 +18,14 @@ Licence CC0 : domaine public, aucune attribution obligatoire. Listées par honn�
 
 Les textures ont été recompressées (JPEG qualité 72–80) pour le navigateur.
 
+## Modèles 3D
+
+| Fichier dans `public/assets/` | Origine | Usage |
+|---|---|---|
+| `models/hassid-sculptly.glb` | Modèle généré avec Sculptly, fourni par Samuel (octobre 2026) | Hassid immobile dans le grand Zal, près de l'entrée |
+
+Le modèle d'origine portait le visage photographique d'une personne réelle. Il a été **anonymisé** avant publication avec `tools/anonymiser-glb.py` : visage en aplat de peau sans traits et relief lissé, barbe, cheveux et chapeau en aplat sombre, fragments de photo inutilisés effacés, texture réduite à 1024 px. Le fichier d'origine n'est pas versionné. Conditions d'utilisation de Sculptly : à vérifier par Samuel pour une diffusion publique.
+
 ## Textures générées par le code
 
 Verre au plomb, sol moucheté, relief de frise, inscription, panneaux de texte : dessinés sur canvas au chargement (`src/world/texturesProcedurales.ts`).
