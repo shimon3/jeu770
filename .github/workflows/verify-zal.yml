@@ -1,0 +1,32 @@
+name: Vérifications jeu 770
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - ameliorations-grand-zal-photos-2026
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Installer les dépendances
+        run: npm ci
+      - name: Vérifier le build TypeScript et Vite
+        run: npm run build
+      - name: Installer Chromium pour les tests tactiles
+        run: npx playwright install --with-deps chromium
+      - name: Tests mobiles et PC émulés
+        run: npm run test:mobile

@@ -143,3 +143,21 @@ Signalé sur Android/Chrome (viewport 360 × 641, DPR 3) : boutons trop bas ou m
 
 ### Reste à tester sur le vrai téléphone Android
 Sensibilité du joystick et de la caméra, fluidité (ombres allégées), barre d'adresse Chrome qui apparaît/disparaît, mode plein écran / navigation par gestes, rotation portrait ↔ paysage en cours de partie.
+
+
+## Améliorations photographiques du Grand Zal — 21 octobre 2026 (branche `ameliorations-grand-zal-photos-2026`)
+
+### Code implémenté
+- `texturesZal.ts` : retrait du losange inventé, carrelage crème avec bandes rectilignes saumon et carrés ; dimensions estimées, motif procédural original.
+- `PlafonniersZal.tsx` : dalles carrées encadrées sous plafond haut et réglettes linéaires sous plafonds bas, en conservant les ventilateurs et lustres.
+- `MobilierZal.tsx` : bancs à dossier, tablette à sefarim légèrement inclinée, repose-pied et montants intermédiaires (sans nouveaux colliders).
+- `AronKodesh.tsx` : colonnes tournées, frise en relief, corniches, plis du parokhet. Le parokhet blanc de Tichri 2025 et la place vide restent inchangés.
+- `Complexe784.tsx` : trois vantaux voisins vitrés décoratifs, encadrement de la porte interactive et garde-corps supérieur, inspirés des photos 2020.
+- `src/config/grandZal.ts` : mesures et trajet de la descente actuelle NON modifiés ; emplacement exact historique encore approximatif.
+- `.github/workflows/verify-zal.yml` : vérification automatisée build et Playwright mobile/PC sur pull request.
+
+### Sources et limites
+Voir `docs/AUDIT-PHOTOS-GRAND-ZAL-2026.md` et le rapport photographique Aaron Valuation (juin 2020, p. 6, 9, 10). Les photos sont des références et ne sont pas enregistrées comme textures. Les dimensions, le nombre exact de portes, les positions de plafonniers et la distribution des bancs restent estimées.
+
+### À vérifier avant de déclarer la reconstitution fidèle
+Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la porte animée, lisibilité du parokhet et rapport d'échelle des bancs. Vérifier les collisions et la fluidité sur téléphone réel. La couverture CI atteste seulement le build et l'ergonomie testée en émulation.

@@ -7,15 +7,34 @@ import type { MateriauxZal } from './materiauxZal'
 import { BORD_NORD, BORD_SUD, Z_SUD } from './EnveloppeZal'
 import { useGame } from '../../state/store'
 
-// Plafond : dalles lumineuses (néons), ventilateurs, lustres de cristal
-// (COLlive 2025 ; Commons 8, 9). Répartition ESTIMÉE.
+// Plafond : dalles carrées au centre, longues réglettes latérales, ventilateurs,
+// lustres de cristal (rapport photographique 2020, COLlive 2025, Commons 8-9).
+// Nombre et répartition ESTIMÉS.
 
 const P = ZAL.plafond
 const S = ZAL.sol
 
-const NEONS: [number, number][] = []
-for (let x = ZAL.x0 + 1.5; x < ZAL.x1 - 1; x += 2.4) for (let z = BORD_SUD - 1.2; z > BORD_NORD + 1; z -= 2.4) NEONS.push([x, z])
-for (let x = ZAL.shalashX0 + 1.2; x < ZAL.x0 - 0.5; x += 2.4) for (let z = ZAL.shalashZ1 - 1.2; z > BORD_NORD + 1; z -= 2.4) NEONS.push([x, z])
+
+// Photos de 2020 (rapport Aaron Valuation p. 9-10) : dalles lumineuses
+// carrées dans le volume haut, longues réglettes dans les plafonds bas.
+// Les positions ci-dessous sont ESTIMÉES (aucun relevé du plafond disponible).
+const SO = ZAL.soffite
+const DALLES: [number, number][] = []
+for (let x = ZAL.x0 + 1.5; x < ZAL.x1 - 1.0; x += 2.4)
+  for (let z = BORD_NORD + 1.2; z < BORD_SUD - 1; z += 2.4)
+    DALLES.push([x, z])
+// Les dalles prolongent la grande salle dans l'aile ouest du shalash.
+for (let x = ZAL.shalashX0 + 1.4; x < ZAL.x0 - 0.6; x += 2.4)
+  for (let z = BORD_NORD + 0.8; z < ZAL.shalashZ1 - 1; z += 2.4)
+    DALLES.push([x, z])
+
+const REGLETTES: [number, number, number][] = []
+for (let x = ZAL.x0 + 1.5; x < ZAL.x1 - 1.0; x += 2.7) {
+  REGLETTES.push([x, Z_SUD - 0.75, SO - 0.055])
+  REGLETTES.push([x, ZAL.z0 + 0.75, SO - 0.055])
+}
+for (let x = ZAL.shalashX0 + 1.2; x < ZAL.x0 - 0.7; x += 2.7)
+  REGLETTES.push([x, ZAL.z0 + 0.7, SO - 0.055])
 
 const VENTILATEURS: [number, number][] = []
 for (const x of [12.7, 17.7, 23.5, 29.3, 34.8]) for (const z of [-7.0, -13.0, -19.0, -25.0]) VENTILATEURS.push([x, z])
@@ -31,7 +50,16 @@ const LUSTRES: [number, number][] = [
 export function PlafonniersZal({ m }: { m: MateriauxZal }) {
   const pieces = useMemo(() => {
     const pc: PieceLibre[] = []
-    for (const [x, z] of NEONS) pc.push({ t: [1.2, 0.03, 0.6], p: [x, P - 0.015, z], mat: m.neon, ombre: false })
+    // Dalles lumineuses encadrées plutôt que rectangles uniformes.
+    for (const [x, z] of DALLES) {
+      pc.push({ t: [0.88, 0.035, 0.88], p: [x, P - 0.022, z], mat: m.metal, ombre: false })
+      pc.push({ t: [0.76, 0.018, 0.76], p: [x, P - 0.048, z], mat: m.neon, ombre: false })
+    }
+    // Les réglettes suivent le plafond bas en périphérie, pas le plafond haut.
+    for (const [x, z, y] of REGLETTES) {
+      pc.push({ t: [1.72, 0.035, 0.19], p: [x, y + 0.02, z], mat: m.metal, ombre: false })
+      pc.push({ t: [1.58, 0.017, 0.10], p: [x, y - 0.01, z], mat: m.neon, ombre: false })
+    }
     for (const [x, z] of LUSTRES) {
       const y = P - 0.9
       pc.push({ geo: new THREE.CylinderGeometry(0.01, 0.01, 0.8, 4), p: [x, P - 0.4, z], mat: m.metal, ombre: false })
