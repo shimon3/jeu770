@@ -177,10 +177,9 @@ Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la p
 - `npm run build` réussi.
 - Rendu contrôlé par captures (Chromium sans GPU, SwiftShader) : façade sans arbre dans l'axe, parement de pierre, descente frontale vue du trottoir, deux portes vues du Zal, Aron fermé, pièce de la chaise.
 - Parcours simulé au clavier : descente des 18 marches et remontée, ouverture de chacune des deux portes puis entrée dans la zone `grand-zal` ; entrée dans `chaise-rabbi` par sa porte ; le garde-corps arrête le joueur avant la chaise. (Rendu à ~2 images/s dans cet environnement : la fluidité n'est pas évaluée.)
+- `npm run test:mobile` (émulation tactile Chromium, avec un Chromium local) : 20 tests réussis, 29 ignorés, comme avant.
 
 ### Non vérifié / reste
 - Les **photos 1 à 5 n'ont pas été examinées** pendant ce travail (non jointes à la session) : comparaison visuelle jeu ↔ photos à faire par Samuel ; copier les photos dans `references/` avec leur origine.
 - Couleur du parokhet de la photo 3 (le blanc de 2025 est conservé).
 - Emplacement réel de la pièce de la chaise.
-- `npm run test:mobile` non relancé ici (navigateur Playwright attendu non téléchargeable dans cet environnement) ; la CI GitHub le lance sur la PR.
-
