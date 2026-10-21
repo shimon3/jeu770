@@ -9,8 +9,6 @@ import { PieceChaise } from './PieceChaise'
 import { DecorZal, EclairageZal, PlafonniersZal } from './PlafonniersZal'
 import { ObjetsMissionsZal } from './ObjetsMissionsZal'
 import { PnjZal } from '../../npc/PnjZal'
-import { PnjModele } from '../../npc/PnjModele'
-import { Suspense } from 'react'
 import { useGame } from '../../state/store'
 
 // Grand Zal souterrain (état de référence : Tichri 2025). Voir
@@ -39,10 +37,7 @@ export function GrandZal() {
 
       {/* PNJ : hassidim anonymes. Aucun ne s'approche de la place vide (npc/routines.ts). */}
       <group visible={pnjVisibles}>
-      {/* Hassid immobile près de l'entrée, tourné vers les portes (modèle Sculptly anonymisé) */}
-      <Suspense fallback={null}>
-        <PnjModele position={[28.5, S, -2.7]} rotationY={-Math.PI / 2} />
-      </Suspense>
+      <PnjZal id="pnj-entree-interieur" position={[28.5, S, -2.7]} rotationY={-Math.PI / 2} parle={false} />
       <PnjZal id="pnj-zal" position={[5.0, S, -24.0]} rotationY={Math.PI * 0.85} nomCle="zal.pnjNom" peau="#d2a07f" barbe="#3a2a1e" />
       <PnjZal id="pnj-etudiant" position={[3.6, S, -26.4]} rotationY={0} etat="assis" nomCle="zal.etudiantNom" repliqueCle="zal.etudiantRepos" peau="#c58f6c" barbe="#1f1712" />
       <PnjZal id="pnj-balancement-1" position={[10.0, S, -16.0]} rotationY={Math.PI / 2} etat="balancement" parle={false} barbe="#6b6b6b" />

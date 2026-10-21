@@ -193,3 +193,10 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - **Traitement (`tools/anonymiser-glb.py`) :** la tête n'utilise plus la texture photo — visage en matériau de peau uni, barbe, cheveux et chapeau en matériau sombre uni ; relief du nez, des lèvres et des arcades lissé (sommets soudés pour ne pas fendre le maillage) ; texels inutilisés effacés (ils contenaient d'autres fragments de visages) ; texture 2048 → 1024 px en JPEG. Contrôle visuel du rendu et de la texture finale : aucun trait du visage ne subsiste.
 - **Placement :** grand Zal, x = 28,5, z = −2,7, tourné vers les deux portes d'entrée ; immobile, avec collision ; affiché seulement quand le joueur est dans le Zal (comme les autres PNJ). Emplacement : choix de jeu.
 
+## 13. Modèle unique pour tous les hassids (21 octobre 2026, branche `hassid-modele-unique`)
+
+- Demande de Samuel : le modèle Sculptly (section 12, même fichier, identique octet pour octet) devient le modèle de **tous** les hassids — avatar du joueur et tous les PNJ.
+- Version utilisée : la version **anonymisée** de la section 12, allégée (≈ 13 000 triangles) : `public/assets/models/hassid.glb`.
+- Mouvements procéduraux (le modèle n'a pas de squelette) : jambes en ciseaux pour la marche, pose assise calculée (cuisses à l'horizontale, pieds au sol), balancement d'étude, respiration. Le manteau se déforme de façon approximative dans ces poses.
+- L'avatar procédural low-poly reste dans le code, affiché seulement pendant le chargement du modèle.
+
