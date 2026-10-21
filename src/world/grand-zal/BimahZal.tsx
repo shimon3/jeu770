@@ -25,8 +25,13 @@ export function BimahZal({ m }: { m: MateriauxZal }) {
     for (const sx of [-1, 1])
       for (const sz of [-1, 1])
         pc.push({ geo: new THREE.CylinderGeometry(0.05, 0.05, 0.04, 10), p: [x + sx * (d - 0.2), S + 0.05, z + sz * (d - 0.2)], r: [Math.PI / 2, 0, 0], mat: m.metal, ombre: false })
-    // Marche d'accès côté ouest
-    pc.push({ t: [0.35, hp / 2, 1.0], p: [x - d - 0.175, S + hp / 4, z], mat: m.bancs, col: true })
+    // Deux marches d'accès côté ouest (structure en bois visible sur la
+    // photo de la bimah, rapport photographique Aaron Valuation 2020 p. 9).
+    // Elles restent sous la hauteur de franchissement du joueur.
+    pc.push({ t: [0.32, hp / 3, 1.05], p: [x - d - 0.46, S + hp / 6, z], mat: m.bancs, col: true })
+    pc.push({ t: [0.32, (hp * 2) / 3, 1.05], p: [x - d - 0.14, S + hp / 3, z], mat: m.bancs, col: true })
+    for (const sx of [-1, 1])
+      pc.push({ t: [0.07, hp / 2, 0.09], p: [x - d - 0.30, S + hp / 4, z + sx * 0.52], mat: m.boisFonce })
     // Garde-corps : poteaux, lisses, balustres ; ouverture de 1 m à l'ouest
     const lisse = (x0: number, z0: number, x1: number, z1: number) => {
       const L = Math.hypot(x1 - x0, z1 - z0)
@@ -53,6 +58,8 @@ export function BimahZal({ m }: { m: MateriauxZal }) {
       [x - d, z - 0.5],
     ])
       pc.push({ t: [0.12, hg + 0.1, 0.12], p: [px, yP + (hg + 0.1) / 2, pz], mat: m.boisFonce })
+      // Pommeau de balustre sculpté, visible sur les montants de la bimah.
+      pc.push({ geo: new THREE.SphereGeometry(0.085, 8, 6), p: [px, yP + hg + 0.17, pz], mat: m.bancs, ombre: false })
     // Table de lecture couverte de bordeaux
     pc.push({ t: [1.0, 0.95, 1.7], p: [x + 0.4, yP + 0.475, z], mat: m.boisFonce, col: true })
     pc.push({ t: [1.06, 0.04, 1.76], p: [x + 0.4, yP + 0.97, z], mat: m.bordeaux })
