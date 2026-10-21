@@ -101,7 +101,7 @@
   "zal.pnjRepos": "Bonne étude !",
   "zal.etudiantRepos": "Je reprends mon étude.",
   "zal.bimahTexte": "La bimah : une enceinte de bois à balustres, montée sur roulettes. On la déplace pour les Hakafot de Sim'hat Torah (photos de Tichri 2025).",
-  "zal.aronTexte": "L'Aron Kodesh du grand Zal, tel que photographié en Tichri 2025 : bois sculpté, couronnement en gradins, pilastres marquetés, parokhet blanc. La disposition de la salle dans ce jeu est une reconstitution artistique.",
+  "zal.aronTexte": "L'Aron Kodesh du grand Zal, tel que photographié en Tichri 2025 : grand meuble de bois sculpté, couronnement en gradins, pilastres marquetés, parokhet blanc toujours fermé. La disposition de la salle dans ce jeu est une reconstitution artistique.",
   "mission.descendre-zal.titre": "Descendre au grand Zal",
   "mission.descendre-zal.description": "Un hassid vous montre l'escalier qui descend vers la grande synagogue, au sous-sol.",
   "mission.descendre-zal.e1": "Descendre l'escalier jusqu'au grand Zal",
@@ -167,5 +167,7 @@
   "tactile.v": "Vue",
   "tactile.j": "Journal",
   "tactile.saut": "Saut",
-  "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue."
+  "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue.",
+  "zone.chaise-rabbi": "Pièce de la chaise du Rabbi",
+  "zal.chaiseTexte": "La chaise du Rabbi, conservée vide dans une petite pièce boisée, avec son tapis et son pupitre. Personne ne s'y assoit. L'emplacement de cette pièce dans le jeu est une reconstitution artistique."
 }

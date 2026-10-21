@@ -68,7 +68,7 @@ export function Monde({ cle }: { cle: number }) {
             <Complexe784 />
             <PanneauxDirection />
             <GrandZal />
-            <PnjZal id="pnj-entree-zal" position={[14.2, 0, 3.4]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
+            <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             <Joueur key={cle} />
           </Physics>

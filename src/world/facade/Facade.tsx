@@ -145,7 +145,8 @@ function oriel(): Piece[] {
   return pc
 }
 
-// Encadrement de porte en pierre, arc Tudor et frise (Commons 3, 4)
+// Encadrement de porte en pierre, arc Tudor et frise (Commons 3, 4 ;
+// photo 1 fournie par Samuel : porte de bois, pierre claire, oriel noir)
 function encadrementPorte(): Piece[] {
   const pc: Piece[] = []
   const y0 = NIVEAUX.rdc
@@ -178,6 +179,37 @@ function encadrementPorte(): Piece[] {
   // Huisserie
   for (const s of [-1, 1]) pc.push({ t: [0.05, hp, EP], p: [TRAVEES.centre + s * (lo / 2 - 0.025), y0 + hp / 2, -EP / 2], m: 'cheneFonce' })
   pc.push({ t: [lo, 0.05, EP], p: [TRAVEES.centre, y0 + hp - 0.025, -EP / 2], m: 'cheneFonce' })
+  return pc
+}
+
+// Champ de pierre claire qui entoure la porte et les deux petites fenêtres,
+// de l'emmarchement jusque sous la console de l'oriel (photos 1 et 2
+// fournies par Samuel). Un simple parement sans collision : la brique reste
+// derrière. Étendue ESTIMÉE.
+function champPierre(): Piece[] {
+  const y0 = NIVEAUX.rdc
+  const L = PORTE.champPierreLargeur
+  const H = PORTE.champPierreHauteur
+  const lo = PORTE.largeur + 0.1
+  const xc = TRAVEES.centre
+  const ouvertures: Rect[] = [
+    { x0: xc - lo / 2, x1: xc + lo / 2, y0, y1: y0 + PORTE.hauteur + 0.05 },
+    ...[-1, 1].map((s) => {
+      const cx = xc + s * PORTE.petiteFenetreEcart
+      return { x0: cx - PORTE.petiteFenetreLargeur / 2, x1: cx + PORTE.petiteFenetreLargeur / 2, y0: y0 + 1.0, y1: y0 + 1.0 + PORTE.petiteFenetreHauteur }
+    }),
+  ]
+  const pc: Piece[] = mur({ axe: 'x', plan: 0.02, epaisseur: 0.04, de: xc - L / 2, a: xc + L / 2, bas: y0 - 0.12, haut: y0 + H, ouvertures, m: 'pierre', col: false })
+  // Assises de pierre marquées par de fins joints, et chaînes d'angle
+  for (let y = y0 + 0.45; y < y0 + H - 0.1; y += 0.45)
+    for (const s of [-1, 1]) {
+      const xa = s < 0 ? xc - L / 2 : xc + lo / 2 + 0.55
+      const xb = s < 0 ? xc - lo / 2 - 0.55 : xc + L / 2
+      if (y > y0 + 0.95 && y < y0 + 1.0 + PORTE.petiteFenetreHauteur + 0.15) continue
+      pc.push({ t: [xb - xa, 0.012, 0.012], p: [(xa + xb) / 2, y, 0.045], m: 'pierreFoncee', ombre: false })
+    }
+  for (const s of [-1, 1]) pc.push({ t: [0.06, H + 0.12, 0.06], p: [xc + s * (L / 2 - 0.03), y0 - 0.12 + (H + 0.12) / 2, 0.05], m: 'pierreFoncee' })
+  pc.push({ t: [L + 0.12, 0.1, 0.12], p: [xc, y0 + H + 0.05, 0.06], m: 'pierre' })
   return pc
 }
 
@@ -283,6 +315,7 @@ export function Facade() {
     for (const s of [-1, 1]) pc.push(...petiteFenetre(xPorte + s * PORTE.petiteFenetreEcart, y0 + 1.0))
     pc.push(...oriel())
     pc.push(...encadrementPorte())
+    pc.push(...champPierre())
     pc.push(...toitures())
     // Seuil de la porte dans l'épaisseur du mur
     pc.push({ t: [lo, 0.2, EP], p: [xPorte, y0 - 0.1, -EP / 2], m: 'pierre', col: true })

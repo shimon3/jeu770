@@ -36,17 +36,33 @@
     {
       "id": "escalier-zal",
       "min": [
-        15.6,
+        19.35,
         -3.6,
         -1.3
       ],
       "max": [
-        24.0,
+        23.45,
         1.5,
-        2.2
+        5.44
       ],
       "interieur": false,
       "calme": false,
+      "artistique": true
+    },
+    {
+      "id": "chaise-rabbi",
+      "min": [
+        40.0,
+        -3.8,
+        -5.4
+      ],
+      "max": [
+        44.6,
+        -0.6,
+        -1.4
+      ],
+      "interieur": true,
+      "calme": true,
       "artistique": true
     },
     {

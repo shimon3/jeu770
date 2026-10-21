@@ -161,3 +161,26 @@ Voir `docs/AUDIT-PHOTOS-GRAND-ZAL-2026.md` et le rapport photographique Aaron Va
 
 ### À vérifier avant de déclarer la reconstitution fidèle
 Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la porte animée, lisibilité du parokhet et rapport d'échelle des bancs. Vérifier les collisions et la fluidité sur téléphone réel. La couverture CI atteste seulement le build et l'ergonomie testée en émulation.
+
+
+## Façade, accès frontal au Zal, Aron fermé, pièce de la chaise — 21 octobre 2026 (branche `facade-acces-zal-aron-chaise`)
+
+### Fait
+- **Entrée du 770** : parement de pierre claire autour de la porte de bois et des petites fenêtres, sous l'oriel noir (photos 1–2). Arbres retirés de l'axe de la façade ; arbre de trottoir devant 784 décalé.
+- **Accès au grand Zal** : l'escalier latéral (parallèle à la façade, partant de la gauche) est supprimé. Nouvelle courette anglaise frontale : depuis le trottoir, 18 marches descendent perpendiculairement à la façade jusqu'à un palier et **deux portes** (photo 4). Les deux portes s'ouvrent (E) et mènent au Zal. Applique éclairée, EXIT au-dessus de chaque porte côté Zal. Le PNJ de la mission « descendre au Zal » est déplacé en haut du nouvel escalier.
+- **Grand Zal** : toujours à −3,40 m sous le trottoir ; reste du Zal, PNJ et missions inchangés.
+- **Aron Kodesh** : toujours fermé (aucun état ouvert dans le code), parokhet d'un seul tenant, meuble plus imposant (photo 3).
+- **Pièce de la chaise du Rabbi** (photo 5) : boiseries, tapis, chaise de velours rouge VIDE, pupitre, garde-corps ; porte depuis le mur est du Zal ; plaque de lecture FR/HE ; zone « reconstitution artistique ».
+- Documentation : `docs/REGISTRE.md` section 11, `docs/AUDIT-FACADE-ACCES-2026.md`.
+
+### Vérifié
+- `npm run build` réussi.
+- Rendu contrôlé par captures (Chromium sans GPU, SwiftShader) : façade sans arbre dans l'axe, parement de pierre, descente frontale vue du trottoir, deux portes vues du Zal, Aron fermé, pièce de la chaise.
+- Parcours simulé au clavier : descente des 18 marches et remontée, ouverture de chacune des deux portes puis entrée dans la zone `grand-zal` ; entrée dans `chaise-rabbi` par sa porte ; le garde-corps arrête le joueur avant la chaise. (Rendu à ~2 images/s dans cet environnement : la fluidité n'est pas évaluée.)
+
+### Non vérifié / reste
+- Les **photos 1 à 5 n'ont pas été examinées** pendant ce travail (non jointes à la session) : comparaison visuelle jeu ↔ photos à faire par Samuel ; copier les photos dans `references/` avec leur origine.
+- Couleur du parokhet de la photo 3 (le blanc de 2025 est conservé).
+- Emplacement réel de la pièce de la chaise.
+- `npm run test:mobile` non relancé ici (navigateur Playwright attendu non téléchargeable dans cet environnement) ; la CI GitHub le lance sur la PR.
+

@@ -75,6 +75,11 @@ export const PORTE = {
   petiteFenetreLargeur: 0.38, // ESTIMÉ — à calibrer
   petiteFenetreHauteur: 1.15, // ESTIMÉ — à calibrer
   petiteFenetreEcart: 1.45, // ESTIMÉ — à calibrer (distance du centre de la porte)
+  // Champ de pierre claire autour de la porte et des deux petites fenêtres,
+  // sous l'oriel (photos 1 et 2 fournies par Samuel, 2026 : pierre claire
+  // autour de la porte de bois). Étendue et hauteur ESTIMÉES — à calibrer.
+  champPierreLargeur: 3.9, // ESTIMÉ — à calibrer
+  champPierreHauteur: 3.05, // ESTIMÉ — à calibrer (aligné sur l'encadrement)
 }
 
 export const ORIEL = {

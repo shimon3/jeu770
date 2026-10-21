@@ -119,7 +119,7 @@ export function EclairageZal() {
   const gl = useThree((s) => s.gl)
   const zone = useGame((s) => s.zone)
   const soleil = useRef<{ l: THREE.DirectionalLight; base: number } | null>(null)
-  const dedans = zone === 'grand-zal'
+  const dedans = zone === 'grand-zal' || zone === 'chaise-rabbi'
   useEffect(() => {
     if (!soleil.current)
       scene.traverse((o) => {
@@ -148,7 +148,7 @@ export function EclairageZal() {
 }
 
 // Décor vérifié : banderole (inscription relevée sur photo), horloge
-// (Commons 9), panneau EXIT au-dessus de la porte (Commons 9).
+// (Commons 9), panneau EXIT au-dessus de chaque porte d'entrée (Commons 9).
 export function DecorZal({ m }: { m: MateriauxZal }) {
   const yB = ZAL.soffite + 1.3
   return (
@@ -159,9 +159,11 @@ export function DecorZal({ m }: { m: MateriauxZal }) {
       <mesh position={[31.5, ZAL.soffite + 0.5, BORD_NORD + 0.08]} material={m.horloge}>
         <circleGeometry args={[0.32, 24]} />
       </mesh>
-      <mesh position={[ENTREE.porteX0 + ENTREE.porteLargeur / 2, S + ENTREE.porteHauteur + 0.17, Z_SUD - 0.04]} rotation={[0, Math.PI, 0]} material={m.exit}>
-        <planeGeometry args={[0.42, 0.16]} />
-      </mesh>
+      {ENTREE.portes.map((d) => (
+        <mesh key={d.id} position={[d.x0 + d.largeur / 2, S + ENTREE.porteHauteur + 0.17, Z_SUD - 0.04]} rotation={[0, Math.PI, 0]} material={m.exit}>
+          <planeGeometry args={[0.42, 0.16]} />
+        </mesh>
+      ))}
     </>
   )
 }
