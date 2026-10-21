@@ -20,43 +20,37 @@ function texture(c: HTMLCanvasElement, metres: number, srgb = true) {
 // d'environ 30 cm, losanges saumon espacés. Module de 2,4 m. Teintes et
 // espacement ESTIMÉS.
 export function textureCarrelage() {
-  const { c, g } = toile(512, 512)
-  const n = 8
-  const p = 512 / n
+  // Photos du Grand Zal en 2020 (rapport Aaron Valuation, p. 9-10) :
+  // carreaux crème, carrés saumon et bandes rectilignes qui dessinent
+  // de grands cadres. L'ancien grand losange central n'est pas visible.
+  // Les tailles et l'espacement restent ESTIMÉS ; la texture se répète
+  // sans image protégée par le droit d'auteur.
+  const { c, g } = toile(576, 576)
+  const n = 12
+  const p = c.width / n
   for (let i = 0; i < n; i++)
     for (let j = 0; j < n; j++) {
-      const v = 236 + ((i * 7 + j * 13) % 5) * 2
-      g.fillStyle = `rgb(${v},${v - 14},${v - 34})`
+      const v = 234 + ((i * 7 + j * 13) % 5) * 2
+      let couleur = `rgb(${v},${v - 12},${v - 27})`
+      // Un cadre terracotta de 30 cm tous les 3,6 m.
+      if (i === 0 || j === 0) couleur = '#d1a080'
+      // Petits carreaux carrés placés dans la partie claire du cadre.
+      else if ([3, 8].includes(i) && [3, 8].includes(j)) couleur = '#be826c'
+      g.fillStyle = couleur
       g.fillRect(i * p, j * p, p, p)
     }
-  // Losange saumon au centre du module
-  g.fillStyle = '#d99a7c'
-  g.save()
-  g.translate(256, 256)
-  g.rotate(Math.PI / 4)
-  g.fillRect(-p * 0.72, -p * 0.72, p * 1.44, p * 1.44)
-  g.restore()
-  // Carreau saumon plein aux angles du module
-  g.fillStyle = '#e3ad8d'
-  for (const [x, y] of [
-    [0, 0],
-    [7, 0],
-    [0, 7],
-    [7, 7],
-  ])
-    g.fillRect(x * p, y * p, p, p)
-  // Joints
-  g.strokeStyle = 'rgba(120,100,80,0.35)'
-  g.lineWidth = 1.5
+  // Joints de carreaux ; aucune diagonale ni losange inventé.
+  g.strokeStyle = 'rgba(121,108,94,0.35)'
+  g.lineWidth = 1.3
   for (let k = 0; k <= n; k++) {
     g.beginPath()
     g.moveTo(k * p, 0)
-    g.lineTo(k * p, 512)
+    g.lineTo(k * p, c.height)
     g.moveTo(0, k * p)
-    g.lineTo(512, k * p)
+    g.lineTo(c.width, k * p)
     g.stroke()
   }
-  return texture(c, 2.4)
+  return texture(c, 3.6)
 }
 
 // Faux plafond à dalles de 60 cm (photos 2025)
