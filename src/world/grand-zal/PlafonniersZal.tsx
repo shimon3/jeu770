@@ -13,11 +13,12 @@ import { useGame } from '../../state/store'
 
 const P = ZAL.plafond
 const S = ZAL.sol
-const SO = ZAL.soffite
+
 
 // Photos de 2020 (rapport Aaron Valuation p. 9-10) : dalles lumineuses
 // carrées dans le volume haut, longues réglettes dans les plafonds bas.
 // Les positions ci-dessous sont ESTIMÉES (aucun relevé du plafond disponible).
+const SO = ZAL.soffite
 const DALLES: [number, number][] = []
 for (let x = ZAL.x0 + 1.5; x < ZAL.x1 - 1.0; x += 2.4)
   for (let z = BORD_NORD + 1.2; z < BORD_SUD - 1; z += 2.4)
