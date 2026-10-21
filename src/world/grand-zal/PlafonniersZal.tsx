@@ -13,6 +13,7 @@ import { useGame } from '../../state/store'
 
 const P = ZAL.plafond
 const S = ZAL.sol
+const SO = ZAL.soffite
 
 // Photos de 2020 (rapport Aaron Valuation p. 9-10) : dalles lumineuses
 // carrées dans le volume haut, longues réglettes dans les plafonds bas.
