@@ -50,10 +50,35 @@ export function AronKodesh({ m }: { m: MateriauxZal }) {
       const w = L - 0.3 - k * 0.7
       pc.push({ t: [P + 0.1 - k * 0.15, 0.12, w], p: [xA, yE + H + 0.06 + k * 0.12, z], mat: k === 0 ? m.or : m.boisDore })
     }
+    // Encadrement de l'Aron : deux colonnes tournées, corniche sculptée
+    // simplifiée et rosaces. Les photos 2020/2025 montrent un meuble en bois
+    // avec reliefs, et non un simple parallélépipède plat. Les cotes restent
+    // ESTIMÉES ; cette décoration ne masque pas le parokhet de Tichri 2025.
+    const xFace = xMur - P - 0.11
+    for (const signe of [-1, 1]) {
+      const zz = z + signe * (L / 2 - 0.32)
+      pc.push({ geo: new THREE.CylinderGeometry(0.13, 0.18, H - 0.7, 10), p: [xFace, yE + H / 2, zz], mat: m.boisDore })
+      for (const y of [yE + 0.27, yE + H - 0.24]) {
+        pc.push({ t: [0.38, 0.18, 0.4], p: [xFace, y, zz], mat: m.boisDore })
+        pc.push({ t: [0.40, 0.045, 0.44], p: [xFace, y + 0.11, zz], mat: m.or, ombre: false })
+      }
+    }
+    pc.push({ t: [0.22, 0.22, L - 0.34], p: [xFace, yE + H - 0.38, z], mat: m.boisDore })
+    pc.push({ t: [0.24, 0.05, L - 0.25], p: [xFace - 0.01, yE + H - 0.22, z], mat: m.or, ombre: false })
+    // Rosaces de la frise : motifs géométriques, aucune inscription inventée.
+    for (let i = -3; i <= 3; i++) {
+      const zz = z + i * (L - 0.8) / 7
+      pc.push({ geo: new THREE.SphereGeometry(0.09, 8, 6), p: [xFace - 0.13, yE + H - 0.38, zz], mat: m.or, ombre: false })
+    }
     // Parokhet blanc et cantonnière frangée d'or
     const lp = L - 1.0
     const hp = H - 0.75
     pc.push({ t: [0.03, hp, lp], p: [xMur - P - 0.02, yE + 0.2 + hp / 2, z], mat: m.parokhet })
+    // Relief discret de plis verticaux ; le tissu n'est plus complètement plat.
+    for (let i = 1; i < 10; i++) {
+      const zz = z - lp / 2 + (lp * i) / 10
+      pc.push({ geo: new THREE.CylinderGeometry(0.022, 0.025, hp - 0.06, 6), p: [xMur - P - 0.055, yE + 0.2 + hp / 2, zz], mat: m.parokhet, ombre: false })
+    }
     pc.push({ t: [0.08, 0.36, lp + 0.15], p: [xMur - P - 0.06, yE + 0.2 + hp - 0.1, z], mat: m.parokhet })
     pc.push({ t: [0.09, 0.05, lp + 0.17], p: [xMur - P - 0.065, yE + 0.2 + hp - 0.3, z], mat: m.or, ombre: false })
     pc.push({ geo: new THREE.CylinderGeometry(0.025, 0.025, lp + 0.4, 8), p: [xMur - P - 0.07, yE + 0.2 + hp + 0.1, z], r: [Math.PI / 2, 0, 0], mat: m.or, ombre: false })
