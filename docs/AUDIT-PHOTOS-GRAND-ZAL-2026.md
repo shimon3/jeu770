@@ -65,3 +65,15 @@ L'architecture générale est déjà largement modélisée. Les plus grosses inc
 | `AronKodesh.tsx` : estrade, garde-corps, bois | Correspondance de principe **confirmée** ; parokhet 2025 blanc n'est pas daté 2020 | Garder la version **Tichri 2025** tant qu'une actualisation n'a pas été demandée explicitement |
 
 **Limitation persistante** : la fiche Google Maps de 770 Eastern Parkway est retrouvée sur https://www.google.com/maps/search/770%2BEastern%2BParkway mais n'expose qu'une « limited view » sans galerie photo exploitable par l'outil. Les pages PDF ci-dessus sont bien visualisées, mais ne sont **pas** des photos Google Maps. Le texte du rapport n'autorise pas la republication de ses photographies : conserver uniquement le lien et l'analyse, pas les images dans `public/assets`.
+
+
+## Exécution — branche de corrections du 21 octobre 2026
+
+Les différences **documentées et suffisamment visibles** ont été appliquées dans la branche `ameliorations-grand-zal-photos-2026`, sans déplacement des coordonnées centrales non vérifiées :
+- carrelage : losange retiré au profit de bandes rectilignes et petits carrés ;
+- plafonnier : deux types de sources (dalles carrées / réglettes) selon l'altitude de plafond ;
+- mobilier : supports et tablettes réalistes des bancs ;
+- Aron : détail des colonnes, corniches et du parokhet ;
+- accès inférieur : plusieurs portes vitrées et garde-corps, avec maintien du chemin jouable.
+
+Les trois portes supplémentaires sur la façade sont **décoratives et non traversables**, l'escalier actuel et la porte interactive sont préservés pour ne pas casser les missions. L'emplacement réel et le nombre exact de vantaux restent inconnus. Voir `docs/PROGRESS.md` pour les changements et les vérifications CI. La galerie Google Maps n'a toujours pas été accessible dans l'outil.
