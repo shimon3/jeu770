@@ -29,17 +29,34 @@ const RANGEES = [...Array.from({ length: 8 }, (_, i) => 11.4 + i * 1.2), ...Arra
 export type SiegeDef = { id: string; position: Vector3Tuple; rotationY: number; sortie: Vector3Tuple }
 
 function banc(m: MateriauxZal, rx: number, za: number, zb: number): PieceLibre[] {
-  // Banc face à l'est (+x), dossier à l'ouest
+  // Rangée de bancs à dossier haut, tablette pour sefarim et repose-pied.
+  // Forme observée sur le reportage intérieur 2020, p. 9-10. Les positions
+  // de toutes les rangées restent des ESTIMATIONS.
   const L = za - zb
   const zc = (za + zb) / 2
-  return [
-    { t: [0.42, 0.05, L], p: [rx, S + 0.45, zc], mat: m.bancs },
-    { t: [0.04, 0.12, L], p: [rx + 0.19, S + 0.38, zc], mat: m.bancs },
-    { t: [0.05, 0.55, L], p: [rx - 0.23, S + 0.76, zc], mat: m.bancs },
-    { t: [0.24, 0.04, L], p: [rx - 0.37, S + 0.84, zc], mat: m.bancs },
-    { t: [0.58, 0.95, 0.06], p: [rx - 0.06, S + 0.475, za - 0.03], mat: m.boisFonce },
-    { t: [0.58, 0.95, 0.06], p: [rx - 0.06, S + 0.475, zb + 0.03], mat: m.boisFonce },
+  const pieces: PieceLibre[] = [
+    // Assise, lèvre avant et dossier.
+    { t: [0.44, 0.065, L], p: [rx, S + 0.45, zc], mat: m.bancs },
+    { t: [0.055, 0.14, L], p: [rx + 0.20, S + 0.40, zc], mat: m.bancs },
+    { t: [0.065, 0.62, L], p: [rx - 0.24, S + 0.75, zc], mat: m.bancs },
+    // Tablette supérieure, légèrement inclinée pour les livres.
+    { t: [0.28, 0.045, L], p: [rx - 0.36, S + 0.90, zc], r: [0, 0, -0.09], mat: m.boisFonce },
+    { t: [0.035, 0.10, L], p: [rx - 0.50, S + 0.87, zc], mat: m.boisFonce },
+    // Repose-pieds et entretoise longitudinale.
+    { t: [0.24, 0.05, L - 0.2], p: [rx + 0.18, S + 0.15, zc], mat: m.boisFonce },
+    // Panneaux porteurs à chaque extrémité.
+    { t: [0.60, 0.95, 0.065], p: [rx - 0.06, S + 0.475, za - 0.04], mat: m.boisFonce },
+    { t: [0.60, 0.95, 0.065], p: [rx - 0.06, S + 0.475, zb + 0.04], mat: m.boisFonce },
   ]
+  // Pieds intermédiaires : les longues assises ne semblent plus flotter.
+  // Ils n'ajoutent pas de collision (la collision du banc est déjà globale).
+  const n = Math.max(0, Math.floor(L / 1.45))
+  for (let i = 1; i <= n; i++) {
+    const z = zb + (L * i) / (n + 1)
+    pieces.push({ t: [0.09, 0.43, 0.09], p: [rx + 0.11, S + 0.215, z], mat: m.boisFonce })
+    pieces.push({ t: [0.065, 0.84, 0.085], p: [rx - 0.23, S + 0.42, z], mat: m.boisFonce })
+  }
+  return pieces
 }
 
 export function bancsEtSieges(m: MateriauxZal) {
