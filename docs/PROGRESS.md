@@ -183,3 +183,18 @@ Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la p
 - Les **photos 1 à 5 n'ont pas été examinées** pendant ce travail (non jointes à la session) : comparaison visuelle jeu ↔ photos à faire par Samuel ; copier les photos dans `references/` avec leur origine.
 - Couleur du parokhet de la photo 3 (le blanc de 2025 est conservé).
 - Emplacement réel de la pièce de la chaise.
+
+## PNJ hassid (modèle Sculptly anonymisé) — 21 octobre 2026 (branche `pnj-hassid-sculptly`)
+
+### Fait
+- Modèle GLB fourni par Samuel intégré comme hassid immobile dans le grand Zal, près de l'entrée (`src/npc/PnjModele.tsx`, `public/assets/models/hassid-sculptly.glb`, 1,5 Mo).
+- Visage anonymisé avant publication (`tools/anonymiser-glb.py`), mis à l'échelle (1,75 m), texture 1K, collision.
+
+### Vérifié
+- `npm run build` réussi ; rendu contrôlé en jeu (face, profil, distance) et texture finale contrôlée.
+
+### Non vérifié / reste
+- `npm run test:mobile` non relancé pour cet ajout (la CI le lance sur `master`).
+- Modèle figé (pas de squelette) : pas d'animation possible. 40 000 triangles : à alléger si le téléphone peine dans le Zal.
+- Conditions d'utilisation de Sculptly à vérifier pour une diffusion publique.
+

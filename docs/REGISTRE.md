@@ -186,3 +186,10 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 
 **Grand Zal toujours souterrain :** sol à −3,40 m sous le trottoir, inchangé ; seule la descente pour y arriver a changé.
 
+## 12. PNJ hassid issu d'un modèle Sculptly (21 octobre 2026, branche `pnj-hassid-sculptly`)
+
+- **Source :** modèle GLB généré avec Sculptly, fourni par Samuel. Ce n'est **pas** une source de fidélité : élément de décor (hassid générique), pas une personne identifiée du 770.
+- **Problème relevé :** la texture d'origine contenait le visage photographique d'un homme réel (jeune, barbe brune ; **pas le Rebbe**). La règle du projet impose des PNJ sans visage réaliste.
+- **Traitement (`tools/anonymiser-glb.py`) :** la tête n'utilise plus la texture photo — visage en matériau de peau uni, barbe, cheveux et chapeau en matériau sombre uni ; relief du nez, des lèvres et des arcades lissé (sommets soudés pour ne pas fendre le maillage) ; texels inutilisés effacés (ils contenaient d'autres fragments de visages) ; texture 2048 → 1024 px en JPEG. Contrôle visuel du rendu et de la texture finale : aucun trait du visage ne subsiste.
+- **Placement :** grand Zal, x = 28,5, z = −2,7, tourné vers les deux portes d'entrée ; immobile, avec collision ; affiché seulement quand le joueur est dans le Zal (comme les autres PNJ). Emplacement : choix de jeu.
+
