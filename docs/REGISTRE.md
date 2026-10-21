@@ -157,3 +157,11 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 | Fenêtres translucides (bureau, salon de l'étage) | Commons 2 (verre au plomb) | Verre au plomb en losanges | Transparence : choix de jeu pour voir dehors |
 
 Photo de référence supprimée : `bureau/01` (photo historique de groupe en incrustation, où le Rebbe pourrait figurer).
+
+
+## 10. Révision visuelle d'après le rapport immobilier de juin 2020 (21 octobre 2026)
+- Source : [Aaron Valuation, photos du complexe 770-788 (PDF)](https://media.chabad.info/chabadinfoheb/wp-content/uploads/2020/08/06-08-2020-12-39-22-Ex-B-to-DSA-Aff.pdf), pages 6, 9 et 10. Photos fournies au cabinet par le propriétaire ; à titre de comparaison et **non** de textures publiées.
+- **Confirmé visuellement :** entrée inférieure sous terrasse avec plusieurs vantaux en bois et verre, garde-corps ; dalles lumineuses carrées dans la salle haute et réglettes en périphérie ; bandeaux saumon et petits carrés dans le carrelage ; bancs avec tablettes ; balustrades en bois de la bimah ; meuble de l'Aron à reliefs.
+- **Toujours ESTIMÉ :** mesures du sol, distance des piliers, géométrie de l'accès en 18 marches, nombre et largeur exacts des portes, disposition permanente des bancs, nombre des luminaires, forme des reliefs sculptés.
+- **Modifications correspondantes :** `src/world/complexe/Complexe784.tsx`, `src/world/grand-zal/{texturesZal,PlafonniersZal,MobilierZal,AronKodesh}.tsx` (et `texturesZal.ts`).
+- **Époques :** le fond architectural observé en 2020 complète la reconstitution Tichri 2025, sans remplacer le parokhet de 2025 ni reconstituer l'aménagement temporaire d'une fête.
