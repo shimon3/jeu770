@@ -137,7 +137,8 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 
 | Liaison | Statut |
 |---|---|
-| Rue → courette de 784 → escalier → porte → grand Zal | Descente depuis la rue confirmée ; **emplacement exact : reconstitution artistique** |
+| Rue → courette de 784 → escalier → porte → grand Zal | **Remplacé le 21/10/2026 (section 11)** : descente frontale depuis le trottoir, deux portes en bas sur la façade avant (photo n° 4 de Samuel). Cotes et position en x : reconstitution artistique |
+| Grand Zal ↔ pièce de la chaise du Rabbi | **Reconstitution artistique** (section 11) : aucune source ne fixe l'emplacement de la pièce |
 | Salle principale ↔ aile ouest (ancien shalash) | Confirmée (mur abattu en 1967, ChabadInfo) |
 | Hall du 770 ↔ grand Zal | **Non créée** : aucune source ne la décrit |
 
@@ -165,3 +166,23 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - **Toujours ESTIMÉ :** mesures du sol, distance des piliers, géométrie de l'accès en 18 marches, nombre et largeur exacts des portes, disposition permanente des bancs, nombre des luminaires, forme des reliefs sculptés.
 - **Modifications correspondantes :** `src/world/complexe/Complexe784.tsx`, `src/world/grand-zal/{texturesZal,PlafonniersZal,MobilierZal,AronKodesh}.tsx` (et `texturesZal.ts`).
 - **Époques :** le fond architectural observé en 2020 complète la reconstitution Tichri 2025, sans remplacer le parokhet de 2025 ni reconstituer l'aménagement temporaire d'une fête.
+
+
+## 11. Façade du 770, accès frontal au Zal, Aron fermé, pièce de la chaise (21 octobre 2026, branche `facade-acces-zal-aron-chaise`)
+
+**Sources :** cinq photos de référence fournies par Samuel (n° 1 à 5). **Limite importante :** ces photos n'étaient pas jointes à la session de travail qui a fait ces modifications ; elles n'ont **pas** été examinées image par image. Le travail suit la description écrite qu'en a donnée Samuel. Elles ne sont pas encore copiées dans `references/` (à faire, avec leur origine et leur licence) ; aucune n'est utilisée comme texture.
+
+| N° | Ce que montre la photo (d'après Samuel) | Élément 3D modifié | Confirmé par la description | Estimé / reconstitution artistique |
+|---|---|---|---|---|
+| 1 | Entrée centrale du 770 : porte de bois, oriel noir au-dessus, pierre claire autour de la porte | `Facade.tsx` : nouveau champ de pierre claire (`champPierre`) autour de la porte et des deux petites fenêtres ; porte de bois et oriel noir conservés | Porte en bois ; oriel noir ; pierre claire autour de la porte | Étendue du parement (3,9 × 3,05 m), joints, chaînes d'angle — `dimensions.ts` `PORTE.champPierre*` |
+| 2 | Façade avant avec un arbre devant | `Rue.tsx` : arbres du terre-plein retirés de l'axe de la façade (\|x\| < 9) ; arbre de trottoir devant 784 décalé (x 22 → 27) | Un arbre masque la façade dans la réalité | **Choix de jeu** : l'arbre est retiré pour dégager la vue, il n'est pas reproduit |
+| 3 | Aron Kodesh fermé, parokhet fermé | `AronKodesh.tsx` : parokhet d'un seul tenant, lesté et frangé, **aucun état ouvert ni interaction d'ouverture** ; meuble élargi (3,9 m), socle mouluré, flancs à panneaux, denticules | Aron fermé, parokhet fermé | Couleur du parokhet : le **blanc de Tichri 2025** (COLlive) est conservé — à confirmer avec la photo 3. Dessin des sculptures, cotes |
+| 4 | Accès au grand Zal depuis la rue, de nuit : escalier sur la face avant, descente vers le sous-sol, deux portes en bas | `Complexe784.tsx`, `grandZal.ts` (`ENTREE`, `COURETTE`), `Rue.tsx`, `EnveloppeZal.tsx`, `PlafonniersZal.tsx`, `zones.json` : courette anglaise frontale, escalier droit perpendiculaire à la façade, palier, **deux portes** jouables (`porte-zal`, `porte-zal-2`), applique éclairée, EXIT au-dessus de chaque porte côté Zal | Accès par la façade avant ; descente frontale depuis le trottoir ; deux portes en bas | Position en x (19,35–23,45 m), largeur, 18 marches, palier de 1,4 m, cotes des portes, murets et garde-corps |
+| 5 | Petite pièce : boiseries, tapis, chaise rouge, pupitre | Nouveau `PieceChaise.tsx`, `grandZal.ts` (`PIECE_CHAISE`), zone `chaise-rabbi` | Boiseries murales, tapis, chaise rouge, pupitre, ambiance sobre | **Emplacement de la pièce** (derrière le mur est du Zal, au sud de l'Aron), sa porte, ses cotes, le dessin des panneaux et des meubles |
+
+**Supprimé :** l'ancienne descente latérale (courette parallèle à la façade, escalier partant de la gauche vers une porte de côté), les trois vantaux vitrés décoratifs et le garde-corps de terrasse au-dessus (section 10), qui suggéraient une autre disposition.
+
+**Règle absolue respectée :** la chaise de la pièce reste **vide** ; un garde-corps sans ouverture (avec collision) la tient à distance du joueur ; aucun PNJ ne peut entrer dans la pièce ni s'approcher de sa porte (`npc/routines.ts`, `distancePieceChaise`). Aucune image, silhouette ou représentation du Rebbe.
+
+**Grand Zal toujours souterrain :** sol à −3,40 m sous le trottoir, inchangé ; seule la descente pour y arriver a changé.
+

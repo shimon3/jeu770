@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { ABORDS } from '../../config/dimensions'
-import { ENTREE, ZAL } from '../../config/grandZal'
+import { COURETTE, ENTREE, ZAL } from '../../config/grandZal'
 import { Invisible, Pieces, type Piece, type V3 } from '../primitives'
 import { useInteractif } from '../interaction'
 import { useMateriaux } from '../materiaux'
@@ -76,14 +76,14 @@ export function Rue() {
     pc.push({ t: [L, 0.4, A.largeurTerrePlein], p: [0, -0.2, (Z_TERRE + Z_CHAUSSEE) / 2], m: 'trottoir', col: true })
     pc.push({ t: [L, 0.4, A.largeurChaussee], p: [0, -0.2 - A.bordure, (Z_CHAUSSEE + Z_FIN) / 2], m: 'asphalte', col: true })
     // Sol devant les parcelles voisines. À droite (784-788), il est percé
-    // pour la courette de l'escalier du grand Zal et s'arrête à la façade
-    // (le Zal est dessous).
+    // pour la courette anglaise frontale de l'escalier du grand Zal et
+    // s'arrête à la façade (le Zal est dessous).
     pc.push({ t: [L / 2 - 9.4, 0.4, 12], p: [-(9.4 + (L / 2 - 9.4) / 2), -0.2, Z_TROTTOIR - 6], m: 'trottoir', col: true })
     const solDroit = (x0: number, x1: number, z0: number, z1: number) =>
       pc.push({ t: [x1 - x0, 0.4, z1 - z0], p: [(x0 + x1) / 2, -0.2, (z0 + z1) / 2], m: 'trottoir', col: true })
-    solDroit(9.4, L / 2, ENTREE.z1, Z_TROTTOIR)
-    solDroit(9.4, ENTREE.hautMarches, ENTREE.z0, ENTREE.z1)
-    solDroit(ENTREE.x1, L / 2, ENTREE.z0, ENTREE.z1)
+    solDroit(9.4, L / 2, COURETTE.zHaut, Z_TROTTOIR)
+    solDroit(9.4, ENTREE.x0, ENTREE.z0, COURETTE.zHaut)
+    solDroit(ENTREE.x1, L / 2, ENTREE.z0, COURETTE.zHaut)
     solDroit(ZAL.x1 + 0.3, L / 2, Z_TROTTOIR - 12, ENTREE.z0)
     // Bordures de granit
     for (const z of [Z_CONTRE, Z_TERRE, Z_CHAUSSEE]) pc.push({ t: [L, 0.3, 0.18], p: [0, -0.12, z], m: 'pierre' })
@@ -95,9 +95,14 @@ export function Rue() {
       const h = 9 + ((i * 7919) % 5) * 2
       pc.push({ t: [11, h, 12], p: [i * 11.5, h / 2, Z_FIN + 25], m: i % 2 ? 'briqueVoisin' : 'briqueVoisinClaire' })
     }
-    // Arbres d'alignement : bord du trottoir et terre-plein
-    for (const x of [-26, -16, 12, 22]) pc.push(...arbre(x, Z_CONTRE - 0.9, 8))
-    for (let x = -48; x <= 48; x += 9) pc.push(...arbre(x + 2, (Z_TERRE + Z_CHAUSSEE) / 2, 9))
+    // Arbres d'alignement : bord du trottoir et terre-plein. Choix de jeu
+    // (photos 1 et 2 fournies par Samuel) : l'arbre qui, en réalité, masque
+    // la façade du 770 est retiré pour dégager la vue ; aucun arbre n'est
+    // planté dans l'axe de la façade (|x| < 9). Les autres sont conservés.
+    // L'arbre de trottoir devant 784 est décalé (x 22 → 27) pour dégager la
+    // vue sur la descente frontale du grand Zal.
+    for (const x of [-26, -16, 12, 27]) pc.push(...arbre(x, Z_CONTRE - 0.9, 8))
+    for (let x = -48; x <= 48; x += 9) if (Math.abs(x + 2) >= 9) pc.push(...arbre(x + 2, (Z_TERRE + Z_CHAUSSEE) / 2, 9))
     for (let x = -48; x <= 48; x += 11) pc.push(...arbre(x, Z_FIN + 3, 8))
     // Lampadaires
     for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
@@ -138,9 +143,9 @@ function SolLointain() {
     const trou = new THREE.Path()
     const pts: [number, number][] = [
       [ZAL.shalashX0 - 0.5, ZAL.z1 + 0.1],
-      [ENTREE.hautMarches, ZAL.z1 + 0.1],
-      [ENTREE.hautMarches, ENTREE.z1],
-      [ENTREE.x1, ENTREE.z1],
+      [ENTREE.x0, ZAL.z1 + 0.1],
+      [ENTREE.x0, COURETTE.zHaut],
+      [ENTREE.x1, COURETTE.zHaut],
       [ENTREE.x1, ZAL.z1 + 0.1],
       [ZAL.x1 + 0.5, ZAL.z1 + 0.1],
       [ZAL.x1 + 0.5, ZAL.z0 - 0.5],

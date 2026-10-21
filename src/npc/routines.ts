@@ -1,7 +1,7 @@
-import { PLACE_VIDE } from '../config/grandZal'
+import { PIECE_CHAISE, PLACE_VIDE } from '../config/grandZal'
 
 // RÈGLE ABSOLUE : aucun PNJ ne s'assoit à la place du Rebbe ni ne s'en
-// approche. Tout point de trajet ou de station est vérifié ici ; un point
+// approche, et aucun n'entre dans la pièce de la chaise. Tout point de trajet ou de station est vérifié ici ; un point
 // trop proche est refusé (et signalé en développement).
 
 const CENTRE: [number, number] = [(PLACE_VIDE.x0 + PLACE_VIDE.x1) / 2, (PLACE_VIDE.z0 + PLACE_VIDE.z1) / 2]
@@ -13,8 +13,15 @@ export function distancePlaceVide(x: number, z: number) {
   return Math.hypot(dx, dz)
 }
 
+// Pièce de la chaise du Rabbi : aucun PNJ n'y entre ni ne s'approche de sa porte
+export function distancePieceChaise(x: number, z: number) {
+  const dx = Math.max(PIECE_CHAISE.x0 - x, 0, x - PIECE_CHAISE.x1)
+  const dz = Math.max(PIECE_CHAISE.z0 - z, 0, z - PIECE_CHAISE.z1)
+  return Math.hypot(dx, dz)
+}
+
 export function pointAutorise(x: number, z: number) {
-  return distancePlaceVide(x, z) >= PLACE_VIDE.rayonExclusionPnj
+  return distancePlaceVide(x, z) >= PLACE_VIDE.rayonExclusionPnj && distancePieceChaise(x, z) >= PIECE_CHAISE.rayonExclusionPnj
 }
 
 // Retourne le chemin sans les points interdits, et vérifie aussi chaque

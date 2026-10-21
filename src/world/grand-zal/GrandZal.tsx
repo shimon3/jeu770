@@ -5,6 +5,7 @@ import { MobilierZal } from './MobilierZal'
 import { BimahZal } from './BimahZal'
 import { AronKodesh } from './AronKodesh'
 import { PlaceVide } from './PlaceVide'
+import { PieceChaise } from './PieceChaise'
 import { DecorZal, EclairageZal, PlafonniersZal } from './PlafonniersZal'
 import { ObjetsMissionsZal } from './ObjetsMissionsZal'
 import { PnjZal } from '../../npc/PnjZal'
@@ -20,7 +21,7 @@ export function GrandZal() {
   // Les PNJ du Zal ne sont dessinés que lorsque le joueur est dans le Zal ou
   // l'escalier (ils restent actifs : leurs trajets continuent)
   const zone = useGame((s) => s.zone)
-  const pnjVisibles = zone === 'grand-zal' || zone === 'escalier-zal'
+  const pnjVisibles = zone === 'grand-zal' || zone === 'escalier-zal' || zone === 'chaise-rabbi'
   return (
     <>
       <EnveloppeZal m={m} />
@@ -28,6 +29,7 @@ export function GrandZal() {
       <BimahZal m={m} />
       <AronKodesh m={m} />
       <PlaceVide m={m} />
+      <PieceChaise m={m} />
       <PlafonniersZal m={m} />
       <DecorZal m={m} />
       <EclairageZal />

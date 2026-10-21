@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { COLONNES, ENTREE, GRANDS_PILIERS, ZAL } from '../../config/grandZal'
+import { COLONNES, ENTREE, GRANDS_PILIERS, PIECE_CHAISE, ZAL } from '../../config/grandZal'
 import { PiecesLibres, type PieceLibre } from './PiecesLibres'
 import type { MateriauxZal } from './materiauxZal'
 
@@ -56,18 +56,30 @@ export function EnveloppeZal({ m }: { m: MateriauxZal }) {
     const yM = (P + S) / 2
     // Murs : nord (peint), est (brique blanche, mur de l'Aron), ouest et aile du shalash
     pc.push({ t: [x1 - sx0 + 2 * EP, H, EP], p: [(sx0 + x1) / 2, yM, z0 - EP / 2], mat: m.peintureBlanche, col: true })
-    pc.push({ t: [EP, H, Z_SUD - z0], p: [x1 + EP / 2, yM, (z0 + Z_SUD) / 2], mat: m.briqueBlanche, col: true })
+    // Mur est (brique blanche), percé d'une porte vers la pièce de la chaise
+    // (RECONSTITUTION ARTISTIQUE, voir PIECE_CHAISE)
+    const PC = PIECE_CHAISE
+    const yPc = S + PC.porteHauteur
+    pc.push({ t: [EP, H, PC.porteZ0 - z0], p: [x1 + EP / 2, yM, (z0 + PC.porteZ0) / 2], mat: m.briqueBlanche, col: true })
+    pc.push({ t: [EP, H, Z_SUD - PC.porteZ1], p: [x1 + EP / 2, yM, (PC.porteZ1 + Z_SUD) / 2], mat: m.briqueBlanche, col: true })
+    pc.push({ t: [EP, P + 0.25 - yPc, PC.porteZ1 - PC.porteZ0], p: [x1 + EP / 2, (P + 0.25 + yPc) / 2, (PC.porteZ0 + PC.porteZ1) / 2], mat: m.briqueBlanche, col: true })
+    pc.push({ t: [EP, 0.25, PC.porteZ1 - PC.porteZ0], p: [x1 + EP / 2, S - 0.125, (PC.porteZ0 + PC.porteZ1) / 2], mat: m.carrelage, col: true })
     pc.push({ t: [EP, H, Z_SUD - sz1], p: [x0 - EP / 2, yM, (sz1 + Z_SUD) / 2], mat: m.briqueBlanche, col: true })
     pc.push({ t: [x0 - sx0 + EP, H, EP], p: [(sx0 - EP + x0) / 2, yM, sz1 + EP / 2], mat: m.briqueBlanche, col: true })
     pc.push({ t: [EP, H, sz1 - z0], p: [sx0 - EP / 2, yM, (z0 + sz1) / 2], mat: m.briqueBlanche, col: true })
-    // Doublage peint de la façade de 784, percé pour la porte
-    const px0 = ENTREE.porteX0
-    const px1 = ENTREE.porteX0 + ENTREE.porteLargeur
+    // Doublage peint de la façade de 784, percé pour les deux portes
     const zl = Z_SUD - 0.01
-    pc.push({ t: [px0 - x0, P - S, 0.02], p: [(x0 + px0) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
-    pc.push({ t: [x1 - px1, P - S, 0.02], p: [(px1 + x1) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
     const yPorte = S + ENTREE.porteHauteur
-    pc.push({ t: [px1 - px0, P - yPorte, 0.02], p: [(px0 + px1) / 2, (P + yPorte) / 2, zl], mat: m.peintureBlanche, ombre: false })
+    const portes = [...ENTREE.portes].sort((a, b) => a.x0 - b.x0)
+    let xc = x0
+    for (const d of portes) {
+      if (d.x0 > xc) pc.push({ t: [d.x0 - xc, P - S, 0.02], p: [(xc + d.x0) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
+      pc.push({ t: [d.largeur, P - yPorte, 0.02], p: [d.x0 + d.largeur / 2, (P + yPorte) / 2, zl], mat: m.peintureBlanche, ombre: false })
+      xc = d.x0 + d.largeur
+    }
+    pc.push({ t: [x1 - xc, P - S, 0.02], p: [(xc + x1) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
+    const px0 = portes[0].x0
+    const px1 = portes[portes.length - 1].x0 + portes[portes.length - 1].largeur
     // Plafonds bas et galeries (sud sur toute la salle, nord sur la salle et le shalash)
     pc.push(...galerie(m, x0, x1, BORD_SUD, -1))
     pc.push(...galerie(m, sx0, x1, BORD_NORD, 1))
