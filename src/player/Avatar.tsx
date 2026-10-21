@@ -1,9 +1,11 @@
-import { useMemo, useRef, type MutableRefObject } from 'react'
+import { Suspense, useMemo, useRef, type MutableRefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { AvatarModele } from './AvatarModele'
 
-// Hassid générique, low-poly, SANS visage réaliste : tête lisse, barbe en
-// volume simple. Sirtouk (long manteau noir), chapeau noir, tsitsit visibles.
+// Tous les hassids (joueur et PNJ) utilisent le modèle 3D fourni par Samuel,
+// anonymisé (AvatarModele.tsx). L'avatar procédural ci-dessous (low-poly, SANS
+// visage réaliste) ne sert plus que pendant le chargement du modèle.
 // Origine du modèle : entre les pieds. Avant du modèle : +z.
 
 export type EtatAnim = 'repos' | 'marche' | 'course' | 'escalier' | 'assis' | 'saut' | 'balancement'
@@ -33,7 +35,15 @@ const PROFIL_MANTEAU: [number, number][] = [
   [0.0, 1.48],
 ]
 
-export function Avatar({ anim, peau = '#d9ad8c', barbe = '#2a1d15', visible = true }: Props) {
+export function Avatar(props: Props) {
+  return (
+    <Suspense fallback={<AvatarProcedural {...props} />}>
+      <AvatarModele anim={props.anim} visible={props.visible} />
+    </Suspense>
+  )
+}
+
+export function AvatarProcedural({ anim, peau = '#d9ad8c', barbe = '#2a1d15', visible = true }: Props) {
   const racine = useRef<THREE.Group>(null)
   const buste = useRef<THREE.Group>(null)
   const hanches = [useRef<THREE.Group>(null), useRef<THREE.Group>(null)]

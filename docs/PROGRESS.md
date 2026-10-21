@@ -198,3 +198,18 @@ Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la p
 - Modèle figé (pas de squelette) : pas d'animation possible. 40 000 triangles : à alléger si le téléphone peine dans le Zal.
 - Conditions d'utilisation de Sculptly à vérifier pour une diffusion publique.
 
+## Modèle unique pour tous les hassids — 21 octobre 2026 (branche `hassid-modele-unique`)
+
+### Fait
+- `src/player/AvatarModele.tsx` : le modèle Sculptly anonymisé et allégé remplace l'avatar procédural pour le joueur et tous les PNJ (`Avatar` charge le modèle ; l'ancien avatar sert de remplaçant pendant le chargement).
+- Poses procédurales par « morph targets » : marche (jambes), assis ; balancement, respiration, roulis de marche par rotations.
+- Le hassid statique de l'entrée du Zal devient un PNJ ordinaire (même modèle) ; `PnjModele.tsx` supprimé.
+
+### Vérifié
+- `npm run build` réussi ; rendus contrôlés : joueur, PNJ debout, PNJ en balancement, PNJ assis, poses assise et de marche isolées.
+
+### Non vérifié / reste
+- Poses approximatives (manteau qui se fend à la marche, pan arrière en pose assise).
+- Performance sur téléphone réel avec ~12 personnages de 13 000 triangles.
+- Les couleurs de peau et de barbe propres à chaque PNJ ne s'appliquent plus (tous identiques).
+
