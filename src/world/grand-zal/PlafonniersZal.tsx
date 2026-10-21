@@ -23,7 +23,7 @@ for (let x = ZAL.x0 + 1.5; x < ZAL.x1 - 1.0; x += 2.4)
     DALLES.push([x, z])
 // Les dalles prolongent la grande salle dans l'aile ouest du shalash.
 for (let x = ZAL.shalashX0 + 1.4; x < ZAL.x0 - 0.6; x += 2.4)
-  for (let z = ZAL.z0 + 1.5; z < ZAL.shalashZ1 - 1; z += 2.4)
+  for (let z = BORD_NORD + 0.8; z < ZAL.shalashZ1 - 1; z += 2.4)
     DALLES.push([x, z])
 
 const REGLETTES: [number, number, number][] = []
