@@ -56,10 +56,11 @@ export function BimahZal({ m }: { m: MateriauxZal }) {
       [x - d, z + d],
       [x - d, z + 0.5],
       [x - d, z - 0.5],
-    ])
+    ]) {
       pc.push({ t: [0.12, hg + 0.1, 0.12], p: [px, yP + (hg + 0.1) / 2, pz], mat: m.boisFonce })
       // Pommeau de balustre sculpté, visible sur les montants de la bimah.
       pc.push({ geo: new THREE.SphereGeometry(0.085, 8, 6), p: [px, yP + hg + 0.17, pz], mat: m.bancs, ombre: false })
+    }
     // Table de lecture couverte de bordeaux
     pc.push({ t: [1.0, 0.95, 1.7], p: [x + 0.4, yP + 0.475, z], mat: m.boisFonce, col: true })
     pc.push({ t: [1.06, 0.04, 1.76], p: [x + 0.4, yP + 0.97, z], mat: m.bordeaux })
