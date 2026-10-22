@@ -17,16 +17,20 @@ export const BORD_SUD = COLONNES.zs[0] // bord du plafond bas sud
 export const BORD_NORD = COLONNES.zs[COLONNES.zs.length - 1] // bord du plafond bas nord
 
 function galerie(m: MateriauxZal, x0: number, x1: number, z: number, sens: 1 | -1): PieceLibre[] {
-  // Face de la galerie : lambris bas, bandeau de vitres sombres, lambris haut
+  // Face de la galerie : lambris de planches bas, bandeau de vitres sombres, lambris haut
   const pc: PieceLibre[] = []
   const L = x1 - x0
   const cx = (x0 + x1) / 2
   pc.push({ t: [L, 0.15, Math.abs(z - (sens > 0 ? ZAL.z0 : Z_SUD))], p: [cx, SO + 0.075, (z + (sens > 0 ? ZAL.z0 : Z_SUD)) / 2], mat: m.plafond })
-  pc.push({ t: [L, 0.95, 0.12], p: [cx, SO + 0.475, z], mat: m.lambris })
+  pc.push({ t: [L, 0.95, 0.12], p: [cx, SO + 0.475, z], mat: m.lambrisMural })
+  // Lambris prolongé sous le plafond bas jusqu'à 2,0 m du sol (zal-wood-wall-gallery-windows) :
+  // pas jusqu'au sol, pour laisser libres les bibliothèques et la porte d'entrée. Sans collision.
+  const yBas = S + 2.0
+  if (SO - yBas > 0.01) pc.push({ t: [L, SO - yBas, 0.12], p: [cx, (SO + yBas) / 2, z], mat: m.lambrisMural })
   pc.push({ t: [L, 0.85, 0.04], p: [cx, SO + 0.95 + 0.425, z - sens * 0.02], mat: m.vitreSombre, ombre: false })
-  for (let x = x0; x <= x1 + 0.01; x += 1.6) pc.push({ t: [0.1, 0.85, 0.1], p: [Math.min(x, x1 - 0.05), SO + 1.375, z], mat: m.lambris })
+  for (let x = x0; x <= x1 + 0.01; x += 1.6) pc.push({ t: [0.1, 0.85, 0.1], p: [Math.min(x, x1 - 0.05), SO + 1.375, z], mat: m.lambrisMural })
   const yHaut = SO + 1.8
-  if (P - yHaut > 0.01) pc.push({ t: [L, P - yHaut, 0.12], p: [cx, (P + yHaut) / 2, z], mat: m.lambris })
+  if (P - yHaut > 0.01) pc.push({ t: [L, P - yHaut, 0.12], p: [cx, (P + yHaut) / 2, z], mat: m.lambrisMural })
   return pc
 }
 
@@ -54,20 +58,22 @@ export function EnveloppeZal({ m }: { m: MateriauxZal }) {
     pc.push({ t: [x0 - sx0, 0.2, sz1 - z0], p: [(sx0 + x0) / 2, P + 0.1, (z0 + sz1) / 2], mat: m.plafond, col: true })
     const H = P - S + 0.5
     const yM = (P + S) / 2
-    // Murs : nord (peint), est (brique blanche, mur de l'Aron), ouest et aile du shalash
-    pc.push({ t: [x1 - sx0 + 2 * EP, H, EP], p: [(sx0 + x1) / 2, yM, z0 - EP / 2], mat: m.peintureBlanche, col: true })
+    // Murs : nord (lambris de planches, references/selection : zal-wide-long-view,
+    // zal-wood-wall-gallery-windows), est (brique blanche, mur de l'Aron),
+    // ouest et aile du shalash (brique blanche : aucune photo de la sélection)
+    pc.push({ t: [x1 - sx0 + 2 * EP, H, EP], p: [(sx0 + x1) / 2, yM, z0 - EP / 2], mat: m.lambrisMural, col: true })
     pc.push({ t: [EP, H, Z_SUD - z0], p: [x1 + EP / 2, yM, (z0 + Z_SUD) / 2], mat: m.briqueBlanche, col: true })
     pc.push({ t: [EP, H, Z_SUD - sz1], p: [x0 - EP / 2, yM, (sz1 + Z_SUD) / 2], mat: m.briqueBlanche, col: true })
     pc.push({ t: [x0 - sx0 + EP, H, EP], p: [(sx0 - EP + x0) / 2, yM, sz1 + EP / 2], mat: m.briqueBlanche, col: true })
     pc.push({ t: [EP, H, sz1 - z0], p: [sx0 - EP / 2, yM, (z0 + sz1) / 2], mat: m.briqueBlanche, col: true })
-    // Doublage peint de la façade de 784, percé pour la porte
+    // Doublage en lambris de planches de la façade de 784, percé pour la porte
     const px0 = ENTREE.porteX0
     const px1 = ENTREE.porteX0 + ENTREE.porteLargeur
     const zl = Z_SUD - 0.01
-    pc.push({ t: [px0 - x0, P - S, 0.02], p: [(x0 + px0) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
-    pc.push({ t: [x1 - px1, P - S, 0.02], p: [(px1 + x1) / 2, yM, zl], mat: m.peintureBlanche, ombre: false })
+    pc.push({ t: [px0 - x0, P - S, 0.02], p: [(x0 + px0) / 2, yM, zl], mat: m.lambrisMural, ombre: false })
+    pc.push({ t: [x1 - px1, P - S, 0.02], p: [(px1 + x1) / 2, yM, zl], mat: m.lambrisMural, ombre: false })
     const yPorte = S + ENTREE.porteHauteur
-    pc.push({ t: [px1 - px0, P - yPorte, 0.02], p: [(px0 + px1) / 2, (P + yPorte) / 2, zl], mat: m.peintureBlanche, ombre: false })
+    pc.push({ t: [px1 - px0, P - yPorte, 0.02], p: [(px0 + px1) / 2, (P + yPorte) / 2, zl], mat: m.lambrisMural, ombre: false })
     // Plafonds bas et galeries (sud sur toute la salle, nord sur la salle et le shalash)
     pc.push(...galerie(m, x0, x1, BORD_SUD, -1))
     pc.push(...galerie(m, sx0, x1, BORD_NORD, 1))

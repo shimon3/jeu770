@@ -8,6 +8,7 @@ import {
   textureExit,
   textureHorloge,
   textureLambris,
+  textureLambrisPlanches,
   textureLivres,
   texturePlafond,
   textureTapis,
@@ -29,6 +30,11 @@ export function useMateriauxZal() {
       carrelage: new THREE.MeshStandardMaterial({ map: textureCarrelage(), roughness: 0.35 }),
       plafond: new THREE.MeshStandardMaterial({ map: texturePlafond(), roughness: 0.95 }),
       lambris: new THREE.MeshStandardMaterial({ map: textureLambris(), roughness: 0.4 }),
+      // Lambris mural en planches (murs et galeries du Zal) : bois verni brillant
+      lambrisMural: (() => {
+        const tex = textureLambrisPlanches()
+        return new THREE.MeshStandardMaterial({ map: tex, bumpMap: tex, bumpScale: 0.6, roughness: 0.22 })
+      })(),
       // Brique peinte en blanc : relief de la brique, couleur de peinture
       briqueBlanche: new THREE.MeshStandardMaterial({ color: '#eceae4', normalMap: m.briqueVoisin.normalMap, roughness: 0.9 }),
       peintureBlanche: new THREE.MeshStandardMaterial({ color: '#f1ede4', roughness: 0.8 }),

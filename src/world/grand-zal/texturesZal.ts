@@ -87,6 +87,69 @@ export function textureLambris() {
   return texture(c, 1.2)
 }
 
+// Lambris mural en planches verticales (references/selection :
+// zal-wide-long-view, zal-wood-wall-gallery-windows, zal-wide-columns-ceiling) :
+// planches de bois brun foncé brillant, largeurs et teintes variées, veinage
+// marqué, joints sombres. Toile 1K couvrant 2,4 m, raccord sans couture.
+// Largeur des planches et teintes ESTIMÉES d'après les photos.
+export function textureLambrisPlanches() {
+  const T = 1024
+  const { c, g } = toile(T, T)
+  let graine = 7
+  const alea = () => {
+    graine = (graine * 16807) % 2147483647
+    return graine / 2147483647
+  }
+  // Largeurs de 12 à 22 cm, la dernière ajustée pour boucler sur 1024 px
+  const pxM = T / 2.4
+  const largeurs: number[] = []
+  let total = 0
+  while (total < T - 0.22 * pxM) {
+    const w = Math.round((0.12 + alea() * 0.1) * pxM)
+    largeurs.push(w)
+    total += w
+  }
+  largeurs[largeurs.length - 1] += T - total
+  let x0 = 0
+  for (const w of largeurs) {
+    // Teinte de base de la planche : brun-orangé verni (photos de la sélection)
+    const r0 = 150 + alea() * 40
+    const g0 = r0 * (0.52 + alea() * 0.07)
+    const b0 = r0 * (0.26 + alea() * 0.06)
+    const ph1 = alea() * 6.28
+    const ph2 = alea() * 6.28
+    for (let x = 0; x < w; x++) {
+      // Veinage : bandes verticales ondulées (périodes multiples de la toile)
+      const u = x / w
+      const v = Math.sin(u * 18 + ph1) * 0.5 + Math.sin(u * 47 + ph2) * 0.25
+      g.fillStyle = `rgb(${r0 + v * 16},${g0 + v * 10},${b0 + v * 6})`
+      g.fillRect(x0 + x, 0, 1, T)
+    }
+    // Fils du bois plus sombres, légèrement ondulés, raccord vertical (période T)
+    for (let k = 0; k < 9; k++) {
+      const bx = x0 + alea() * w
+      const amp = 1 + alea() * 4
+      const per = [1, 2, 4][Math.floor(alea() * 3)]
+      g.strokeStyle = `rgba(30,14,6,${0.12 + alea() * 0.2})`
+      g.lineWidth = 0.6 + alea() * 1.4
+      g.beginPath()
+      for (let y = 0; y <= T; y += 8) {
+        const xx = bx + Math.sin((y / T) * Math.PI * 2 * per + k) * amp
+        if (y === 0) g.moveTo(xx, y)
+        else g.lineTo(xx, y)
+      }
+      g.stroke()
+    }
+    // Joint sombre et léger reflet sur l'arête
+    g.fillStyle = 'rgba(18,8,3,0.85)'
+    g.fillRect(x0, 0, 3, T)
+    g.fillStyle = 'rgba(255,220,180,0.08)'
+    g.fillRect(x0 + 3, 0, 2, T)
+    x0 += w
+  }
+  return texture(c, 2.4)
+}
+
 // Dos de livres (sefarim) pour les bibliothèques : couleurs génériques
 export function textureLivres() {
   const { c, g } = toile(512, 256)
