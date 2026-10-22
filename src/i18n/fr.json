@@ -167,5 +167,6 @@
   "tactile.v": "Vue",
   "tactile.j": "Journal",
   "tactile.saut": "Saut",
-  "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue."
+  "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue.",
+  "message.galerieFermee": "Porte fermée. Reconstitution artistique : aucune photo ne documente cet accès à une galerie."
 }

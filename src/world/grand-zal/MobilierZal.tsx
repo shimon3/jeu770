@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { Vector3Tuple } from 'three'
 import { ZAL } from '../../config/grandZal'
 import { escalier, Invisible } from '../primitives'
+import { Porte } from '../Porte'
 import { PiecesLibres, type PieceLibre } from './PiecesLibres'
 import type { MateriauxZal } from './materiauxZal'
 import { useInteractif } from '../interaction'
@@ -15,6 +16,16 @@ import { t } from '../../i18n'
 // l'analyse des images A à D).
 
 const S = ZAL.sol
+
+// Escalier de service et porte de galerie du shalash (reconstitution artistique)
+const ESC_X0 = -3.2 // pied de l'escalier
+const ESC_Z = -23.5 // axe, le long du mur sud du shalash
+const ESC_L = 0.9 // largeur
+const Y_PALIER = S + 1.6
+const GIRON = 0.25
+const PALIER_X1 = ESC_X0 - 8 * GIRON // bord du palier côté escalier (palier de 0,8 m)
+const PORTE_L = 0.82
+const PORTE_H = 2.05
 
 // Segments de bancs le long de z (allées transversales entre eux)
 const SEGMENTS: [number, number][] = [
@@ -129,8 +140,29 @@ export function MobilierZal({ m }: { m: MateriauxZal }) {
       pieces.push({ t: [w, 0.4, 3.8], p: [(xMur + xFront) / 2, S + 0.4 * k + 0.2, -25.9], mat: m.bancs, col: true })
       pieces.push({ t: [0.03, 0.38, 3.8], p: [xFront + 0.015, S + 0.4 * k + 0.2, -25.9], mat: m.boisFonce, ombre: false })
     }
-    const e = escalier({ x: -23.6, largeur: 0.8, depart: -3.2, sens: -1, yDepart: S, contremarche: 0.2, giron: 0.35, nombre: 8, m: 'chene', axe: 'x' })
+    // Escalier de service vers une porte de galerie (toujours fermée) dans le mur
+    // ouest : RECONSTITUTION ARTISTIQUE, aucune photo de references/selection ne
+    // montre cet accès (voir docs/REGISTRE.md). Départ inchangé (x = -3,2) pour
+    // laisser libre le trajet du PNJ marcheur ; palier de 0,8 m devant la porte.
+    const e = escalier({ x: ESC_Z, largeur: ESC_L, depart: ESC_X0, sens: -1, yDepart: S, contremarche: 0.2, giron: GIRON, nombre: 8, m: 'chene', axe: 'x' })
     for (const p of e.pieces) if ('t' in p) pieces.push({ t: p.t, p: p.p, mat: m.bancs })
+    // Palier
+    pieces.push({ t: [PALIER_X1 - xMur, Y_PALIER - S, ESC_L], p: [(xMur + PALIER_X1) / 2, (S + Y_PALIER) / 2, ESC_Z], mat: m.bancs, col: true })
+    // Garde-corps côté gradins (nord) : main courante en pente puis horizontale, balustres
+    const zG = ESC_Z - ESC_L / 2 - 0.03
+    const longPente = ESC_X0 - PALIER_X1
+    const angPente = Math.atan2(Y_PALIER - S, longPente)
+    pieces.push({ t: [Math.hypot(longPente, Y_PALIER - S), 0.06, 0.07], p: [(ESC_X0 + PALIER_X1) / 2, (S + Y_PALIER) / 2 + 1.0, zG], r: [0, 0, -angPente], mat: m.boisFonce })
+    pieces.push({ t: [PALIER_X1 - xMur, 0.06, 0.07], p: [(xMur + PALIER_X1) / 2, Y_PALIER + 1.0, zG], mat: m.boisFonce })
+    for (let x = ESC_X0 - GIRON / 2; x > xMur + 0.05; x -= GIRON) {
+      const yPied = x > PALIER_X1 ? S + 0.2 * Math.min(8, Math.ceil((ESC_X0 - x) / GIRON)) : Y_PALIER
+      pieces.push({ t: [0.04, 1.0, 0.04], p: [x, yPied + 0.5, zG], mat: m.bancs, ombre: false })
+    }
+    // Chambranle de la porte de galerie
+    const zP0 = ESC_Z + PORTE_L / 2
+    const zP1 = ESC_Z - PORTE_L / 2
+    for (const z of [zP0 + 0.04, zP1 - 0.04]) pieces.push({ t: [0.06, PORTE_H + 0.08, 0.08], p: [xMur + 0.03, Y_PALIER + (PORTE_H + 0.08) / 2, z], mat: m.boisFonce, ombre: false })
+    pieces.push({ t: [0.06, 0.08, PORTE_L + 0.16], p: [xMur + 0.03, Y_PALIER + PORTE_H + 0.04, ESC_Z], mat: m.boisFonce, ombre: false })
     return { pieces, colliders: b.colliders, sieges, rampe: e.rampe }
   }, [m])
 
@@ -141,6 +173,19 @@ export function MobilierZal({ m }: { m: MateriauxZal }) {
         <Invisible key={i} taille={c.t} position={c.p} />
       ))}
       <Invisible taille={rampe.taille} position={rampe.position} rotation={rampe.rotation} />
+      {/* Garde-corps côté gradins : empêche de tomber de l'escalier ou du palier */}
+      <Invisible taille={[ESC_X0 - ZAL.shalashX0, Y_PALIER + 1.1 - S, 0.06]} position={[(ESC_X0 + ZAL.shalashX0) / 2, (S + Y_PALIER + 1.1) / 2, ESC_Z - ESC_L / 2 - 0.03]} />
+      {/* Porte de galerie, toujours fermée (comme la porte du bureau) */}
+      <Porte
+        id="porte-galerie-shalash"
+        charniere={[ZAL.shalashX0 + 0.03, Y_PALIER, ESC_Z + PORTE_L / 2]}
+        largeur={PORTE_L}
+        hauteur={PORTE_H}
+        sens={1}
+        rotationY={Math.PI / 2}
+        angleOuverture={0}
+        verrouillee="message.galerieFermee"
+      />
       {sieges.map((s) => (
         <Siege key={s.id} def={s} />
       ))}

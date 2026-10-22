@@ -157,3 +157,12 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 | Fenêtres translucides (bureau, salon de l'étage) | Commons 2 (verre au plomb) | Verre au plomb en losanges | Transparence : choix de jeu pour voir dehors |
 
 Photo de référence supprimée : `bureau/01` (photo historique de groupe en incrustation, où le Rebbe pourrait figurer).
+
+
+## 11. Chantier A (22 octobre 2026) : escalier et porte de galerie du shalash
+
+| Élément 3D | Photos de `references/selection/` | Statut |
+|---|---|---|
+| Escalier de service le long du mur sud de l'aile ouest (shalash), 8 marches, garde-corps côté gradins | **Aucune** (`zal-bimah-wooden-stairs` montre l'escalier de la bima, `zal-stairwell-down` une cage descendante non située) | **Reconstitution artistique** |
+| Palier et porte de galerie toujours fermée dans le mur ouest | **Aucune** | **Reconstitution artistique.** Message en jeu (« Porte fermée. Reconstitution artistique… »). Une galerie des femmes à l'étage est mentionnée par Wikipedia (« 770 Eastern Parkway »), source hors sélection : son accès réel n'est pas documenté. |
+| Gradins | Aucune | Inchangés ; **reconstitution artistique** (section 7). Ils ne sont plus accessibles depuis l'escalier (garde-corps). |
