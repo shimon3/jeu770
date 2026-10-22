@@ -30,7 +30,7 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
 - Assets 3D en GLB/glTF. Modélisation surtout en code (géométries procédurales
   ou glTF générés par script). Blender seulement en ligne de commande
   (`blender -b -P script.py`) s'il est installé ; sinon, s'en passer et le dire.
-- Code sur GitHub ; déploiement sur Cloudflare Pages (`npm run build` → `dist/`).
+- TRAVAIL 100 % LOCAL pour l'instant : aucun git push, aucun commit vers un dépôt distant, aucun déploiement, aucun upload vers GitHub ou ailleurs, tant que Samuel ne l'a pas demandé explicitement. Déploiement futur : Cloudflare Pages (`npm run build` → `dist/`).
 - Cible : 60 fps sur un portable moyen. Textures 1K par défaut, 2K pour la
   façade. Chargement progressif par zone.
 
@@ -95,6 +95,14 @@ listées dans CREDITS.md.
   (`npm install`, `npm run dev`), build et déploiement Cloudflare Pages.
 - docs/REGISTRE.md, CREDITS.md, docs/PROGRESS.md à jour.
 
+## Références visuelles (references/)
+- Le dossier references/ est la SEULE source visuelle autorisée pour le bâtiment : grand-zal/, maison-du-rabbi/, exterieur/, avec references/INDEX.md (dossier, fichier, source, description).
+- Avant toute modification graphique : relire les photos concernées de references/, comparer le rendu du jeu à la photo, lister les écarts.
+- Ne jamais chercher d'images ailleurs, ne jamais utiliser de connaissance générale sur le bâtiment, ne jamais inventer un détail. Ce qui n'est pas vérifiable reste signalé comme non vérifié.
+- Les photos des répliques sont exclues de references/ (règle « 770 original uniquement »).
+- Toute photo montrant le Rebbe est supprimée de references/ et ignorée, même si elle vient d'une source listée.
+- Photos de sites d'actualité : référence seulement, jamais utilisées telles quelles dans le jeu. Textures visibles uniquement si libres (Wikimedia Commons, chabad.info, CC0).
+
 ## Méthode
 - Ne pas construire tout le complexe d'un coup : une phase à la fois
   (prompts/phase-N.md).
@@ -102,3 +110,9 @@ listées dans CREDITS.md.
 - Fin de phase : `npm run build` sans erreur, test en `npm run dev`, mise à jour
   de docs/PROGRESS.md (fait, reste, points à calibrer).
 - Ne jamais présenter comme fonctionnel ce qui n'a pas été testé.
+
+## Discipline d'exécution
+- Une seule correction visuelle à la fois. Après chacune : relancer le jeu, capturer avant/après, attendre la validation visuelle de Samuel avant la suivante.
+- Exécuter TOUT ce qui est demandé, rien de moins, rien de plus.
+- Fin de chaque tâche : rapport avec fichiers créés ou modifiés, ce qui a été fait, ce qui n'a PAS été fait et pourquoi. Ne jamais déclarer terminé ce qui est partiel.
+- Le jeu doit rester fluide sur mobile (écran 360px).

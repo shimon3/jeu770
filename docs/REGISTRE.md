@@ -159,6 +159,30 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 Photo de référence supprimée : `bureau/01` (photo historique de groupe en incrustation, où le Rebbe pourrait figurer).
 
 
+# Phase 2 (fidélité visuelle) — Maison du Rabbi au regard de `references/selection/` (22 octobre 2026)
+
+Depuis le nouveau CLAUDE.md, `references/selection/` est la **seule** base de comparaison. Les sources des sections 3 et 9 (anash.org 2021 et 2025, crownheights.info, shabboshouse.org) ne figurent pas dans cette sélection : ce qu'elles seules justifient est désormais classé **non vérifié** ci-dessous. Aucun détail n'a été ajouté ni retiré du jeu à ce stade (diagnostic seulement).
+
+## 10. Statut de chaque élément de la Maison du Rabbi
+
+| Élément du jeu | Photos de `selection/` qui le montrent | Statut |
+|---|---|---|
+| Hall d'entrée : matériaux | `house-vestibule-groin-vaults`, `house-vestibule-vault-boss`, `house-vestibule-vault-pendant`, `house-vestibule-showcase`, `house-floor-770-terrazzo` | Vérifiable : voûtes d'arêtes blanches, culots en laiton, portes en bois verni, appliques, sol en terrazzo brun avec « 770 » en laiton. **Le hall du jeu (colombages, plafond plat, sol moucheté) ne correspond pas à ces photos.** |
+| Hall : disposition, position de l'escalier et des portes | Aucune | **Reconstitution artistique** |
+| Escalier principal en bois et étage | Aucune photo nette dans la sélection (`house-panelled-room` ne montre pas d'escalier) | **Reconstitution artistique** |
+| Couloir vers porte vernie (EXIT) | `house-corridor-exit-door`, `house-door-knob-detail` | Matériaux vérifiables (portes vernies, terrazzo) ; **emplacement : reconstitution artistique** |
+| Antichambre « Gan Eden HaTa'hton » | Aucune | **Reconstitution artistique** (nom seulement, hors sélection) |
+| Bureau du Rebbe | **Aucune** | **Reconstitution artistique.** Aucun détail de mobilier (bureau à plateau de verre, téléphone, table ronde, pupitres, classeur, stores) n'est vérifiable dans la sélection. Consigne : bureau **vide et simple**, fauteuil **vide**, aucun PNJ, aucune image du Rebbe, porte toujours fermée. |
+| Petit zal (salle jaune à arche en bois) | `house-small-shul-wide`, `house-small-shul-ark`, `house-yellow-room-ceiling-rose`, `house-yellow-room-window-wall` | Matériaux vérifiables (crépi jaune, soubassement bois, arche marquetée, lustre, rosace, fenêtres à petits carreaux) ; **son emplacement dans le 770 n'est confirmé par aucune source de la sélection : reconstitution artistique** |
+| Bibliothèque | `house-library-room`, `house-library-shelves`, `house-library-window`, `house-library-door` | Matériaux vérifiables ; **emplacement : reconstitution artistique** |
+| Salles d'étude blanches, niche à patères, escalier en granit | `house-study-room`, `house-study-hall-white`, `house-study-room-urns`, `house-coat-niche-stepped`, `house-stairway-granite` | Matériaux vérifiables ; **emplacement : reconstitution artistique** (absentes du jeu actuel) |
+| Ancien bureau aux boiseries sombres | `house-old-office-windows` | Pièce non nommée par la source ; **ne pas l'assimiler au bureau du Rebbe** |
+| Pièce lambrissée à bibliothèques vitrées | `house-panelled-room` | **Pièce non identifiée par la source** : ne sert de référence à aucune pièce précise |
+| Appartement de l'étage | Aucune | **Reconstitution artistique sobre, aucun portrait** |
+
+Toutes les liaisons intérieures de la maison (hall → bureau, hall → couloir → petit zal, hall → étage) restent des **reconstitutions artistiques** et doivent garder la mention en jeu.
+
+
 ## 11. Chantier A (22 octobre 2026) : escalier et porte de galerie du shalash
 
 | Élément 3D | Photos de `references/selection/` | Statut |
