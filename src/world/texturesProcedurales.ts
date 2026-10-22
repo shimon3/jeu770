@@ -117,3 +117,74 @@ export function textureTexte(texte: string, w = 256, h = 128, fond = '#d9cdb2', 
   g.fillText(texte, w / 2, h / 2)
   return finaliser(c)
 }
+
+// Brique de la façade du 770 (references/selection : exterior-quatrefoil-stone,
+// exterior-triple-window-mullions, exterior-facade-front-winter) : appareil en
+// panneresses, briques de teintes très variées (rouge, rouge sombre, violacé,
+// presque noir, quelques orangées), joints gris clair en retrait. Toile 1K
+// couvrant 1,05 m, raccord sans couture. Tailles et proportions des teintes
+// ESTIMÉES d'après les photos. Renvoie la même texture pour la couleur et le relief.
+export function textureBrique770() {
+  const T = 1024
+  const { c, g } = canvas(T, T)
+  let graine = 770
+  const alea = () => {
+    graine = (graine * 16807) % 2147483647
+    return graine / 2147483647
+  }
+  // [r, g, b, poids]
+  const teintes: [number, number, number, number][] = [
+    [118, 50, 40, 0.3], // rouge
+    [94, 40, 36, 0.26], // rouge sombre
+    [80, 44, 50, 0.2], // violacé
+    [56, 38, 40, 0.1], // presque noir
+    [128, 64, 46, 0.08], // orangé
+    [90, 72, 78, 0.06], // gris violacé
+  ]
+  const tirer = () => {
+    let x = alea()
+    for (const t of teintes) {
+      if ((x -= t[3]) <= 0) return t
+    }
+    return teintes[0]
+  }
+  g.fillStyle = '#857c72' // mortier
+  g.fillRect(0, 0, T, T)
+  const nb = 5 // briques par rang (≈ 21 cm)
+  const rangs = 14 // rangs (≈ 7,5 cm)
+  const bw = T / nb
+  const bh = T / rangs
+  const joint = 7
+  for (let r = 0; r < rangs; r++) {
+    const dec = r % 2 ? bw / 2 : 0
+    for (let k = -1; k < nb; k++) {
+      const [cr, cg, cb] = tirer()
+      const v = 0.9 + alea() * 0.2
+      const x = k * bw + dec + joint / 2
+      const y = r * bh + joint / 2
+      const w = bw - joint
+      const h = bh - joint
+      g.fillStyle = `rgb(${cr * v},${cg * v},${cb * v})`
+      g.fillRect(x, y, w, h)
+      if (x < 0) {
+        g.fillRect(x + T, y, w, h)
+      }
+      if (x + w > T) g.fillRect(x - T, y, w, h)
+      // Mouchetures et nuances de cuisson
+      for (let i = 0; i < 40; i++) {
+        const d = alea() < 0.5 ? 0 : 255
+        g.fillStyle = `rgba(${d},${d * 0.8},${d * 0.7},${0.04 + alea() * 0.07})`
+        const px = x + alea() * w
+        const py = y + alea() * h
+        const s = 2 + alea() * 6
+        g.fillRect(px, py, s, s * 0.6)
+        if (px < 0) g.fillRect(px + T, py, s, s * 0.6)
+        if (px + s > T) g.fillRect(px - T, py, s, s * 0.6)
+      }
+    }
+  }
+  const tex = finaliser(c)
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(1 / 1.05, 1 / 1.05)
+  return tex
+}

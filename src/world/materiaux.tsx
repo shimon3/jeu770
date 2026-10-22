@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import { textureLosanges, textureMouchetee, textureInscription, textureFrise } from './texturesProcedurales'
+import { textureLosanges, textureMouchetee, textureInscription, textureFrise, textureBrique770 } from './texturesProcedurales'
 
 // Textures CC0 de Poly Haven (voir CREDITS.md). Les UV des géométries sont
 // en mètres : `repeat = 1 / taille du motif`.
@@ -41,7 +41,12 @@ function standard(jeu: THREE.Texture[], motif: number, params: THREE.MeshStandar
 function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
   const vitrail = textureLosanges()
   return {
-    brique770: standard(tex.brique770, 1.0, { normalScale: new THREE.Vector2(0.8, 0.8) }),
+    // Brique de la façade du 770 : texture procédurale 1K (teintes de la sélection),
+    // utilisée aussi comme relief des joints
+    brique770: (() => {
+      const t = textureBrique770()
+      return new THREE.MeshStandardMaterial({ map: t, bumpMap: t, bumpScale: 2, roughness: 0.92 })
+    })(),
     briqueVoisin: standard(tex.briqueVoisin, 1.4, { color: '#c9a08a' }),
     briqueVoisinClaire: standard(tex.briqueVoisin, 1.4, { color: '#e6b39a' }),
     briqueMuret: standard(tex.brique770, 1.0, { color: '#e0b0a0' }),
@@ -54,6 +59,10 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     cheneFonce: standard(tex.chene, 1.2, { color: '#6e3d1a', roughness: 0.5 }),
     pierre: standard(tex.platre, 1.5, { color: '#d9cdb2', roughness: 0.9 }),
     pierreFoncee: standard(tex.platre, 1.5, { color: '#b9ad94', roughness: 0.9 }),
+    // Pierre calcaire crème de la façade du 770 (sélection : exterior-quatrefoil-stone,
+    // exterior-oriel-window). Les voisins gardent « pierre ». Teintes ESTIMÉES.
+    pierre770: standard(tex.platre, 1.5, { color: '#fff4d8', roughness: 0.88 }),
+    pierreFoncee770: standard(tex.platre, 1.5, { color: '#f0e2c0', roughness: 0.88 }),
     sol: new THREE.MeshStandardMaterial({ map: textureMouchetee(), roughness: 0.45 }),
     herbe: new THREE.MeshStandardMaterial({ color: '#4f7a3c', roughness: 1 }),
     haie: new THREE.MeshStandardMaterial({ color: '#2f5a2a', roughness: 1 }),
@@ -74,7 +83,7 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     papier: new THREE.MeshStandardMaterial({ color: '#f6f1e4', roughness: 1 }),
     panneauBleu: new THREE.MeshStandardMaterial({ color: '#23405f', roughness: 0.6 }),
     inscription: new THREE.MeshStandardMaterial({ map: textureInscription(), roughness: 0.9 }),
-    frise: new THREE.MeshStandardMaterial({ color: '#d9cdb2', bumpMap: textureFrise(), bumpScale: 3, roughness: 0.9 }),
+    frise: new THREE.MeshStandardMaterial({ color: '#efe3c6', bumpMap: textureFrise(), bumpScale: 3, roughness: 0.9 }),
     noir: new THREE.MeshStandardMaterial({ color: '#0d0d0d', roughness: 0.85 }),
     voiture0: new THREE.MeshStandardMaterial({ color: '#2b2f36', metalness: 0.6, roughness: 0.35 }),
     voiture1: new THREE.MeshStandardMaterial({ color: '#8e9296', metalness: 0.6, roughness: 0.35 }),

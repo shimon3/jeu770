@@ -33,19 +33,19 @@ function fenetre(f: FenetreDef, transparente = false): Piece[] {
     } else {
       pc.push({ t: [lj, h, 0.03], p: [cx, y + h / 2, -RETRAIT_VITRE], m: verre, col: true, ombre: false })
     }
-    if (c > 0) pc.push({ t: [meneau, h, 0.22], p: [cx - lj / 2 - meneau / 2, y + h / 2, -0.09], m: 'pierre' })
+    if (c > 0) pc.push({ t: [meneau, h, 0.22], p: [cx - lj / 2 - meneau / 2, y + h / 2, -0.09], m: 'pierre770' })
   }
-  if (yImposte) pc.push({ t: [w, 0.1, 0.22], p: [x, yImposte, -0.09], m: 'pierre' })
+  if (yImposte) pc.push({ t: [w, 0.1, 0.22], p: [x, yImposte, -0.09], m: 'pierre770' })
   // Encadrement
-  pc.push({ t: [0.2, h + 0.22, 0.12], p: [x - w / 2 - 0.1, y + h / 2 + 0.06, 0.03], m: 'pierre' })
-  pc.push({ t: [0.2, h + 0.22, 0.12], p: [x + w / 2 + 0.1, y + h / 2 + 0.06, 0.03], m: 'pierre' })
-  pc.push({ t: [w + 0.62, 0.24, 0.14], p: [x, y + h + 0.12, 0.04], m: 'pierre' })
-  pc.push({ t: [w + 0.5, 0.1, 0.24], p: [x, y - 0.05, 0.07], m: 'pierre' })
+  pc.push({ t: [0.2, h + 0.22, 0.12], p: [x - w / 2 - 0.1, y + h / 2 + 0.06, 0.03], m: 'pierre770' })
+  pc.push({ t: [0.2, h + 0.22, 0.12], p: [x + w / 2 + 0.1, y + h / 2 + 0.06, 0.03], m: 'pierre770' })
+  pc.push({ t: [w + 0.62, 0.24, 0.14], p: [x, y + h + 0.12, 0.04], m: 'pierre770' })
+  pc.push({ t: [w + 0.5, 0.1, 0.24], p: [x, y - 0.05, 0.07], m: 'pierre770' })
   // Harpes : blocs alternés le long des piédroits
   const n = Math.max(2, Math.round(h / 0.32))
   const pas = h / n
   for (let k = 0; k < n; k += 2) {
-    for (const s of [-1, 1]) pc.push({ t: [0.14, pas * 0.92, 0.1], p: [x + s * (w / 2 + 0.27), y + pas * (k + 0.5), 0.02], m: 'pierre' })
+    for (const s of [-1, 1]) pc.push({ t: [0.14, pas * 0.92, 0.1], p: [x + s * (w / 2 + 0.27), y + pas * (k + 0.5), 0.02], m: 'pierre770' })
   }
   // Fond sombre derrière le vitrail (l'intérieur n'est pas modélisé)
   if (!transparente) pc.push({ t: [w, h, 0.02], p: [x, y + h / 2, -EP + 0.02], m: 'noir', ombre: false })
@@ -58,8 +58,8 @@ function petiteFenetre(x: number, y: number): Piece[] {
   const h = PORTE.petiteFenetreHauteur
   const pc: Piece[] = [
     { t: [w, h, 0.03], p: [x, y + h / 2, -0.12], m: 'vitrail', col: true, ombre: false },
-    { t: [w + 0.3, 0.12, 0.2], p: [x, y - 0.06, 0.06], m: 'pierre' },
-    { t: [w + 0.24, 0.14, 0.12], p: [x, y + h + 0.07, 0.03], m: 'pierre' },
+    { t: [w + 0.3, 0.12, 0.2], p: [x, y - 0.06, 0.06], m: 'pierre770' },
+    { t: [w + 0.24, 0.14, 0.12], p: [x, y + h + 0.07, 0.03], m: 'pierre770' },
   ]
   // Grille : barreaux verticaux à pointes de lance et traverses
   for (let i = 0; i < 4; i++) {
@@ -133,15 +133,15 @@ function oriel(): Piece[] {
   pc.push({ geo: geoTronc(debord, sommet, haut, haut + toit), m: 'ardoise' })
   // Console en pierre : bandeau (inscription) puis encorbellement
   const yB = bas - 0.62
-  pc.push({ geo: geoTronc(planOriel(1, 0.06), planOriel(1, 0.06), yB, bas), m: 'pierre' })
+  pc.push({ geo: geoTronc(planOriel(1, 0.06), planOriel(1, 0.06), yB, bas), m: 'pierre770' })
   const pointe: [number, number][] = [
     [TRAVEES.centre - 0.55, 0],
     [TRAVEES.centre - 0.3, 0.22],
     [TRAVEES.centre + 0.3, 0.22],
     [TRAVEES.centre + 0.55, 0],
   ]
-  pc.push({ geo: geoTronc(pointe, planOriel(1, 0.02), yB - 0.55, yB), m: 'pierre' })
-  pc.push({ t: [0.5, 0.16, 0.18], p: [TRAVEES.centre, yB - 0.63, 0.09], m: 'pierre' })
+  pc.push({ geo: geoTronc(pointe, planOriel(1, 0.02), yB - 0.55, yB), m: 'pierre770' })
+  pc.push({ t: [0.5, 0.16, 0.18], p: [TRAVEES.centre, yB - 0.63, 0.09], m: 'pierre770' })
   return pc
 }
 
@@ -155,23 +155,23 @@ function encadrementPorte(): Piece[] {
   const H = PORTE.encadrementHauteur
   const jamb = (L - lo) / 2
   for (const s of [-1, 1]) {
-    pc.push({ t: [jamb, hp, 0.16], p: [TRAVEES.centre + s * (lo / 2 + jamb / 2), y0 + hp / 2, 0.05], m: 'pierre' })
+    pc.push({ t: [jamb, hp, 0.16], p: [TRAVEES.centre + s * (lo / 2 + jamb / 2), y0 + hp / 2, 0.05], m: 'pierre770' })
     // Moulures verticales
-    pc.push({ t: [0.05, hp, 0.05], p: [TRAVEES.centre + s * (lo / 2 + 0.06), y0 + hp / 2, 0.15], m: 'pierreFoncee' })
-    pc.push({ t: [0.05, H, 0.04], p: [TRAVEES.centre + s * (L / 2 - 0.04), y0 + H / 2, 0.15], m: 'pierreFoncee' })
+    pc.push({ t: [0.05, hp, 0.05], p: [TRAVEES.centre + s * (lo / 2 + 0.06), y0 + hp / 2, 0.15], m: 'pierreFoncee770' })
+    pc.push({ t: [0.05, H, 0.04], p: [TRAVEES.centre + s * (L / 2 - 0.04), y0 + H / 2, 0.15], m: 'pierreFoncee770' })
   }
   const hL = H - hp
-  pc.push({ t: [L, hL, 0.16], p: [TRAVEES.centre, y0 + hp + hL / 2, 0.05], m: 'pierre' })
-  pc.push({ t: [L, 0.06, 0.06], p: [TRAVEES.centre, y0 + H - 0.03, 0.15], m: 'pierreFoncee' })
+  pc.push({ t: [L, hL, 0.16], p: [TRAVEES.centre, y0 + hp + hL / 2, 0.05], m: 'pierre770' })
+  pc.push({ t: [L, 0.06, 0.06], p: [TRAVEES.centre, y0 + H - 0.03, 0.15], m: 'pierreFoncee770' })
   // Linteau mouluré au-dessus de la porte
-  pc.push({ t: [lo + 0.25, 0.12, 0.08], p: [TRAVEES.centre, y0 + hp + 0.06, 0.15], m: 'pierreFoncee' })
+  pc.push({ t: [lo + 0.25, 0.12, 0.08], p: [TRAVEES.centre, y0 + hp + 0.06, 0.15], m: 'pierreFoncee770' })
   // Arc Tudor surbaissé (deux rampants) et frise sculptée au-dessus
   const demi = 0.75
   const fleche = 0.28
   const ang = Math.atan2(fleche, demi)
   const lg = Math.hypot(demi, fleche)
   for (const s of [-1, 1])
-    pc.push({ t: [lg, 0.07, 0.06], p: [TRAVEES.centre + (s * demi) / 2, y0 + hp + 0.2 + fleche / 2, 0.16], r: [0, 0, -s * ang], m: 'pierreFoncee' })
+    pc.push({ t: [lg, 0.07, 0.06], p: [TRAVEES.centre + (s * demi) / 2, y0 + hp + 0.2 + fleche / 2, 0.16], r: [0, 0, -s * ang], m: 'pierreFoncee770' })
   pc.push({ t: [L - 0.2, 0.32, 0.03], p: [TRAVEES.centre, y0 + H - 0.24, 0.14], m: 'frise', ombre: false })
   // Lanterne au-dessus de la porte
   pc.push({ t: [0.26, 0.16, 0.2], p: [TRAVEES.centre, y0 + hp + 0.35, 0.3], m: 'noir' })
@@ -201,21 +201,21 @@ function toitures(): Piece[] {
       const mx = cx + (s * demi) / 2
       const my = g.base + ht / 2
       // Chaperon de pierre sur le rampant
-      pc.push({ t: [rampant + 0.15, 0.16, 0.55], p: [mx - s * 0.04, my + 0.09, -0.2], r: [0, 0, -s * ang], m: 'pierre' })
+      pc.push({ t: [rampant + 0.15, 0.16, 0.55], p: [mx - s * 0.04, my + 0.09, -0.2], r: [0, 0, -s * ang], m: 'pierre770' })
       // Pan d'ardoise de l'aile
       pc.push({ t: [rampant + 0.1, 0.1, P - 0.3], p: [mx + s * 0.02, my + 0.13, -0.3 - (P - 0.3) / 2], r: [0, 0, -s * ang], m: 'ardoise' })
     }
     // Fleuron au sommet
-    pc.push({ t: [0.22, 0.4, 0.22], p: [cx, g.sommet + 0.25, -0.15], m: 'pierre' })
-    pc.push({ geo: new THREE.ConeGeometry(0.13, 0.35, 4), p: [cx, g.sommet + 0.62, -0.15], r: [0, Math.PI / 4, 0], m: 'pierre' })
+    pc.push({ t: [0.22, 0.4, 0.22], p: [cx, g.sommet + 0.25, -0.15], m: 'pierre770' })
+    pc.push({ geo: new THREE.ConeGeometry(0.13, 0.35, 4), p: [cx, g.sommet + 0.62, -0.15], r: [0, Math.PI / 4, 0], m: 'pierre770' })
   }
   // Plaques de pierre dans les pignons (Commons 2) : losange à quadrilobe
   // sur les pignons latéraux, plaque carrée au centre
   for (const x of [TRAVEES.gauche, TRAVEES.droite])
-    pc.push({ t: [0.5, 0.5, 0.06], p: [x, FACADE.egout + 1.95, 0.03], r: [0, 0, Math.PI / 4], m: 'pierre' })
-  pc.push({ t: [0.42, 0.42, 0.06], p: [TRAVEES.centre, FACADE.egoutCentre + 1.0, 0.03], m: 'pierre' })
+    pc.push({ t: [0.5, 0.5, 0.06], p: [x, FACADE.egout + 1.95, 0.03], r: [0, 0, Math.PI / 4], m: 'pierre770' })
+  pc.push({ t: [0.42, 0.42, 0.06], p: [TRAVEES.centre, FACADE.egoutCentre + 1.0, 0.03], m: 'pierre770' })
   // Corniche d'égout
-  pc.push({ t: [LARGEUR_FACADE + 0.1, 0.12, 0.2], p: [0, FACADE.egoutCentre + 0.05, 0.06], m: 'pierre' })
+  pc.push({ t: [LARGEUR_FACADE + 0.1, 0.12, 0.2], p: [0, FACADE.egoutCentre + 0.05, 0.06], m: 'pierre770' })
 
   // Pan de toiture principal entre les pignons, puis toit plat
   const H = FACADE.hauteurToitPrincipal
@@ -224,15 +224,15 @@ function toitures(): Piece[] {
   const ang = Math.atan2(montee, prof)
   const lg = Math.hypot(prof, montee)
   pc.push({ t: [LARGEUR_FACADE, 0.12, lg], p: [0, FACADE.egoutCentre + montee / 2 + 0.06, -prof / 2], r: [ang, 0, 0], m: 'ardoise' })
-  pc.push({ t: [LARGEUR_FACADE, 0.2, FACADE.profondeur - prof], p: [0, H, -prof - (FACADE.profondeur - prof) / 2], m: 'pierreFoncee', ombre: true })
+  pc.push({ t: [LARGEUR_FACADE, 0.2, FACADE.profondeur - prof], p: [0, H, -prof - (FACADE.profondeur - prof) / 2], m: 'pierreFoncee770', ombre: true })
 
   // Cheminées aux extrémités, avec mitrons (Commons 2)
   for (const s of [-1, 1]) {
     const cx = s * (LARGEUR_FACADE / 2 - 0.5)
     pc.push({ t: [0.75, FACADE.hauteurCheminee - FACADE.egout + 0.6, 0.9], p: [cx, (FACADE.hauteurCheminee + FACADE.egout - 0.6) / 2, -1.6], m: 'brique770' })
-    pc.push({ t: [0.9, 0.12, 1.05], p: [cx, FACADE.hauteurCheminee + 0.06, -1.6], m: 'pierre' })
+    pc.push({ t: [0.9, 0.12, 1.05], p: [cx, FACADE.hauteurCheminee + 0.06, -1.6], m: 'pierre770' })
     for (const dz of [-0.2, 0.2])
-      pc.push({ geo: new THREE.CylinderGeometry(0.1, 0.12, 0.55, 8), p: [cx, FACADE.hauteurCheminee + 0.4, -1.6 + dz], m: 'pierreFoncee' })
+      pc.push({ geo: new THREE.CylinderGeometry(0.1, 0.12, 0.55, 8), p: [cx, FACADE.hauteurCheminee + 0.4, -1.6 + dz], m: 'pierreFoncee770' })
   }
   return pc
 }
@@ -265,13 +265,13 @@ export function Facade() {
     // Bandeau de pierre sous les fenêtres du 2e étage (Commons 2)
     for (const tr of [TRAVEES.gauche, TRAVEES.droite]) {
       const w = tr === TRAVEES.gauche ? FACADE.largeurTraveeGauche : FACADE.largeurTraveeDroite
-      pc.push({ t: [w, 0.12, 0.08], p: [tr, 8.82, 0.04], m: 'pierre' })
+      pc.push({ t: [w, 0.12, 0.08], p: [tr, 8.82, 0.04], m: 'pierre770' })
     }
     // Panneaux de pierre sculptés sous les grandes baies du rez-de-chaussée
     for (const f of FENETRES.filter((f) => f.y < 3))
       pc.push({ t: [f.w, f.y - y0 - 0.05, 0.05], p: [f.x, y0 + (f.y - y0) / 2, 0.025], m: 'frise', ombre: false })
     // Soubassement de pierre
-    pc.push({ t: [LARGEUR_FACADE + 0.04, 0.12, 0.08], p: [0, y0 - 0.06, 0.04], m: 'pierre' })
+    pc.push({ t: [LARGEUR_FACADE + 0.04, 0.12, 0.08], p: [0, y0 - 0.06, 0.04], m: 'pierre770' })
     // Descentes d'eau pluviale en zinc de part et d'autre de la travée centrale
     for (const s of [-1, 1]) {
       const x = s * (FACADE.largeurTraveeCentre / 2 + 0.05)
@@ -285,7 +285,7 @@ export function Facade() {
     pc.push(...encadrementPorte())
     pc.push(...toitures())
     // Seuil de la porte dans l'épaisseur du mur
-    pc.push({ t: [lo, 0.2, EP], p: [xPorte, y0 - 0.1, -EP / 2], m: 'pierre', col: true })
+    pc.push({ t: [lo, 0.2, EP], p: [xPorte, y0 - 0.1, -EP / 2], m: 'pierre770', col: true })
     return pc
   }, [])
 
@@ -338,12 +338,12 @@ function Abords() {
 
     // Palier devant la porte et marches (brique, nez en pierre : crownheights.info 2022)
     pc.push({ t: [3.0, yR - yC + 0.3, A.palierProfondeur], p: [0, yC + (yR - yC - 0.3) / 2, A.palierProfondeur / 2], m: 'allee', col: true })
-    const e1 = escalier({ x: 0, largeur: 3.0, depart: zMarches, sens: -1, yDepart: yC, contremarche: hPorte, giron: A.giron, nombre: nPorte, m: 'allee', mNez: 'pierre' })
+    const e1 = escalier({ x: 0, largeur: 3.0, depart: zMarches, sens: -1, yDepart: yC, contremarche: hPorte, giron: A.giron, nombre: nPorte, m: 'allee', mNez: 'pierre770' })
     pc.push(...e1.pieces)
     // Joues des marches et garde-corps en fer
     for (const s of [-1, 1]) {
       pc.push({ t: [0.3, yR - yC + 0.25, zMarches], p: [s * 1.65, yC + (yR - yC + 0.25) / 2, zMarches / 2], m: 'briqueMuret', col: true })
-      pc.push({ t: [0.34, 0.06, zMarches + 0.04], p: [s * 1.65, yR + 0.28, zMarches / 2], m: 'pierre' })
+      pc.push({ t: [0.34, 0.06, zMarches + 0.04], p: [s * 1.65, yR + 0.28, zMarches / 2], m: 'pierre770' })
       for (let i = 0; i <= 6; i++) {
         const z = 0.1 + (i * (zMarches - 0.2)) / 6
         pc.push({ t: [0.025, 0.85, 0.025], p: [s * 1.65, yR + 0.3 + 0.42, z], m: 'fer', ombre: false })
@@ -358,7 +358,7 @@ function Abords() {
     pc.push({ t: [la, 0.8, zFinAllee - zMarches], p: [0, yC - 0.4, (zMarches + zFinAllee) / 2], m: 'allee', col: true })
 
     // Marches du trottoir à la cour, dans l'ouverture du muret (photo Clio)
-    const e2 = escalier({ x: 0, largeur: la, depart: zMarchesRue, sens: -1, yDepart: NIVEAUX.trottoir, contremarche: (yC - NIVEAUX.trottoir) / A.marches, giron: A.giron, nombre: A.marches, m: 'allee', mNez: 'pierre' })
+    const e2 = escalier({ x: 0, largeur: la, depart: zMarchesRue, sens: -1, yDepart: NIVEAUX.trottoir, contremarche: (yC - NIVEAUX.trottoir) / A.marches, giron: A.giron, nombre: A.marches, m: 'allee', mNez: 'pierre770' })
     pc.push(...e2.pieces)
 
     // Muret de brique à chaperon de pierre, grille en fer au-dessus
@@ -368,7 +368,7 @@ function Abords() {
       const lg = xL - de
       const cx = s * (de + lg / 2)
       pc.push({ t: [lg, A.murHauteur + 0.3, A.murEpaisseur], p: [cx, (A.murHauteur - 0.3) / 2, zm], m: 'briqueMuret', col: true })
-      pc.push({ t: [lg, 0.08, A.murEpaisseur + 0.1], p: [cx, A.murHauteur + 0.04, zm], m: 'pierre' })
+      pc.push({ t: [lg, 0.08, A.murEpaisseur + 0.1], p: [cx, A.murHauteur + 0.04, zm], m: 'pierre770' })
       // Grille : barreaux tous les 15 cm
       const n = Math.floor(lg / 0.15)
       for (let i = 0; i <= n; i++) pc.push({ t: [0.02, 0.75, 0.02], p: [s * (de + i * 0.15), A.murHauteur + 0.45, zMur + 0.05], m: 'fer', ombre: false })
@@ -377,8 +377,8 @@ function Abords() {
       // Piliers de l'entrée, chapeaux pyramidaux en pierre
       const px = s * (la / 2 + 0.28)
       pc.push({ t: [0.55, A.murHauteur + 0.65, 0.55], p: [px, (A.murHauteur + 0.65) / 2 - 0.15, zm], m: 'briqueMuret', col: true })
-      pc.push({ t: [0.65, 0.1, 0.65], p: [px, A.murHauteur + 0.55, zm], m: 'pierre' })
-      pc.push({ geo: new THREE.ConeGeometry(0.42, 0.35, 4), p: [px, A.murHauteur + 0.77, zm], r: [0, Math.PI / 4, 0], m: 'pierre' })
+      pc.push({ t: [0.65, 0.1, 0.65], p: [px, A.murHauteur + 0.55, zm], m: 'pierre770' })
+      pc.push({ geo: new THREE.ConeGeometry(0.42, 0.35, 4), p: [px, A.murHauteur + 0.77, zm], r: [0, Math.PI / 4, 0], m: 'pierre770' })
       // Thuyas de part et d'autre de l'entrée (Commons 2, 3)
       pc.push({ geo: new THREE.ConeGeometry(0.45, 2.2, 8), p: [s * 2.55, yC + 1.1, 0.7], m: 'haie' })
       // Haies basses le long du muret, côté cour
