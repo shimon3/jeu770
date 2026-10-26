@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
 import { Avatar, type Anim } from './Avatar'
+import { MeshyPreviewPlayer } from './MeshyPreviewPlayer'
 import { glissementCamera, joystick, touche } from './entrees'
 import { joueur, useGame } from '../state/store'
 import { zoneEn } from '../world/zones'
@@ -277,7 +278,7 @@ export function Joueur() {
         <CapsuleCollider args={[DEMI, RAYON]} />
       </RigidBody>
       <group ref={avatar}>
-        <Avatar anim={anim} />
+        {new URLSearchParams(window.location.search).get('meshyPreview') === '1' ? <MeshyPreviewPlayer anim={anim} /> : <Avatar anim={anim} />}
       </group>
     </>
   )
