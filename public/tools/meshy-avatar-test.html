@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>770 — Test isolé du personnage Meshy</title>
+<style>body{margin:0;background:#151922;color:#eee;font:15px system-ui}header{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px;background:#242b38}button,input{font:inherit}button{padding:7px 14px;cursor:pointer}canvas{display:block}#status{font-size:13px}#viewer{height:calc(100vh - 84px)}small{opacity:.8}</style>
+<script type="importmap">{"imports":{"three":"https://esm.sh/three@0.186.1","three/addons/":"https://esm.sh/three@0.186.1/examples/jsm/"}}</script>
+</head><body>
+<header><strong>770 — Laboratoire Meshy</strong><label>GLB local <input id="file" type="file" accept=".glb,model/gltf-binary"></label><button id="idle" disabled>Idle</button><button id="walk" disabled>Quick Walk</button><button id="stop" disabled>Pause</button><span id="status">Choisir le GLB combiné. Aucun envoi du fichier.</span></header><div id="viewer"></div>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const box=document.querySelector('#viewer'),status=document.querySelector('#status');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x242b37);
+const camera=new THREE.PerspectiveCamera(45,1,.05,100);camera.position.set(2.4,1.7,3.5);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+box.appendChild(renderer.domElement);
+const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,1,0);orbit.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0x777788,2));
+const lamp=new THREE.DirectionalLight(0xffffff,2);lamp.position.set(3,7,4);scene.add(lamp);
+const grid=new THREE.GridHelper(8,16,0x697586,0x414b59);scene.add(grid);
+let model=null,mixer=null,clips=[],active=null,paused=false;const clock=new THREE.Clock();
+function resize(){const w=box.clientWidth,h=box.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();
+function play(which){if(!mixer)return;const clip=clips.find(c=>which==='idle'?/idle/i.test(c.name):/walk/i.test(c.name));if(!clip){status.textContent='Animation absente : '+which;return}const next=mixer.clipAction(clip);next.reset().play();if(active&&active!==next)active.crossFadeTo(next,.25,false);active=next;paused=false;mixer.timeScale=1;status.textContent='Lecture : '+clip.name}
+document.querySelector('#idle').onclick=()=>play('idle');document.querySelector('#walk').onclick=()=>play('walk');
+document.querySelector('#stop').onclick=()=>{if(!mixer)return;paused=!paused;mixer.timeScale=paused?0:1;status.textContent=paused?'En pause':'Reprise'};
+document.querySelector('#file').onchange=async e=>{
+const file=e.target.files?.[0];if(!file)return;status.textContent='Chargement local…';
+try{const url=URL.createObjectURL(file);const data=await new GLTFLoader().loadAsync(url);URL.revokeObjectURL(url);
+if(model)scene.remove(model);model=data.scene;scene.add(model);clips=data.animations;
+mixer=new THREE.AnimationMixer(model);active=null;
+const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+const h=Math.max(size.y,.1);model.position.sub(new THREE.Vector3(center.x,bounds.min.y,center.z));
+orbit.target.set(0,h*.52,0);camera.position.set(h*1.35,h*.9,h*1.65);orbit.update();grid.position.y=0;
+document.querySelector('#idle').disabled=!clips.some(c=>/idle/i.test(c.name));
+document.querySelector('#walk').disabled=!clips.some(c=>/walk/i.test(c.name));
+document.querySelector('#stop').disabled=!clips.length;
+status.textContent=file.name+' | '+clips.length+' animation(s) : '+clips.map(c=>c.name).join(', ');
+if(clips.some(c=>/idle/i.test(c.name)))play('idle');
+}catch(err){status.textContent='Erreur de chargement : '+String(err)}
+};
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);mixer?.update(dt);orbit.update();renderer.render(scene,camera)}animate();
+</script></body></html>
