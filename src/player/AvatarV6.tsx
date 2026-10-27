@@ -17,15 +17,19 @@ const FONDU = 0.25
 const SEUIL_MARCHE_LENTE = 1.8
 const ETATS_PROCEDURAUX: EtatAnim[] = ['assis', 'balancement']
 
-function clipPour(a: Anim): { clip: Clip; echelle: number } {
+// `vReelle` : vitesse horizontale réellement parcourue (collisions et
+// accélération comprises). La vitesse de lecture suit celle-ci plutôt que la
+// vitesse demandée, sinon les pieds glissent quand le joueur est freiné.
+function clipPour(a: Anim, vReelle: number): { clip: Clip; echelle: number } {
+  const v = vReelle > 0.2 ? vReelle : a.vitesse
   switch (a.etat) {
     case 'course':
-      return { clip: 'Running', echelle: a.vitesse / VITESSE_NATURELLE.Running }
+      return { clip: 'Running', echelle: v / VITESSE_NATURELLE.Running }
     case 'marche':
     case 'escalier':
       return a.vitesse < SEUIL_MARCHE_LENTE
-        ? { clip: 'Walking', echelle: a.vitesse / VITESSE_NATURELLE.Walking }
-        : { clip: 'Quick_Walk', echelle: a.vitesse / VITESSE_NATURELLE.Quick_Walk }
+        ? { clip: 'Walking', echelle: v / VITESSE_NATURELLE.Walking }
+        : { clip: 'Quick_Walk', echelle: v / VITESSE_NATURELLE.Quick_Walk }
     case 'saut':
       // Pas d'animation de saut : on garde l'élan de la course, ralenti
       return { clip: 'Running', echelle: 0.35 }
@@ -39,6 +43,10 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
   const mixer = useMemo(() => new THREE.AnimationMixer(gltf.scene), [gltf.scene])
   const actions = useRef<Partial<Record<Clip, THREE.AnimationAction>>>({})
   const courant = useRef<Clip | null>(null)
+  const vReelle = useRef(0)
+  const posValide = useRef(false)
+  const pos = useMemo(() => new THREE.Vector3(), [])
+  const posPrec = useMemo(() => new THREE.Vector3(), [])
 
   useEffect(() => {
     gltf.scene.traverse((o) => {
@@ -61,7 +69,18 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
 
   useFrame((_, dtBrut) => {
     const dt = Math.min(dtBrut, 0.05)
-    const { clip, echelle } = clipPour(anim.current)
+    const g = groupe.current
+    if (g && dtBrut > 0) {
+      g.getWorldPosition(pos)
+      if (posValide.current) {
+        const v = Math.hypot(pos.x - posPrec.x, pos.z - posPrec.z) / dtBrut
+        // Une téléportation ne doit pas compter comme une vitesse
+        if (v < 15) vReelle.current = THREE.MathUtils.damp(vReelle.current, v, 10, dt)
+      }
+      posPrec.copy(pos)
+      posValide.current = true
+    }
+    const { clip, echelle } = clipPour(anim.current, vReelle.current)
     const suivante = actions.current[clip]
     if (!suivante) return
     if (courant.current !== clip) {
@@ -72,6 +91,17 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
     }
     suivante.timeScale = THREE.MathUtils.clamp(echelle, 0.35, 1.8)
     mixer.update(dt)
+    // Outil de test en développement : état de l'animation
+    if (import.meta.env.DEV) {
+      ;(window as unknown as Record<string, unknown>).__avatarV6 = {
+        clip,
+        echelle: suivante.timeScale,
+        temps: suivante.time,
+        vReelle: vReelle.current,
+        etat: anim.current.etat,
+        vitessesNaturelles: VITESSE_NATURELLE,
+      }
+    }
   })
 
   return (
