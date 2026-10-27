@@ -3,6 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
 import { Avatar, type Anim } from './Avatar'
+import { AvatarV6 } from './AvatarV6'
+import { avatarChoisi } from '../config/avatar'
 import { glissementCamera, joystick, touche } from './entrees'
 import { joueur, useGame } from '../state/store'
 import { zoneEn } from '../world/zones'
@@ -276,9 +278,7 @@ export function Joueur() {
       <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={depart.position} enabledRotations={[false, false, false]}>
         <CapsuleCollider args={[DEMI, RAYON]} />
       </RigidBody>
-      <group ref={avatar}>
-        <Avatar anim={anim} />
-      </group>
+      <group ref={avatar}>{avatarChoisi() === 'v6' ? <AvatarV6 anim={anim} /> : <Avatar anim={anim} />}</group>
     </>
   )
 }
