@@ -4,11 +4,14 @@ import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { Avatar, type Anim, type EtatAnim } from './Avatar'
 import {
-  URL_AVATAR_V6,
+  URL_AVATAR,
+  type ChoixGlb,
   VITESSE_NATURELLE,
   SEUIL_VERS_COURSE,
   SEUIL_VERS_MARCHE_RAPIDE,
   plafondMipmapChoisi,
+  fermetureBrasChoisie,
+  avatarChoisi,
 } from '../config/avatar'
 
 // Avatar du joueur : personnage Hasidic_Man_v6 (GLB skinné, 4 animations).
@@ -90,8 +93,84 @@ function usePlafondMipmaps(scene: THREE.Object3D, plafond: number | null) {
   })
 }
 
-function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: MutableRefObject<THREE.Group | null> }) {
-  const gltf = useGLTF(URL_AVATAR_V6)
+// Fermeture des bras : rotation de chaque os ForeArm (enfant direct de Spine2,
+// sans os d'épaule) autour de l'axe avant du torse, en pivotant sur une épaule
+// virtuelle, appliquée après le mixer. Le mixer ne réécrit pas la position de
+// ces os à chaque image : on rétablit donc l'état d'avant la fermeture avant
+// chaque mise à jour du mixer, sinon le décalage s'accumulerait.
+const EPAULE_VIRTUELLE = { x: 0.215, y: 1.3, z: -0.09 } // espace du maillage au repos, en m
+
+type BrasPrepare = {
+  os: THREE.Bone
+  pivot: THREE.Vector3
+  rotation: THREE.Quaternion
+  position0: THREE.Vector3
+  quaternion0: THREE.Quaternion
+  ferme: boolean
+}
+
+function preparerBras(scene: THREE.Object3D, fermeture: { gauche: number; droite: number } | null): BrasPrepare[] {
+  if (!fermeture) return []
+  let sk: THREE.SkinnedMesh | undefined
+  scene.traverse((o) => {
+    if (!sk && (o as THREE.SkinnedMesh).isSkinnedMesh) sk = o as THREE.SkinnedMesh
+  })
+  if (!sk) return []
+  const { bones, boneInverses } = sk.skeleton
+  const nom = (b: THREE.Bone) => b.name.replace(/mixamorig:?/, '')
+  const i2 = bones.findIndex((b) => nom(b) === 'Spine2')
+  if (i2 < 0) return []
+  // Repos : espace du maillage → espace local de Spine2 (avec son échelle)
+  const versSpine2 = boneInverses[i2]
+  const q = new THREE.Quaternion()
+  versSpine2.decompose(new THREE.Vector3(), q, new THREE.Vector3())
+  const axe = new THREE.Vector3(0, 0, 1).applyQuaternion(q).normalize()
+  const res: BrasPrepare[] = []
+  for (const [cote, signe, angle] of [['Left', -1, fermeture.gauche], ['Right', 1, fermeture.droite]] as const) {
+    const os = bones.find((b) => nom(b) === `${cote}ForeArm`)
+    if (!os || os.parent !== bones[i2] || !angle) continue
+    const pivot = new THREE.Vector3(signe * -EPAULE_VIRTUELLE.x, EPAULE_VIRTUELLE.y, EPAULE_VIRTUELLE.z).applyMatrix4(versSpine2)
+    res.push({
+      os,
+      pivot,
+      rotation: new THREE.Quaternion().setFromAxisAngle(axe, THREE.MathUtils.degToRad(signe * angle)),
+      position0: new THREE.Vector3(),
+      quaternion0: new THREE.Quaternion(),
+      ferme: false,
+    })
+  }
+  return res
+}
+
+function fermerBras(bras: BrasPrepare[]) {
+  for (const b of bras) {
+    b.position0.copy(b.os.position)
+    b.quaternion0.copy(b.os.quaternion)
+    b.os.position.sub(b.pivot).applyQuaternion(b.rotation).add(b.pivot)
+    b.os.quaternion.premultiply(b.rotation)
+    b.ferme = true
+  }
+}
+
+function rouvrirBras(bras: BrasPrepare[]) {
+  for (const b of bras) {
+    if (!b.ferme) continue
+    b.os.position.copy(b.position0)
+    b.os.quaternion.copy(b.quaternion0)
+    b.ferme = false
+  }
+}
+
+function Modele({
+  anim,
+  groupe,
+  choix,
+}: {
+  anim: MutableRefObject<Anim>
+  groupe: MutableRefObject<THREE.Group | null>
+  choix: ChoixGlb
+}) {
+  const gltf = useGLTF(URL_AVATAR[choix])
   const mixer = useMemo(() => new THREE.AnimationMixer(gltf.scene), [gltf.scene])
   const actions = useRef<Partial<Record<Clip, THREE.AnimationAction>>>({})
   const courant = useRef<Clip | null>(null)
@@ -103,6 +182,9 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
   const posPrec = useMemo(() => new THREE.Vector3(), [])
   const plafond = useMemo(() => plafondMipmapChoisi(), [])
   usePlafondMipmaps(gltf.scene, plafond)
+  const bras = useMemo(() => preparerBras(gltf.scene, fermetureBrasChoisie(choix)), [gltf.scene, choix])
+  // La scène du GLB est mise en cache : la rendre telle qu'on l'a trouvée
+  useEffect(() => () => rouvrirBras(bras), [bras])
 
   useEffect(() => {
     gltf.scene.traverse((o) => {
@@ -150,7 +232,9 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
       courant.current = clip
     }
     suivante.timeScale = THREE.MathUtils.clamp(echelle, 0.35, 2)
+    rouvrirBras(bras)
     mixer.update(dt)
+    fermerBras(bras)
     // Outil de test en développement : état de l'animation et du rendu
     if (import.meta.env.DEV) {
       ;(window as unknown as Record<string, unknown>).__avatarV6 = {
@@ -161,6 +245,8 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
         etat: anim.current.etat,
         vitessesNaturelles: VITESSE_NATURELLE,
         plafondMipmap: plafond,
+        brasFermes: bras.length,
+        modele: choix,
       }
     }
   })
@@ -172,7 +258,7 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
   )
 }
 
-export function AvatarV6({ anim }: { anim: MutableRefObject<Anim> }) {
+export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>; choix?: ChoixGlb }) {
   const v6 = useRef<THREE.Group | null>(null)
   const ancien = useRef<THREE.Group>(null)
 
@@ -188,10 +274,12 @@ export function AvatarV6({ anim }: { anim: MutableRefObject<Anim> }) {
         <Avatar anim={anim} />
       </group>
       <Suspense fallback={null}>
-        <Modele anim={anim} groupe={v6} />
+        <Modele anim={anim} groupe={v6} choix={choix} />
       </Suspense>
     </>
   )
 }
 
-useGLTF.preload(URL_AVATAR_V6)
+// Préchargement du seul GLB choisi
+const choixInitial = avatarChoisi()
+if (choixInitial !== 'ancien') useGLTF.preload(URL_AVATAR[choixInitial])
