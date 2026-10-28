@@ -4,7 +4,8 @@ import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Anim } from './Avatar'
 
-// Modèle de TOUS les hassids du jeu (joueur et PNJ) : modèle Sculptly fourni
+// Modèle de retour arrière des hassids (le personnage v6 est le modèle par
+// défaut, voir config/avatar.ts) : modèle Sculptly fourni
 // par Samuel (octobre 2026), ANONYMISÉ avant publication (visage uni sans
 // traits, voir tools/anonymiser-glb.py) puis allégé (≈ 13 000 triangles).
 //

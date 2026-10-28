@@ -2,7 +2,8 @@ import { Suspense, useEffect, useMemo, useRef, type MutableRefObject } from 'rea
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { Avatar, type Anim, type EtatAnim } from './Avatar'
+import { Avatar, type Anim } from './Avatar'
+import { creerPosesV6 } from './posesV6'
 import {
   URL_AVATAR,
   type ChoixGlb,
@@ -16,8 +17,9 @@ import {
 
 // Avatar du joueur : personnage Hasidic_Man_v6 (GLB skinné, 4 animations).
 // Origine : entre les pieds. Avant du modèle : +z (comme Avatar.tsx).
-// Les états sans animation dans le GLB (assis, balancement) affichent
-// l'avatar procédural d'origine.
+// Les états sans animation dans le GLB (assis, balancement) sont des poses
+// posées par-dessus Idle_11 (posesV6.ts), comme pour les PNJ. L'avatar
+// d'origine (Avatar.tsx) ne s'affiche que pendant le chargement du GLB.
 
 type Clip = 'Idle_11' | 'Walking' | 'Quick_Walk' | 'Running'
 
@@ -32,7 +34,6 @@ const DEMARRAGE = 0.3
 // Bloqué contre un obstacle : repos plutôt que marche sur place (hystérésis)
 const BLOQUE = 0.3
 const DEBLOQUE = 0.5
-const ETATS_PROCEDURAUX: EtatAnim[] = ['assis', 'balancement']
 
 // `vReelle` : vitesse horizontale réellement parcourue (collisions comprises).
 // Le clip et sa vitesse de lecture la suivent plutôt que la vitesse demandée,
@@ -185,6 +186,15 @@ function Modele({
   const bras = useMemo(() => preparerBras(gltf.scene, fermetureBrasChoisie(choix)), [gltf.scene, choix])
   // La scène du GLB est mise en cache : la rendre telle qu'on l'a trouvée
   useEffect(() => () => rouvrirBras(bras), [bras])
+  const poses = useMemo(() => {
+    let sk: THREE.SkinnedMesh | undefined
+    gltf.scene.traverse((o) => {
+      if (!sk && (o as THREE.SkinnedMesh).isSkinnedMesh) sk = o as THREE.SkinnedMesh
+    })
+    return sk ? creerPosesV6(sk) : null
+  }, [gltf.scene])
+  useEffect(() => () => poses?.retablir(), [poses])
+  const t = useRef(0)
 
   useEffect(() => {
     gltf.scene.traverse((o) => {
@@ -207,6 +217,7 @@ function Modele({
 
   useFrame((_, dtBrut) => {
     const dt = Math.min(dtBrut, 0.05)
+    t.current += dt
     const g = groupe.current
     if (g && dtBrut > 0) {
       g.getWorldPosition(pos)
@@ -232,9 +243,11 @@ function Modele({
       courant.current = clip
     }
     suivante.timeScale = THREE.MathUtils.clamp(echelle, 0.35, 2)
+    poses?.retablir()
     rouvrirBras(bras)
     mixer.update(dt)
     fermerBras(bras)
+    poses?.appliquer(a.etat, t.current)
     // Outil de test en développement : état de l'animation et du rendu
     if (import.meta.env.DEV) {
       ;(window as unknown as Record<string, unknown>).__avatarV6 = {
@@ -260,23 +273,10 @@ function Modele({
 
 export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>; choix?: ChoixGlb }) {
   const v6 = useRef<THREE.Group | null>(null)
-  const ancien = useRef<THREE.Group>(null)
-
-  useFrame(() => {
-    const procedural = ETATS_PROCEDURAUX.includes(anim.current.etat)
-    if (v6.current) v6.current.visible = !procedural
-    if (ancien.current) ancien.current.visible = procedural || !v6.current
-  })
-
   return (
-    <>
-      <group ref={ancien}>
-        <Avatar anim={anim} />
-      </group>
-      <Suspense fallback={null}>
-        <Modele anim={anim} groupe={v6} choix={choix} />
-      </Suspense>
-    </>
+    <Suspense fallback={<Avatar anim={anim} />}>
+      <Modele anim={anim} groupe={v6} choix={choix} />
+    </Suspense>
   )
 }
 

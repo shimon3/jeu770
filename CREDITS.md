@@ -20,9 +20,15 @@ Les textures ont été recompressées (JPEG qualité 72–80) pour le navigateur
 
 ## Modèles 3D
 
-| Fichier dans `public/assets/` | Origine | Usage |
+| Fichier | Origine | Usage |
 |---|---|---|
-| `models/hassid.glb` | Modèle généré avec Sculptly, fourni par Samuel (octobre 2026) | Modèle de **tous** les hassids : avatar du joueur et tous les PNJ |
+| `public/models/hasidic_man_v6_brasSym.glb` | Personnage généré avec **Meshy AI** par Samuel sous **abonnement payant** (27/10/2026), à partir d'une image de référence elle-même générée par IA (pas de photo d'une personne réelle). Retouché dans Blender (poids, matériaux, textures, animations Idle_11 / Walking / Quick_Walk / Running) puis bras gauche reconstruit en miroir du bras droit | Modèle de **tous** les hassids : avatar du joueur et tous les PNJ |
+| `public/models/hasidic_man_v6.glb` | Même personnage, avant la reconstruction du bras gauche | Retour arrière (`?avatar=v6`) |
+| `public/assets/models/hassid.glb` | Modèle généré avec Sculptly, fourni par Samuel (octobre 2026), anonymisé | Retour arrière (`?avatar=ancien`, `?pnj=ancien`) |
+
+Meshy : d'après les conditions publiées par Meshy (FAQ et page des tarifs, consultées le 28/10/2026), les modèles créés avec un abonnement payant appartiennent à l'utilisateur et peuvent être utilisés commercialement, sous réserve que les éléments sources ne portent pas atteinte aux droits de tiers. Les justificatifs à conserver (abonnement, génération, image de référence) sont listés dans `docs/DROITS-PERSONNAGE-V6.md`. Les poses assise et de balancement sont calculées dans le code (`src/player/posesV6.ts`) : aucune animation supplémentaire n'a été générée.
+
+Sculptly :
 
 Le modèle d'origine portait le visage photographique d'une personne réelle. Il a été **anonymisé** avant publication avec `tools/anonymiser-glb.py` : visage en aplat de peau sans traits et relief lissé, barbe, cheveux et chapeau en aplat sombre, fragments de photo inutilisés effacés, texture réduite à 1024 px. Puis allégé avec glTF-Transform (`weld`, `simplify`) : environ 13 000 triangles, 0,6 Mo. Le fichier d'origine n'est pas versionné. Conditions d'utilisation de Sculptly : à vérifier par Samuel pour une diffusion publique.
 

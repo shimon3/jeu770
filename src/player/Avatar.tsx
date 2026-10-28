@@ -3,9 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { AvatarModele } from './AvatarModele'
 
-// Tous les hassids (joueur et PNJ) utilisent le modèle 3D fourni par Samuel,
-// anonymisé (AvatarModele.tsx). L'avatar procédural ci-dessous (low-poly, SANS
-// visage réaliste) ne sert plus que pendant le chargement du modèle.
+// Modèle Sculptly anonymisé (AvatarModele.tsx) : retour arrière des hassids
+// (?avatar=ancien, ?pnj=ancien) et affichage pendant le chargement du
+// personnage v6 (player/AvatarV6.tsx, npc/PnjV6.tsx). L'avatar procédural
+// ci-dessous (low-poly, SANS visage réaliste) ne sert que pendant le
+// chargement du modèle Sculptly.
 // Origine du modèle : entre les pieds. Avant du modèle : +z.
 
 export type EtatAnim = 'repos' | 'marche' | 'course' | 'escalier' | 'assis' | 'saut' | 'balancement'
