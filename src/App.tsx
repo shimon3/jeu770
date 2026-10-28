@@ -121,7 +121,12 @@ export default function App() {
         // Sans verrouillage du pointeur, Échap arrive jusqu'ici
         if (st.panneau) st.set({ panneau: null })
         else if (st.pause) reprendre()
-        else st.set({ pause: true })
+        else {
+          st.set({ pause: true })
+          // Si le pointeur est encore verrouillé, les clics iraient au canvas
+          // et non aux boutons du menu
+          if (document.pointerLockElement) document.exitPointerLock()
+        }
         return
       }
       if (e.code === 'F3') {
