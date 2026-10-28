@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
-import { Avatar, type Anim, type EtatAnim } from '../player/Avatar'
+import type { Anim, EtatAnim } from '../player/Avatar'
+import { CorpsPnj } from './CorpsPnj'
 import { useInteractif } from '../world/interaction'
 import { useGame } from '../state/store'
 import { t } from '../i18n'
@@ -115,7 +116,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
         </RigidBody>
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
-        <Avatar anim={anim} peau={peau} barbe={barbe} />
+        <CorpsPnj anim={anim} peau={peau} barbe={barbe} />
       </group>
     </>
   )

@@ -18,6 +18,10 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
 - La place du Rebbe dans le grand Zal et le fauteuil de son bureau restent VIDES.
   Aucun PNJ ne s'y assoit ni ne s'en approche dans ses déplacements.
 - Les PNJ sont des hassidim anonymes et génériques, sans visage réaliste.
+  Exception décidée par Samuel le 28/10/2026 : les PNJ qui utilisent le modèle
+  `hasidic_man_v6_brasSym.glb` peuvent avoir son visage réaliste (personnage
+  générique généré, sans ressemblance voulue avec une personne réelle). Les
+  autres règles ci-dessus restent entières.
 - Ne jamais générer ni télécharger d'image du Rebbe, même comme placeholder.
   Une photo de référence qui le montre est supprimée de references/ et ignorée.
 - Si une tâche semble exiger de contourner cette règle : s'arrêter et demander.

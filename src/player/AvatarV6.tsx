@@ -65,7 +65,7 @@ function clipPour(
 // n'expose pas ce paramètre : on le pose sur la texture WebGL une fois envoyée,
 // et on le repose si Three.js en crée une nouvelle (contexte WebGL perdu puis
 // restauré, changement de réglages de la texture).
-function usePlafondMipmaps(scene: THREE.Object3D, plafond: number | null) {
+export function usePlafondMipmaps(scene: THREE.Object3D, plafond: number | null) {
   const gl = useThree((s) => s.gl)
   const cartes = useMemo(() => {
     const s = new Set<THREE.Texture>()

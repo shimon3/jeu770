@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { CapsuleCollider, RigidBody } from '@react-three/rapier'
-import { Avatar, type Anim } from '../player/Avatar'
+import type { Anim } from '../player/Avatar'
+import { CorpsPnj } from './CorpsPnj'
 import { useInteractif } from '../world/interaction'
 import { useGame } from '../state/store'
 import { t } from '../i18n'
@@ -31,7 +32,7 @@ export function PnjImmobile({ id, position, rotationY, peau = '#c99878', barbe =
         <CapsuleCollider args={[0.55, 0.3]} />
       </RigidBody>
       <group position={position} rotation={[0, rotationY, 0]}>
-        <Avatar anim={anim} peau={peau} barbe={barbe} />
+        <CorpsPnj anim={anim} peau={peau} barbe={barbe} />
       </group>
     </>
   )
