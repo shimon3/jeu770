@@ -36,6 +36,7 @@ export function Joueur() {
   const corps = useRef<RapierRigidBody>(null)
   const avatar = useRef<THREE.Group>(null)
   const anim = useRef<Anim>({ etat: 'repos', vitesse: 0 })
+  const choixAvatar = avatarChoisi()
   const { world, rapier } = useRapier()
   const camera = useThree((s) => s.camera)
   const gl = useThree((s) => s.gl)
@@ -278,7 +279,7 @@ export function Joueur() {
       <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={depart.position} enabledRotations={[false, false, false]}>
         <CapsuleCollider args={[DEMI, RAYON]} />
       </RigidBody>
-      <group ref={avatar}>{avatarChoisi() === 'v6' ? <AvatarV6 anim={anim} /> : <Avatar anim={anim} />}</group>
+      <group ref={avatar}>{choixAvatar === 'ancien' ? <Avatar anim={anim} /> : <AvatarV6 anim={anim} choix={choixAvatar} />}</group>
     </>
   )
 }
