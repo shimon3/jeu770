@@ -1,9 +1,15 @@
 import { Suspense, useEffect, useMemo, useRef, type MutableRefObject } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { Avatar, type Anim, type EtatAnim } from './Avatar'
-import { URL_AVATAR_V6, VITESSE_NATURELLE } from '../config/avatar'
+import {
+  URL_AVATAR_V6,
+  VITESSE_NATURELLE,
+  SEUIL_VERS_COURSE,
+  SEUIL_VERS_MARCHE_RAPIDE,
+  plafondMipmapChoisi,
+} from '../config/avatar'
 
 // Avatar du joueur : personnage Hasidic_Man_v6 (GLB skinné, 4 animations).
 // Origine : entre les pieds. Avant du modèle : +z (comme Avatar.tsx).
@@ -13,29 +19,75 @@ import { URL_AVATAR_V6, VITESSE_NATURELLE } from '../config/avatar'
 type Clip = 'Idle_11' | 'Walking' | 'Quick_Walk' | 'Running'
 
 const FONDU = 0.25
-// En dessous de cette vitesse (joystick peu incliné), marche lente
-const SEUIL_MARCHE_LENTE = 1.8
+// Joueur transmet la vitesse nominale : au-dessus, la course est demandée
+// (Maj ou joystick à fond), même si la vitesse réelle est plus basse
+const COURSE_DEMANDEE = 3
+// La vitesse réelle est lissée : au démarrage, elle n'a pas encore rattrapé la
+// vitesse demandée. Pendant ce délai, on se fie à la vitesse demandée, et
+// Quick_Walk n'est pas choisi au début d'une course.
+const DEMARRAGE = 0.3
+// Bloqué contre un obstacle : repos plutôt que marche sur place (hystérésis)
+const BLOQUE = 0.3
+const DEBLOQUE = 0.5
 const ETATS_PROCEDURAUX: EtatAnim[] = ['assis', 'balancement']
 
-// `vReelle` : vitesse horizontale réellement parcourue (collisions et
-// accélération comprises). La vitesse de lecture suit celle-ci plutôt que la
-// vitesse demandée, sinon les pieds glissent quand le joueur est freiné.
-function clipPour(a: Anim, vReelle: number): { clip: Clip; echelle: number } {
-  const v = vReelle > 0.2 ? vReelle : a.vitesse
-  switch (a.etat) {
-    case 'course':
-      return { clip: 'Running', echelle: v / VITESSE_NATURELLE.Running }
-    case 'marche':
-    case 'escalier':
-      return a.vitesse < SEUIL_MARCHE_LENTE
-        ? { clip: 'Walking', echelle: v / VITESSE_NATURELLE.Walking }
-        : { clip: 'Quick_Walk', echelle: v / VITESSE_NATURELLE.Quick_Walk }
-    case 'saut':
-      // Pas d'animation de saut : on garde l'élan de la course, ralenti
-      return { clip: 'Running', echelle: 0.35 }
-    default:
-      return { clip: 'Idle_11', echelle: 1 }
+// `vReelle` : vitesse horizontale réellement parcourue (collisions comprises).
+// Le clip et sa vitesse de lecture la suivent plutôt que la vitesse demandée,
+// sinon les pieds glissent quand le joueur est freiné.
+// `tMouvement` et `tCourse` : durées depuis lesquelles le déplacement et la
+// course sont demandés, en secondes.
+function clipPour(
+  a: Anim,
+  vReelle: number,
+  courant: Clip | null,
+  tMouvement: number,
+  tCourse: number,
+): { clip: Clip; echelle: number } {
+  if (a.etat === 'saut') {
+    // Pas d'animation de saut : on garde l'élan de la course, ralenti
+    return { clip: 'Running', echelle: 0.35 }
   }
+  if (a.etat === 'repos' || a.vitesse === 0) return { clip: 'Idle_11', echelle: 1 }
+  const v = tMouvement < DEMARRAGE ? Math.max(vReelle, a.vitesse) : vReelle
+  if (v < (courant === 'Idle_11' ? DEBLOQUE : BLOQUE)) return { clip: 'Idle_11', echelle: 1 }
+  if (a.vitesse < COURSE_DEMANDEE) return { clip: 'Walking', echelle: v / VITESSE_NATURELLE.Walking }
+  const seuil = courant === 'Running' ? SEUIL_VERS_MARCHE_RAPIDE : SEUIL_VERS_COURSE
+  return v >= seuil || tCourse < DEMARRAGE
+    ? { clip: 'Running', echelle: v / VITESSE_NATURELLE.Running }
+    : { clip: 'Quick_Walk', echelle: v / VITESSE_NATURELLE.Quick_Walk }
+}
+
+// Plafond du niveau de mipmap des textures de couleur (paramètre WebGL2
+// standard TEXTURE_MAX_LOD, sans toucher aux shaders de Three.js). Three.js
+// n'expose pas ce paramètre : on le pose sur la texture WebGL une fois envoyée,
+// et on le repose si Three.js en crée une nouvelle (contexte WebGL perdu puis
+// restauré, changement de réglages de la texture).
+function usePlafondMipmaps(scene: THREE.Object3D, plafond: number | null) {
+  const gl = useThree((s) => s.gl)
+  const cartes = useMemo(() => {
+    const s = new Set<THREE.Texture>()
+    scene.traverse((o) => {
+      const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined
+      if ((o as THREE.Mesh).isMesh && m?.map) s.add(m.map)
+    })
+    return [...s]
+  }, [scene])
+  const posees = useRef(new WeakMap<THREE.Texture, WebGLTexture>())
+
+  useFrame(() => {
+    if (plafond === null) return
+    // Three.js n'utilise que WebGL2
+    const c = gl.getContext() as WebGL2RenderingContext
+    if (c.isContextLost()) return
+    for (const t of cartes) {
+      const tex = (gl.properties.get(t) as { __webglTexture?: WebGLTexture }).__webglTexture
+      if (!tex || posees.current.get(t) === tex) continue
+      // Liaison par l'état de Three.js pour que son cache reste exact
+      gl.state.bindTexture(c.TEXTURE_2D, tex)
+      c.texParameterf(c.TEXTURE_2D, c.TEXTURE_MAX_LOD, plafond)
+      posees.current.set(t, tex)
+    }
+  })
 }
 
 function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: MutableRefObject<THREE.Group | null> }) {
@@ -44,9 +96,13 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
   const actions = useRef<Partial<Record<Clip, THREE.AnimationAction>>>({})
   const courant = useRef<Clip | null>(null)
   const vReelle = useRef(0)
+  const tMouvement = useRef(0)
+  const tCourse = useRef(0)
   const posValide = useRef(false)
   const pos = useMemo(() => new THREE.Vector3(), [])
   const posPrec = useMemo(() => new THREE.Vector3(), [])
+  const plafond = useMemo(() => plafondMipmapChoisi(), [])
+  usePlafondMipmaps(gltf.scene, plafond)
 
   useEffect(() => {
     gltf.scene.traverse((o) => {
@@ -80,7 +136,11 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
       posPrec.copy(pos)
       posValide.current = true
     }
-    const { clip, echelle } = clipPour(anim.current, vReelle.current)
+    const a = anim.current
+    const bouge = a.etat !== 'repos' && a.vitesse > 0
+    tMouvement.current = bouge ? tMouvement.current + dt : 0
+    tCourse.current = bouge && a.vitesse >= COURSE_DEMANDEE ? tCourse.current + dt : 0
+    const { clip, echelle } = clipPour(a, vReelle.current, courant.current, tMouvement.current, tCourse.current)
     const suivante = actions.current[clip]
     if (!suivante) return
     if (courant.current !== clip) {
@@ -89,9 +149,9 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
       if (precedente) precedente.crossFadeTo(suivante, FONDU, false)
       courant.current = clip
     }
-    suivante.timeScale = THREE.MathUtils.clamp(echelle, 0.35, 1.8)
+    suivante.timeScale = THREE.MathUtils.clamp(echelle, 0.35, 2)
     mixer.update(dt)
-    // Outil de test en développement : état de l'animation
+    // Outil de test en développement : état de l'animation et du rendu
     if (import.meta.env.DEV) {
       ;(window as unknown as Record<string, unknown>).__avatarV6 = {
         clip,
@@ -100,6 +160,7 @@ function Modele({ anim, groupe }: { anim: MutableRefObject<Anim>; groupe: Mutabl
         vReelle: vReelle.current,
         etat: anim.current.etat,
         vitessesNaturelles: VITESSE_NATURELLE,
+        plafondMipmap: plafond,
       }
     }
   })
