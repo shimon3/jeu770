@@ -73,6 +73,24 @@ export function fermetureBrasChoisie(choix: ChoixGlb): { gauche: number; droite:
   return FERMETURE_BRAS[choix]
 }
 
+// Corps des PNJ (dialogues, missions, trajets et collisions ne changent pas) :
+// 'v6sym'  : personnage hassidique au bras gauche en miroir, partagé par tous
+//            les PNJ (un squelette et des animations par PNJ) ;
+// 'ancien' : avatar procédural d'origine (src/player/Avatar.tsx).
+// Retour immédiat : passer PNJ_MODELE à 'ancien', ou ?pnj=ancien dans l'adresse.
+export type ChoixPnj = 'v6sym' | 'ancien'
+export const PNJ_MODELE: ChoixPnj = 'v6sym'
+
+export function pnjModeleChoisi(): ChoixPnj {
+  try {
+    const p = new URLSearchParams(window.location.search).get('pnj')
+    if (p === 'ancien' || p === 'v6sym') return p
+  } catch {
+    // adresse illisible : réglage par défaut
+  }
+  return PNJ_MODELE
+}
+
 export function avatarChoisi(): ChoixAvatar {
   try {
     const p = new URLSearchParams(window.location.search).get('avatar')
