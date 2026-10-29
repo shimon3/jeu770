@@ -61,8 +61,9 @@ export function plafondMipmapChoisi(): number | null {
 // ?bras=origine dans l'adresse.
 export const FERMETURE_BRAS: Record<ChoixGlb, { gauche: number; droite: number } | null> = {
   v6: { gauche: 9, droite: 4 },
-  // 20° : bras presque verticaux ; à 24°, les mains entrent dans le sirtouk.
-  v6sym: { gauche: 20, droite: 20 },
+  // 12° : bras proches du corps sans coller au sirtouk. Le balancement des
+  // clips de marche et de course est réduit dans player/animationsV6.ts.
+  v6sym: { gauche: 12, droite: 12 },
 }
 
 export function fermetureBrasChoisie(choix: ChoixGlb): { gauche: number; droite: number } | null {

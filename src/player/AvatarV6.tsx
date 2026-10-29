@@ -4,6 +4,7 @@ import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { Avatar, type Anim } from './Avatar'
 import { creerPosesV6 } from './posesV6'
+import { adoucirAnimationsBras, AMPLITUDE_BALANCEMENT_BRAS } from './animationsV6'
 import {
   URL_AVATAR,
   type ChoixGlb,
@@ -173,6 +174,7 @@ function Modele({
 }) {
   const gltf = useGLTF(URL_AVATAR[choix])
   const mixer = useMemo(() => new THREE.AnimationMixer(gltf.scene), [gltf.scene])
+  const animations = useMemo(() => adoucirAnimationsBras(gltf.animations), [gltf.animations])
   const actions = useRef<Partial<Record<Clip, THREE.AnimationAction>>>({})
   const courant = useRef<Clip | null>(null)
   const vReelle = useRef(0)
@@ -206,14 +208,14 @@ function Modele({
         m.frustumCulled = false
       }
     })
-    for (const c of gltf.animations) actions.current[c.name as Clip] = mixer.clipAction(c)
+    for (const c of animations.clips) actions.current[c.name as Clip] = mixer.clipAction(c)
     return () => {
       mixer.stopAllAction()
       mixer.uncacheRoot(gltf.scene)
       actions.current = {}
       courant.current = null
     }
-  }, [gltf, mixer])
+  }, [animations, gltf.scene, mixer])
 
   useFrame((_, dtBrut) => {
     const dt = Math.min(dtBrut, 0.05)
@@ -259,6 +261,8 @@ function Modele({
         vitessesNaturelles: VITESSE_NATURELLE,
         plafondMipmap: plafond,
         brasFermes: bras.length,
+        amplitudeBalancementBras: AMPLITUDE_BALANCEMENT_BRAS,
+        pistesBrasAdoucies: animations.pistesBrasAdoucies,
         modele: choix,
       }
     }

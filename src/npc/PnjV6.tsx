@@ -7,6 +7,7 @@ import type { Anim } from '../player/Avatar'
 import { fermerBras, preparerBras, rouvrirBras, usePlafondMipmaps } from '../player/AvatarV6'
 import { URL_AVATAR, VITESSE_NATURELLE, fermetureBrasChoisie, plafondMipmapChoisi } from '../config/avatar'
 import { creerPosesV6 } from '../player/posesV6'
+import { adoucirAnimationsBras } from '../player/animationsV6'
 
 // Corps d'un PNJ avec le personnage hassidique v6 (bras gauche en miroir).
 // Le GLB est chargé une fois : chaque PNJ en reçoit un clone qui partage le
@@ -18,7 +19,7 @@ import { creerPosesV6 } from '../player/posesV6'
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
 
-type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null; brasFermes: number }
+type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null; brasFermes: number; pistesBrasAdoucies: number }
 
 function diagnostics(): Map<string, DiagnosticPnj> | null {
   if (!import.meta.env.DEV) return null
@@ -44,6 +45,7 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   usePlafondMipmaps(racine, plafondMipmapChoisi())
 
   const mixer = useMemo(() => new THREE.AnimationMixer(racine), [racine])
+  const animations = useMemo(() => adoucirAnimationsBras(gltf.animations), [gltf.animations])
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
   const courant = useRef<string | null>(null)
   const t = useRef(Math.random() * 10)
@@ -55,20 +57,20 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   useEffect(() => {
     // Actions créées ici (et non dans un useMemo) : compatible avec le double
     // montage de StrictMode, qui vide le cache du mixer au démontage
-    actions.current = Object.fromEntries(gltf.animations.map((c) => [c.name, mixer.clipAction(c)]))
+    actions.current = Object.fromEntries(animations.clips.map((c) => [c.name, mixer.clipAction(c)]))
     return () => {
       mixer.stopAllAction()
       mixer.uncacheRoot(racine)
       actions.current = {}
       courant.current = null
     }
-  }, [gltf.animations, mixer, racine])
+  }, [animations, mixer, racine])
 
   useEffect(() => {
     const d = diagnostics()
-    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null, brasFermes: bras.length })
+    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null, brasFermes: bras.length, pistesBrasAdoucies: animations.pistesBrasAdoucies })
     return () => void d?.delete(id)
-  }, [anim, bras.length, id])
+  }, [anim, animations.pistesBrasAdoucies, bras.length, id])
 
   useEffect(() => () => poses.retablir(), [poses])
   useEffect(() => () => rouvrirBras(bras), [bras])
@@ -100,7 +102,7 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
     mixer.update(dt)
     fermerBras(bras)
     poses.appliquer(etat, t.current)
-    diagnostics()?.set(id, { etat, vitesse, clip: courant.current, brasFermes: bras.length })
+    diagnostics()?.set(id, { etat, vitesse, clip: courant.current, brasFermes: bras.length, pistesBrasAdoucies: animations.pistesBrasAdoucies })
   })
 
   return <primitive object={racine} />
