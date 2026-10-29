@@ -56,17 +56,25 @@ export function plafondMipmapChoisi(): number | null {
 // symétrique. Le bras droit reste moins fermé : au-delà, la manche traverse le
 // sirtouk (mesuré). Le bras gauche pivote à mi-bras dans le squelette Meshy :
 // au-delà de 9°, il paraît cassé à mi-hauteur. Sur 'v6sym', le bras gauche est
-// le miroir du droit : aucune fermeture, tel que validé en prévisualisation
-// (essayer { gauche: 4, droite: 4 } pour serrer un peu). Retour immédiat aux clips
-// d'origine : passer à null, ou ouvrir le jeu avec ?bras=origine dans l'adresse.
+// le miroir du droit : la même fermeture sûre est donc appliquée aux deux bras.
+// Retour immédiat aux clips d'origine : passer à null, ou ouvrir le jeu avec
+// ?bras=origine dans l'adresse.
 export const FERMETURE_BRAS: Record<ChoixGlb, { gauche: number; droite: number } | null> = {
   v6: { gauche: 9, droite: 4 },
-  v6sym: null,
+  // 20° : bras presque verticaux ; à 24°, les mains entrent dans le sirtouk.
+  v6sym: { gauche: 20, droite: 20 },
 }
 
 export function fermetureBrasChoisie(choix: ChoixGlb): { gauche: number; droite: number } | null {
   try {
-    if (new URLSearchParams(window.location.search).get('bras') === 'origine') return null
+    const valeur = new URLSearchParams(window.location.search).get('bras')
+    if (valeur === 'origine') return null
+    // Outil de calibration visuelle : ?bras=12 applique le même angle aux
+    // deux bras, sans recompilation. Borné pour éviter une rotation aberrante.
+    if (valeur !== null && valeur.trim() !== '') {
+      const angle = Number(valeur)
+      if (Number.isFinite(angle) && angle >= 0 && angle <= 24) return { gauche: angle, droite: angle }
+    }
   } catch {
     // adresse illisible : réglage par défaut
   }

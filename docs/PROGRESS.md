@@ -13,6 +13,8 @@
   matériaux et textures partagés ; dialogues, missions, collisions et trajets
   conservés.
 - Poses assise et balancement appliquées au squelette par `posesV6.ts`.
+- Bras gauche et droit fermés symétriquement à 20° après chaque image
+  d'animation : ils restent presque verticaux au repos, en marche et en course.
 - Retour arrière immédiat avec `?avatar=v6`, `?avatar=ancien` et
   `?pnj=ancien`.
 - Les pauses des PNJ marcheurs suivent maintenant le temps réel quand le rendu

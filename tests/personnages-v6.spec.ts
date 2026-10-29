@@ -3,8 +3,8 @@ import { test, expect, type Page } from '@playwright/test'
 declare global {
   interface Window {
     __770: any
-    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number }
-    __pnjV6?: Map<string, { etat: string; vitesse: number; clip: string | null }>
+    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number; brasFermes: number }
+    __pnjV6?: Map<string, { etat: string; vitesse: number; clip: string | null; brasFermes: number }>
   }
 }
 
@@ -19,7 +19,7 @@ async function demarrer(page: Page, recherche = '') {
 }
 
 test.describe('Personnages hassidiques v6', () => {
-  test.skip(({ isMobile }) => isMobile, 'un contrÃ´le PC suffit')
+  test.skip(({ isMobile }) => isMobile, 'un contrôle PC suffit')
 
   test('le joueur utilise v6sym et anime repos, marche et course', async ({ page }) => {
     await demarrer(page)
@@ -30,6 +30,7 @@ test.describe('Personnages hassidiques v6', () => {
 
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.modele)).toBe('v6sym')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip)).toBe('Idle_11')
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.brasFermes)).toBe(2)
 
     await page.keyboard.down('KeyW')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Walking')
@@ -43,7 +44,7 @@ test.describe('Personnages hassidiques v6', () => {
     await page.keyboard.up('ShiftLeft')
   })
 
-  test('les 13 PNJ utilisent v6sym avec des animations indÃ©pendantes', async ({ page }) => {
+  test('les 13 PNJ utilisent v6sym avec des animations indépendantes', async ({ page }) => {
     await demarrer(page)
     await page.evaluate(() => {
       window.__770.teleporter(22.1, -2.5, -6)
@@ -51,6 +52,7 @@ test.describe('Personnages hassidiques v6', () => {
     })
 
     await expect.poll(() => page.evaluate(() => window.__pnjV6?.size ?? 0), { timeout: 30_000 }).toBe(13)
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.brasFermes === 2))).toBe(true)
     const ids = await page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].sort())
     expect(ids).toEqual([
       'pnj-assis-1',
@@ -75,7 +77,7 @@ test.describe('Personnages hassidiques v6', () => {
     ).not.toEqual([])
   })
 
-  test('les paramÃ¨tres de retour arriÃ¨re conservent les anciens personnages', async ({ page }) => {
+  test('les paramètres de retour arrière conservent les anciens personnages', async ({ page }) => {
     await demarrer(page, '?avatar=ancien&pnj=ancien')
     await page.waitForTimeout(1000)
     expect(await page.evaluate(() => window.__avatarV6)).toBeUndefined()

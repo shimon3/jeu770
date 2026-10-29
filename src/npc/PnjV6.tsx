@@ -4,8 +4,8 @@ import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
-import { usePlafondMipmaps } from '../player/AvatarV6'
-import { URL_AVATAR, VITESSE_NATURELLE, plafondMipmapChoisi } from '../config/avatar'
+import { fermerBras, preparerBras, rouvrirBras, usePlafondMipmaps } from '../player/AvatarV6'
+import { URL_AVATAR, VITESSE_NATURELLE, fermetureBrasChoisie, plafondMipmapChoisi } from '../config/avatar'
 import { creerPosesV6 } from '../player/posesV6'
 
 // Corps d'un PNJ avec le personnage hassidique v6 (bras gauche en miroir).
@@ -18,7 +18,7 @@ import { creerPosesV6 } from '../player/posesV6'
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
 
-type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null }
+type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null; brasFermes: number }
 
 function diagnostics(): Map<string, DiagnosticPnj> | null {
   if (!import.meta.env.DEV) return null
@@ -50,6 +50,7 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   const ombreReglee = useRef(false)
 
   const poses = useMemo(() => creerPosesV6(sk), [sk])
+  const bras = useMemo(() => preparerBras(racine, fermetureBrasChoisie('v6sym')), [racine])
 
   useEffect(() => {
     // Actions créées ici (et non dans un useMemo) : compatible avec le double
@@ -65,11 +66,12 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
 
   useEffect(() => {
     const d = diagnostics()
-    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null })
+    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null, brasFermes: bras.length })
     return () => void d?.delete(id)
-  }, [anim, id])
+  }, [anim, bras.length, id])
 
   useEffect(() => () => poses.retablir(), [poses])
+  useEffect(() => () => rouvrirBras(bras), [bras])
 
   useFrame((_, dtBrut) => {
     const dt = Math.min(dtBrut, 0.05)
@@ -94,9 +96,11 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
     }
     if (suivante) suivante.timeScale = clip === 'Walking' ? THREE.MathUtils.clamp(vitesse / VITESSE_NATURELLE.Walking, 0.35, 2) : 1
     poses.retablir()
+    rouvrirBras(bras)
     mixer.update(dt)
+    fermerBras(bras)
     poses.appliquer(etat, t.current)
-    diagnostics()?.set(id, { etat, vitesse, clip: courant.current })
+    diagnostics()?.set(id, { etat, vitesse, clip: courant.current, brasFermes: bras.length })
   })
 
   return <primitive object={racine} />

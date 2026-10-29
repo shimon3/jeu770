@@ -101,7 +101,7 @@ export function usePlafondMipmaps(scene: THREE.Object3D, plafond: number | null)
 // chaque mise à jour du mixer, sinon le décalage s'accumulerait.
 const EPAULE_VIRTUELLE = { x: 0.215, y: 1.3, z: -0.09 } // espace du maillage au repos, en m
 
-type BrasPrepare = {
+export type BrasPrepare = {
   os: THREE.Bone
   pivot: THREE.Vector3
   rotation: THREE.Quaternion
@@ -110,7 +110,7 @@ type BrasPrepare = {
   ferme: boolean
 }
 
-function preparerBras(scene: THREE.Object3D, fermeture: { gauche: number; droite: number } | null): BrasPrepare[] {
+export function preparerBras(scene: THREE.Object3D, fermeture: { gauche: number; droite: number } | null): BrasPrepare[] {
   if (!fermeture) return []
   let sk: THREE.SkinnedMesh | undefined
   scene.traverse((o) => {
@@ -143,7 +143,7 @@ function preparerBras(scene: THREE.Object3D, fermeture: { gauche: number; droite
   return res
 }
 
-function fermerBras(bras: BrasPrepare[]) {
+export function fermerBras(bras: BrasPrepare[]) {
   for (const b of bras) {
     b.position0.copy(b.os.position)
     b.quaternion0.copy(b.os.quaternion)
@@ -153,7 +153,7 @@ function fermerBras(bras: BrasPrepare[]) {
   }
 }
 
-function rouvrirBras(bras: BrasPrepare[]) {
+export function rouvrirBras(bras: BrasPrepare[]) {
   for (const b of bras) {
     if (!b.ferme) continue
     b.os.position.copy(b.position0)
