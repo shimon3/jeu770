@@ -14,7 +14,8 @@ export type AnimationsV6Adoucies = {
   pistesMainsCourseFixees: number
 }
 
-const cache = new WeakMap<THREE.AnimationClip[], AnimationsV6Adoucies>()
+const cacheComplet = new WeakMap<THREE.AnimationClip[], AnimationsV6Adoucies>()
+const cacheCourseSource = new WeakMap<THREE.AnimationClip[], AnimationsV6Adoucies>()
 
 function estPisteAvantBras(piste: THREE.KeyframeTrack) {
   return /(?:Left|Right)ForeArm\.(?:quaternion|position)$/.test(piste.name)
@@ -48,7 +49,8 @@ function moyennePosition(piste: THREE.KeyframeTrack) {
   return somme.multiplyScalar(1 / Math.max(1, n))
 }
 
-export function adoucirAnimationsBras(animations: THREE.AnimationClip[]): AnimationsV6Adoucies {
+export function adoucirAnimationsBras(animations: THREE.AnimationClip[], courseCorrigeeSource = false): AnimationsV6Adoucies {
+  const cache = courseCorrigeeSource ? cacheCourseSource : cacheComplet
   const existant = cache.get(animations)
   if (existant) return existant
 
@@ -63,6 +65,9 @@ export function adoucirAnimationsBras(animations: THREE.AnimationClip[]): Animat
   let pistesMainsCourseFixees = 0
   const clips = animations.map((source) => {
     if (source.name === 'Idle_11') return source
+    // Le GLB dédié au joueur contient déjà sa course corrigée : aucune
+    // compensation React/Three n'est ajoutée par-dessus ce clip.
+    if (source.name === 'Running' && courseCorrigeeSource) return source
     const clip = source.clone()
     for (const piste of clip.tracks) {
       const avantBras = estPisteAvantBras(piste)

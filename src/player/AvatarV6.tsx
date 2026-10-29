@@ -7,6 +7,7 @@ import { creerPosesV6 } from './posesV6'
 import { adoucirAnimationsBras, AMPLITUDE_BALANCEMENT_BRAS } from './animationsV6'
 import {
   URL_AVATAR,
+  URL_AVATAR_JOUEUR_V6SYM,
   type ChoixGlb,
   VITESSE_NATURELLE,
   SEUIL_VERS_COURSE,
@@ -172,9 +173,14 @@ function Modele({
   groupe: MutableRefObject<THREE.Group | null>
   choix: ChoixGlb
 }) {
-  const gltf = useGLTF(URL_AVATAR[choix])
+  const courseCorrigeeSource = choix === 'v6sym'
+  const url = courseCorrigeeSource ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choix]
+  const gltf = useGLTF(url)
   const mixer = useMemo(() => new THREE.AnimationMixer(gltf.scene), [gltf.scene])
-  const animations = useMemo(() => adoucirAnimationsBras(gltf.animations), [gltf.animations])
+  const animations = useMemo(
+    () => adoucirAnimationsBras(gltf.animations, courseCorrigeeSource),
+    [courseCorrigeeSource, gltf.animations],
+  )
   const actions = useRef<Partial<Record<Clip, THREE.AnimationAction>>>({})
   const courant = useRef<Clip | null>(null)
   const vReelle = useRef(0)
@@ -264,6 +270,8 @@ function Modele({
         amplitudeBalancementBras: AMPLITUDE_BALANCEMENT_BRAS,
         pistesBrasAdoucies: animations.pistesBrasAdoucies,
         pistesMainsCourseFixees: animations.pistesMainsCourseFixees,
+        courseCorrigeeSource,
+        source: url,
         modele: choix,
       }
     }
@@ -287,4 +295,6 @@ export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>;
 
 // Préchargement du seul GLB choisi
 const choixInitial = avatarChoisi()
-if (choixInitial !== 'ancien') useGLTF.preload(URL_AVATAR[choixInitial])
+if (choixInitial !== 'ancien') {
+  useGLTF.preload(choixInitial === 'v6sym' ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choixInitial])
+}

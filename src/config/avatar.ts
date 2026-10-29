@@ -16,6 +16,11 @@ export const URL_AVATAR: Record<ChoixGlb, string> = {
   v6sym: '/models/hasidic_man_v6_brasSym.glb',
 }
 
+// Variante dédiée au joueur. Le maillage, le rig, les matériaux et les trois
+// autres clips sont identiques à v6sym ; seules quatre courbes de rotation du
+// clip Running (deux bras, deux mains) sont corrigées à la source.
+export const URL_AVATAR_JOUEUR_V6SYM = '/models/hasidic_man_v6_player.glb'
+
 // Vitesse au sol des pieds de chaque animation à vitesse de lecture 1, en m/s.
 // Mesurée dans Blender sur Hasidic_Man_v6 (pied au contact du sol).
 // Sert à caler la vitesse de lecture sur la vitesse de déplacement pour

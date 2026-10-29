@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test'
 declare global {
   interface Window {
     __770: any
-    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number; brasFermes: number; amplitudeBalancementBras: number; pistesBrasAdoucies: number; pistesMainsCourseFixees: number }
+    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number; brasFermes: number; amplitudeBalancementBras: number; pistesBrasAdoucies: number; pistesMainsCourseFixees: number; courseCorrigeeSource: boolean; source: string }
     __pnjV6?: Map<string, { etat: string; vitesse: number; clip: string | null; brasFermes: number; pistesBrasAdoucies: number; pistesMainsCourseFixees: number }>
   }
 }
@@ -32,19 +32,18 @@ test.describe('Personnages hassidiques v6', () => {
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip)).toBe('Idle_11')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.brasFermes)).toBe(2)
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.amplitudeBalancementBras)).toBe(0.3)
-    await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesBrasAdoucies)).toBe(12)
-    await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesMainsCourseFixees)).toBe(2)
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesBrasAdoucies)).toBe(8)
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesMainsCourseFixees)).toBe(0)
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.courseCorrigeeSource)).toBe(true)
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.source)).toBe('/models/hasidic_man_v6_player.glb')
 
     await page.keyboard.down('KeyW')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Walking')
-    await page.keyboard.up('KeyW')
-    await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Idle_11')
-
     await page.keyboard.down('ShiftLeft')
-    await page.keyboard.down('KeyW')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Running')
     await page.keyboard.up('KeyW')
     await page.keyboard.up('ShiftLeft')
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Idle_11')
   })
 
   test('les 13 PNJ utilisent v6sym avec des animations indépendantes', async ({ page }) => {
