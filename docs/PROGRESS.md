@@ -17,6 +17,8 @@
   d'animation : ils restent proches du corps sans coller au sirtouk.
 - Balancement des avant-bras réduit à 30 % dans les clips de marche, marche
   rapide et course, sans modifier les jambes, le bassin ni le torse.
+- En course, les positions des deux mains restent verrouillées sur les
+  poignets afin qu'elles ne paraissent jamais détachées des avant-bras.
 - Retour arrière immédiat avec `?avatar=v6`, `?avatar=ancien` et
   `?pnj=ancien`.
 - Les pauses des PNJ marcheurs suivent maintenant le temps réel quand le rendu

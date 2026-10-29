@@ -263,6 +263,7 @@ function Modele({
         brasFermes: bras.length,
         amplitudeBalancementBras: AMPLITUDE_BALANCEMENT_BRAS,
         pistesBrasAdoucies: animations.pistesBrasAdoucies,
+        pistesMainsCourseFixees: animations.pistesMainsCourseFixees,
         modele: choix,
       }
     }

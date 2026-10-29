@@ -19,7 +19,14 @@ import { adoucirAnimationsBras } from '../player/animationsV6'
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
 
-type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null; brasFermes: number; pistesBrasAdoucies: number }
+type DiagnosticPnj = {
+  etat: Anim['etat']
+  vitesse: number
+  clip: string | null
+  brasFermes: number
+  pistesBrasAdoucies: number
+  pistesMainsCourseFixees: number
+}
 
 function diagnostics(): Map<string, DiagnosticPnj> | null {
   if (!import.meta.env.DEV) return null
@@ -68,9 +75,16 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
 
   useEffect(() => {
     const d = diagnostics()
-    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null, brasFermes: bras.length, pistesBrasAdoucies: animations.pistesBrasAdoucies })
+    d?.set(id, {
+      etat: anim.current.etat,
+      vitesse: anim.current.vitesse,
+      clip: null,
+      brasFermes: bras.length,
+      pistesBrasAdoucies: animations.pistesBrasAdoucies,
+      pistesMainsCourseFixees: animations.pistesMainsCourseFixees,
+    })
     return () => void d?.delete(id)
-  }, [anim, animations.pistesBrasAdoucies, bras.length, id])
+  }, [anim, animations.pistesBrasAdoucies, animations.pistesMainsCourseFixees, bras.length, id])
 
   useEffect(() => () => poses.retablir(), [poses])
   useEffect(() => () => rouvrirBras(bras), [bras])
@@ -102,7 +116,14 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
     mixer.update(dt)
     fermerBras(bras)
     poses.appliquer(etat, t.current)
-    diagnostics()?.set(id, { etat, vitesse, clip: courant.current, brasFermes: bras.length, pistesBrasAdoucies: animations.pistesBrasAdoucies })
+    diagnostics()?.set(id, {
+      etat,
+      vitesse,
+      clip: courant.current,
+      brasFermes: bras.length,
+      pistesBrasAdoucies: animations.pistesBrasAdoucies,
+      pistesMainsCourseFixees: animations.pistesMainsCourseFixees,
+    })
   })
 
   return <primitive object={racine} />

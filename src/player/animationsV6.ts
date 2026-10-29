@@ -2,19 +2,26 @@ import * as THREE from 'three'
 
 // Les clips Meshy font balancer les bras beaucoup trop loin du corps. On
 // conserve 30 % du mouvement original des avant-bras : assez pour que la
-// marche reste vivante, sans grands arcs artificiels. Les jambes, le bassin,
-// le torse et les mains ne sont pas modifiés.
+// marche reste vivante, sans grands arcs artificiels. Les jambes, le bassin
+// et le torse ne sont pas modifiés. Pendant la course uniquement, les
+// translations des mains sont verrouillées sur leur point d'attache au
+// poignet pour éviter qu'elles paraissent décollées des avant-bras.
 export const AMPLITUDE_BALANCEMENT_BRAS = 0.3
 
 export type AnimationsV6Adoucies = {
   clips: THREE.AnimationClip[]
   pistesBrasAdoucies: number
+  pistesMainsCourseFixees: number
 }
 
 const cache = new WeakMap<THREE.AnimationClip[], AnimationsV6Adoucies>()
 
 function estPisteAvantBras(piste: THREE.KeyframeTrack) {
   return /(?:Left|Right)ForeArm\.(?:quaternion|position)$/.test(piste.name)
+}
+
+function estPositionMain(piste: THREE.KeyframeTrack) {
+  return /(?:Left|Right)Hand\.position$/.test(piste.name)
 }
 
 function moyenneQuaternion(piste: THREE.KeyframeTrack) {
@@ -48,19 +55,25 @@ export function adoucirAnimationsBras(animations: THREE.AnimationClip[]): Animat
   const repos = animations.find((clip) => clip.name === 'Idle_11')
   const references = new Map<string, THREE.Quaternion | THREE.Vector3>()
   for (const piste of repos?.tracks ?? []) {
-    if (!estPisteAvantBras(piste)) continue
+    if (!estPisteAvantBras(piste) && !estPositionMain(piste)) continue
     references.set(piste.name, piste.name.endsWith('.quaternion') ? moyenneQuaternion(piste) : moyennePosition(piste))
   }
 
   let pistesBrasAdoucies = 0
+  let pistesMainsCourseFixees = 0
   const clips = animations.map((source) => {
     if (source.name === 'Idle_11') return source
     const clip = source.clone()
     for (const piste of clip.tracks) {
-      if (!estPisteAvantBras(piste)) continue
+      const avantBras = estPisteAvantBras(piste)
+      const mainEnCourse = source.name === 'Running' && estPositionMain(piste)
+      if (!avantBras && !mainEnCourse) continue
       const reference = references.get(piste.name)
       if (!reference) continue
-      if (reference instanceof THREE.Quaternion && piste.name.endsWith('.quaternion')) {
+      if (mainEnCourse && reference instanceof THREE.Vector3) {
+        for (let i = 0; i < piste.values.length; i += 3) reference.toArray(piste.values, i)
+        pistesMainsCourseFixees++
+      } else if (reference instanceof THREE.Quaternion && piste.name.endsWith('.quaternion')) {
         const animee = new THREE.Quaternion()
         for (let i = 0; i < piste.values.length; i += 4) {
           animee.fromArray(piste.values, i)
@@ -73,12 +86,12 @@ export function adoucirAnimationsBras(animations: THREE.AnimationClip[]): Animat
           reference.clone().lerp(animee, AMPLITUDE_BALANCEMENT_BRAS).toArray(piste.values, i)
         }
       } else continue
-      pistesBrasAdoucies++
+      if (avantBras) pistesBrasAdoucies++
     }
     return clip
   })
 
-  const resultat = { clips, pistesBrasAdoucies }
+  const resultat = { clips, pistesBrasAdoucies, pistesMainsCourseFixees }
   cache.set(animations, resultat)
   return resultat
 }

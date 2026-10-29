@@ -3,8 +3,8 @@ import { test, expect, type Page } from '@playwright/test'
 declare global {
   interface Window {
     __770: any
-    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number; brasFermes: number; amplitudeBalancementBras: number; pistesBrasAdoucies: number }
-    __pnjV6?: Map<string, { etat: string; vitesse: number; clip: string | null; brasFermes: number; pistesBrasAdoucies: number }>
+    __avatarV6?: { clip: string; modele: string; etat: string; echelle: number; brasFermes: number; amplitudeBalancementBras: number; pistesBrasAdoucies: number; pistesMainsCourseFixees: number }
+    __pnjV6?: Map<string, { etat: string; vitesse: number; clip: string | null; brasFermes: number; pistesBrasAdoucies: number; pistesMainsCourseFixees: number }>
   }
 }
 
@@ -33,6 +33,7 @@ test.describe('Personnages hassidiques v6', () => {
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.brasFermes)).toBe(2)
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.amplitudeBalancementBras)).toBe(0.3)
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesBrasAdoucies)).toBe(12)
+    await expect.poll(() => page.evaluate(() => window.__avatarV6?.pistesMainsCourseFixees)).toBe(2)
 
     await page.keyboard.down('KeyW')
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Walking')
@@ -56,6 +57,7 @@ test.describe('Personnages hassidiques v6', () => {
     await expect.poll(() => page.evaluate(() => window.__pnjV6?.size ?? 0), { timeout: 30_000 }).toBe(13)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.brasFermes === 2))).toBe(true)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesBrasAdoucies === 12))).toBe(true)
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesMainsCourseFixees === 2))).toBe(true)
     const ids = await page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].sort())
     expect(ids).toEqual([
       'pnj-assis-1',
