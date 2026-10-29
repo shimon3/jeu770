@@ -32,7 +32,7 @@ export function PnjImmobile({ id, position, rotationY, peau = '#c99878', barbe =
         <CapsuleCollider args={[0.55, 0.3]} />
       </RigidBody>
       <group position={position} rotation={[0, rotationY, 0]}>
-        <CorpsPnj anim={anim} peau={peau} barbe={barbe} />
+        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} />
       </group>
     </>
   )

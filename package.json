@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test:mobile": "playwright test"
+    "test:mobile": "playwright test",
+    "test:personnages": "playwright test tests/personnages-v6.spec.ts --project=pc-1280x720"
   },
   "dependencies": {
     "@fontsource/heebo": "^5.2.0",

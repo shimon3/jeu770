@@ -8,12 +8,12 @@ import { pnjModeleChoisi } from '../config/avatar'
 // et avec ?pnj=ancien, c'est l'avatar procédural d'origine qui s'affiche.
 const CHOIX = pnjModeleChoisi()
 
-export function CorpsPnj({ anim, peau, barbe }: { anim: MutableRefObject<Anim>; peau?: string; barbe?: string }) {
+export function CorpsPnj({ id, anim, peau, barbe }: { id: string; anim: MutableRefObject<Anim>; peau?: string; barbe?: string }) {
   const ancien = <Avatar anim={anim} peau={peau} barbe={barbe} />
   if (CHOIX === 'ancien') return ancien
   return (
     <Suspense fallback={ancien}>
-      <PnjV6 anim={anim} />
+      <PnjV6 id={id} anim={anim} />
     </Suspense>
   )
 }

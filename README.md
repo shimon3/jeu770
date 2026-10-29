@@ -2,7 +2,9 @@
 
 Jeu 3D jouable dans le navigateur, dans et autour du 770 Eastern Parkway (Brooklyn). React + TypeScript + Vite, Three.js via React Three Fiber, physique Rapier.
 
-État actuel : **phase 1** (rue, façade, hall, escalier, une mission). Détail dans `docs/PROGRESS.md`, sources dans `docs/REGISTRE.md`.
+État actuel : rue et façade, maison du Rabbi, Grand Zal souterrain, missions,
+commandes mobiles et personnages 3D animés. Détail dans `docs/PROGRESS.md`,
+sources dans `docs/REGISTRE.md`.
 
 ## Installation sous Windows
 
@@ -24,10 +26,25 @@ npm run dev
 | `npm run dev` | Serveur de développement avec rechargement à chaud |
 | `npm run build` | Vérification TypeScript puis build optimisé dans `dist/` |
 | `npm run preview` | Sert le contenu de `dist/` en local |
+| `npm run test:personnages` | Vérifie le joueur 3D, les 13 PNJ et les retours arrière |
+| `npm run test:mobile` | Suite Playwright complète, mobile et PC |
 
 ## Touches
 
 ZQSD / WASD / flèches : se déplacer · Souris : caméra (cliquer dans la scène pour la capturer) · Molette : zoom · Maj : courir · Espace : sauter · E : interagir · V : 1re / 3e personne · J : journal · M : plan · P : programme · Échap : menu.
+
+## Personnages 3D
+
+Le joueur et les 13 PNJ utilisent par défaut
+`public/models/hasidic_man_v6_brasSym.glb`. Les animations de repos, marche,
+marche rapide et course viennent du GLB ; les poses assise et de balancement
+sont appliquées au squelette dans le code.
+
+Retours arrière disponibles sans recompilation :
+
+- `?avatar=v6` : version antérieure du GLB ;
+- `?avatar=ancien` : ancien avatar du joueur ;
+- `?pnj=ancien` : anciens corps des PNJ.
 
 ## Données éditables
 
@@ -69,7 +86,8 @@ src/
   ui/         accueil, HUD, menu, panneaux
   i18n/       fr.json, he.json
   audio/      ambiance procédurale
-public/assets/  textures et HDRI (CC0)
+public/assets/  textures, HDRI et ancien modèle de retour arrière
+public/models/  personnages GLB animés
 references/     photos de référence (jamais publiées, ignorées par git)
 docs/           BRIEF, REGISTRE, PROGRESS, REFERENCES
 ```

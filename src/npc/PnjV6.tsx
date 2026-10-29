@@ -18,7 +18,15 @@ import { creerPosesV6 } from '../player/posesV6'
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
 
-export function PnjV6({ anim }: { anim: MutableRefObject<Anim> }) {
+type DiagnosticPnj = { etat: Anim['etat']; vitesse: number; clip: string | null }
+
+function diagnostics(): Map<string, DiagnosticPnj> | null {
+  if (!import.meta.env.DEV) return null
+  const w = window as unknown as { __pnjV6?: Map<string, DiagnosticPnj> }
+  return (w.__pnjV6 ??= new Map())
+}
+
+export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }) {
   const gltf = useGLTF(URL)
   const { racine, sk } = useMemo(() => {
     const racine = clonerAvecSquelette(gltf.scene)
@@ -55,6 +63,12 @@ export function PnjV6({ anim }: { anim: MutableRefObject<Anim> }) {
     }
   }, [gltf.animations, mixer, racine])
 
+  useEffect(() => {
+    const d = diagnostics()
+    d?.set(id, { etat: anim.current.etat, vitesse: anim.current.vitesse, clip: null })
+    return () => void d?.delete(id)
+  }, [anim, id])
+
   useEffect(() => () => poses.retablir(), [poses])
 
   useFrame((_, dtBrut) => {
@@ -82,7 +96,7 @@ export function PnjV6({ anim }: { anim: MutableRefObject<Anim> }) {
     poses.retablir()
     mixer.update(dt)
     poses.appliquer(etat, t.current)
-
+    diagnostics()?.set(id, { etat, vitesse, clip: courant.current })
   })
 
   return <primitive object={racine} />

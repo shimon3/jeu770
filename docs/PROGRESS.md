@@ -1,5 +1,44 @@
 # Progression
 
+## Personnages hassidiques v6sym — intégration finalisée (29 octobre 2026)
+
+### Fait
+
+- `hasidic_man_v6_brasSym.glb` est le personnage par défaut du joueur et des
+  **13 PNJ** : deux à l'extérieur et onze dans le Grand Zal.
+- Joueur : repos, marche, marche rapide et course avec fondus ; vitesse de
+  lecture calée sur le déplacement réel ; vue première/troisième personne,
+  collisions et interactions conservées.
+- PNJ : un squelette et un mixer indépendants par personnage, avec géométrie,
+  matériaux et textures partagés ; dialogues, missions, collisions et trajets
+  conservés.
+- Poses assise et balancement appliquées au squelette par `posesV6.ts`.
+- Retour arrière immédiat avec `?avatar=v6`, `?avatar=ancien` et
+  `?pnj=ancien`.
+- Les pauses des PNJ marcheurs suivent maintenant le temps réel quand le rendu
+  est lent ; leur déplacement reste plafonné pour éviter les bonds.
+
+### Vérifié
+
+- `npm run build` : réussi sans erreur TypeScript.
+- Tests ciblés : joueur v6sym au repos, en marche et en course ; inventaire des
+  13 PNJ ; cinq PNJ assis, deux en balancement, marcheurs actifs ; retours
+  arrière joueur et PNJ. **3 tests réussis**.
+- Suite Playwright mobile/PC : **23 tests réussis, 47 ignorés selon les formats,
+  aucun échec**.
+- Contrôle visuel en 1280×720 : joueur dehors et dans le Grand Zal, PNJ debout,
+  en balancement et assis sur un banc.
+
+### Limites connues, non bloquantes
+
+- Le GLB ne contient pas de clip dédié au saut, aux escaliers, à l'assise ou
+  au balancement : saut et escaliers réutilisent les clips locomoteurs ; assise
+  et balancement sont procéduraux.
+- Le nouveau GLB utilise une texture unique : les anciennes couleurs de peau et
+  de barbe par PNJ ne s'appliquent qu'au modèle de retour arrière.
+- Les performances et sensations restent à confirmer sur un téléphone physique ;
+  les tests mobiles utilisent l'émulation tactile de Chrome.
+
 ## Phase 1 — Prototype jouable (20 octobre 2026)
 
 ### Fait et testé

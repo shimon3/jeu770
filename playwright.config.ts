@@ -13,6 +13,10 @@ const android = (width: number, height: number) => ({
     'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36',
 })
 
+// En local, permet d'utiliser Chrome dÃ©jÃ  installÃ© quand le navigateur
+// Playwright n'est pas prÃ©sent. La CI continue d'utiliser Chromium Playwright.
+const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+
 export default defineConfig({
   testDir: './tests',
   timeout: 120_000,
@@ -22,7 +26,10 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:5179',
-    launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] },
+    launchOptions: {
+      executablePath: executablePath || undefined,
+      args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+    },
   },
   webServer: {
     command: 'npx vite --port 5179 --strictPort',

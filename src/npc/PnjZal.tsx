@@ -72,10 +72,13 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
 
   useFrame((_, dtBrut) => {
     if (!route.length) return
-    const dt = Math.min(dtBrut, 0.05)
+    // Les pauses suivent le temps rÃ©el, mÃªme si SwiftShader ou un tÃ©lÃ©phone
+    // lent tombe Ã  quelques images/s. Le mouvement reste davantage plafonnÃ©
+    // pour qu'un PNJ ne traverse pas un obstacle aprÃ¨s une image trÃ¨s longue.
+    const dt = Math.min(dtBrut, 0.1)
     const e = etatRoute.current
     if (e.pause > 0) {
-      e.pause -= dt
+      e.pause -= Math.min(dtBrut, 0.5)
       anim.current = { etat: 'repos', vitesse: 0 }
       return
     }
@@ -116,7 +119,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
         </RigidBody>
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
-        <CorpsPnj anim={anim} peau={peau} barbe={barbe} />
+        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} />
       </group>
     </>
   )
