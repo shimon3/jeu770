@@ -117,3 +117,245 @@ export function textureTexte(texte: string, w = 256, h = 128, fond = '#d9cdb2', 
   g.fillText(texte, w / 2, h / 2)
   return finaliser(c)
 }
+
+// ---------------------------------------------------------------------------
+// Heichal du grand Zal (photo fournie par Samuel, 12/11/2026) : parokhet de
+// velours bordeaux « כתר תורה » (couronne, livre ouvert, deux colonnes,
+// couronne de laurier), cantonnière « יחי אדוננו… », bois marqueté.
+// La dédicace brodée (noms de défunts) n'est PAS reproduite : lignes dorées
+// décoratives à la place.
+
+const OR = '#d9b25a'
+const OR_CLAIR = '#f0d48a'
+
+function velours(g: CanvasRenderingContext2D, w: number, h: number) {
+  const d = g.createLinearGradient(0, 0, w, 0)
+  d.addColorStop(0, '#4a0a12')
+  d.addColorStop(0.5, '#741624')
+  d.addColorStop(1, '#4a0a12')
+  g.fillStyle = d
+  g.fillRect(0, 0, w, h)
+  // Plis verticaux
+  for (let x = 0; x < w; x += 22) {
+    g.fillStyle = `rgba(0,0,0,${0.06 + 0.06 * Math.sin(x * 0.11)})`
+    g.fillRect(x, 0, 9, h)
+  }
+}
+
+function etoile(g: CanvasRenderingContext2D, x: number, y: number, r: number) {
+  g.fillStyle = OR
+  g.beginPath()
+  for (let i = 0; i < 16; i++) {
+    const a = (i * Math.PI) / 8
+    const rr = i % 2 ? r * 0.45 : r
+    g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr)
+  }
+  g.closePath()
+  g.fill()
+}
+
+export function textureParokhet() {
+  const W = 512
+  const H = 768
+  const { c, g } = canvas(W, H)
+  velours(g, W, H)
+  // Galons dorés verticaux et bordure
+  g.fillStyle = OR
+  for (const x of [70, W - 76]) g.fillRect(x, 0, 6, H)
+  g.fillRect(0, H - 26, W, 10)
+  // Petites rosaces dorées sur les côtés
+  for (let y = 70; y < H - 60; y += 95) {
+    etoile(g, 36, y, 10)
+    etoile(g, W - 36, y, 10)
+  }
+  for (const [x, y] of [[120, 236], [W - 120, 236], [120, 330], [W - 120, 330], [120, 520], [W - 120, 520]]) etoile(g, x, y, 8)
+  // Couronne
+  const cx = W / 2
+  g.fillStyle = OR_CLAIR
+  g.beginPath()
+  g.moveTo(cx - 50, 175)
+  g.lineTo(cx - 58, 120)
+  g.lineTo(cx - 28, 148)
+  g.lineTo(cx, 108)
+  g.lineTo(cx + 28, 148)
+  g.lineTo(cx + 58, 120)
+  g.lineTo(cx + 50, 175)
+  g.closePath()
+  g.fill()
+  g.fillStyle = '#b8323c'
+  for (const dx of [-30, 0, 30]) {
+    g.beginPath()
+    g.arc(cx + dx, 160, 6, 0, Math.PI * 2)
+    g.fill()
+  }
+  // « כתר תורה »
+  g.fillStyle = OR
+  g.textAlign = 'center'
+  g.direction = 'rtl'
+  g.font = 'bold 54px "Frank Ruhl Libre", "Heebo", serif'
+  g.fillText('כתר         תורה', cx, 160)
+  // Deux colonnes torsadées
+  for (const x of [cx - 120, cx + 120]) {
+    g.fillStyle = OR
+    g.fillRect(x - 11, 225, 22, 230)
+    g.fillStyle = '#9a7a30'
+    for (let y = 232; y < 450; y += 20) g.fillRect(x - 11, y, 22, 5)
+    g.fillStyle = OR_CLAIR
+    g.beginPath()
+    g.arc(x, 214, 16, 0, Math.PI * 2)
+    g.fill()
+  }
+  // Livre ouvert (tables de la Torah)
+  g.fillStyle = OR_CLAIR
+  g.fillRect(cx - 62, 260, 124, 100)
+  g.strokeStyle = '#8a6a26'
+  g.lineWidth = 3
+  g.strokeRect(cx - 62, 260, 124, 100)
+  g.beginPath()
+  g.moveTo(cx, 260)
+  g.lineTo(cx, 360)
+  g.stroke()
+  g.lineWidth = 2
+  for (let y = 275; y < 352; y += 12) {
+    g.beginPath()
+    g.moveTo(cx - 54, y)
+    g.lineTo(cx - 8, y)
+    g.moveTo(cx + 8, y)
+    g.lineTo(cx + 54, y)
+    g.stroke()
+  }
+  // Volute sous le livre
+  g.strokeStyle = OR
+  g.lineWidth = 4
+  g.beginPath()
+  g.moveTo(cx - 60, 385)
+  g.bezierCurveTo(cx - 20, 405, cx + 20, 365, cx + 60, 385)
+  g.stroke()
+  // Dédicace : lignes dorées décoratives (texte non reproduit)
+  g.fillStyle = 'rgba(217,178,90,0.75)'
+  for (let i = 0; i < 6; i++) {
+    const w = 170 - Math.abs(i - 2.5) * 22
+    g.fillRect(cx - w / 2, 420 + i * 22, w, 5)
+  }
+  // Couronne de laurier
+  g.strokeStyle = OR
+  g.lineWidth = 5
+  g.beginPath()
+  g.arc(cx, 520, 120, Math.PI * 0.15, Math.PI * 0.85)
+  g.stroke()
+  g.fillStyle = '#6f8f3a'
+  for (let a = 0.2; a < 0.82; a += 0.06) {
+    for (const s of [-1, 1]) {
+      const ang = Math.PI * (0.5 + s * (a - 0.5))
+      const x = cx + Math.cos(ang) * 120
+      const y = 520 + Math.sin(ang) * 120
+      g.beginPath()
+      g.ellipse(x, y, 10, 4, ang + Math.PI / 4, 0, Math.PI * 2)
+      g.fill()
+    }
+  }
+  g.fillStyle = '#b8323c'
+  g.beginPath()
+  g.arc(cx, 642, 9, 0, Math.PI * 2)
+  g.fill()
+  return finaliser(c)
+}
+
+export function textureCantonniere() {
+  const W = 1024
+  const H = 128
+  const { c, g } = canvas(W, H)
+  velours(g, W, H)
+  g.fillStyle = OR
+  g.fillRect(0, 6, W, 5)
+  g.fillRect(0, H - 34, W, 4)
+  // Festons et frange
+  for (let x = 0; x < W; x += 64) {
+    g.beginPath()
+    g.arc(x + 32, H - 30, 32, 0, Math.PI)
+    g.fillStyle = '#5c0d18'
+    g.fill()
+  }
+  g.fillStyle = OR
+  for (let x = 0; x < W; x += 6) g.fillRect(x, H - 14, 3, 14)
+  g.textAlign = 'center'
+  g.direction = 'rtl'
+  g.font = 'bold 40px "Frank Ruhl Libre", "Heebo", serif'
+  g.fillText('יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד', W / 2, 64)
+  for (const x of [60, W - 60]) etoile(g, x, 52, 12)
+  return finaliser(c)
+}
+
+// Marqueterie en damier (bas des pilastres et du socle)
+export function textureDamier() {
+  const { c, g } = canvas(256, 256)
+  for (let y = 0; y < 8; y++)
+    for (let x = 0; x < 8; x++) {
+      g.fillStyle = (x + y) % 2 ? '#a8783e' : '#5a3218'
+      g.fillRect(x * 32, y * 32, 32, 32)
+    }
+  g.strokeStyle = '#3a2010'
+  g.lineWidth = 2
+  for (let i = 0; i <= 8; i++) {
+    g.beginPath()
+    g.moveTo(i * 32, 0)
+    g.lineTo(i * 32, 256)
+    g.moveTo(0, i * 32)
+    g.lineTo(256, i * 32)
+    g.stroke()
+  }
+  const tex = finaliser(c)
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+  return tex
+}
+
+// Rayons marquetés du fronton (« soleil » de lattes claires et foncées)
+export function textureRayons() {
+  const { c, g } = canvas(512, 256)
+  g.fillStyle = '#5a3218'
+  g.fillRect(0, 0, 512, 256)
+  for (let i = 0; i < 24; i++) {
+    const a0 = Math.PI + (i * Math.PI) / 24
+    const a1 = Math.PI + ((i + 1) * Math.PI) / 24
+    g.fillStyle = i % 2 ? '#c69a5a' : '#7a4a22'
+    g.beginPath()
+    g.moveTo(256, 256)
+    g.lineTo(256 + Math.cos(a0) * 400, 256 + Math.sin(a0) * 400)
+    g.lineTo(256 + Math.cos(a1) * 400, 256 + Math.sin(a1) * 400)
+    g.closePath()
+    g.fill()
+  }
+  return finaliser(c)
+}
+
+// Pierre angulaire de l'entrée du Zal (photo fournie par Samuel, 12/11/2026)
+export function texturePierreAngulaire() {
+  const W = 512
+  const H = 512
+  const { c, g } = canvas(W, H)
+  g.fillStyle = '#6d6a66'
+  g.fillRect(0, 0, W, H)
+  for (let i = 0; i < 5000; i++) {
+    g.fillStyle = Math.random() < 0.5 ? 'rgba(30,28,26,0.35)' : 'rgba(200,196,190,0.25)'
+    g.fillRect(Math.random() * W, Math.random() * H, 2, 2)
+  }
+  g.fillStyle = '#1c1a18'
+  g.textAlign = 'center'
+  g.direction = 'rtl'
+  g.font = 'bold 64px "Frank Ruhl Libre", "Heebo", serif'
+  g.fillText('אבן הפינה', W / 2, 110)
+  g.direction = 'ltr'
+  g.font = '44px "Inter", serif'
+  g.fillText('THE CORNERSTONE', W / 2, 175)
+  // Médaillon ovale encastré
+  g.strokeStyle = '#1c1a18'
+  g.lineWidth = 5
+  g.beginPath()
+  g.ellipse(W / 2, 340, 150, 105, 0, 0, Math.PI * 2)
+  g.stroke()
+  g.fillStyle = '#3c3936'
+  g.beginPath()
+  g.ellipse(W / 2, 345, 132, 88, 0, 0, Math.PI * 2)
+  g.fill()
+  return finaliser(c)
+}
