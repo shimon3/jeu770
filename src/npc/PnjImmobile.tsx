@@ -3,6 +3,7 @@ import { CapsuleCollider, RigidBody } from '@react-three/rapier'
 import type { Anim } from '../player/Avatar'
 import { CorpsPnj, type ModelePnj } from './CorpsPnj'
 import { gabaritPnj } from './PnjEnfant'
+import { OmbreSol } from './OmbreSol'
 import { useInteractif } from '../world/interaction'
 import { useGame } from '../state/store'
 import { t } from '../i18n'
@@ -35,6 +36,7 @@ export function PnjImmobile({ id, position, rotationY, peau = '#c99878', barbe =
       </RigidBody>
       <group position={position} rotation={[0, rotationY, 0]}>
         <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} />
+        <OmbreSol rayon={g.rayon * 1.5} />
       </group>
     </>
   )

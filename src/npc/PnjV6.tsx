@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, type MutableRefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { DIST_OMBRE_REELLE } from './OmbreSol'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
 import { fermerBras, preparerBras, rouvrirBras, usePlafondMipmaps } from '../player/AvatarV6'
@@ -18,7 +19,7 @@ import { adoucirAnimationsBras } from '../player/animationsV6'
 
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
-const DIST_OMBRE = 8
+const DIST_OMBRE = DIST_OMBRE_REELLE
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
 const POS = new THREE.Vector3()
