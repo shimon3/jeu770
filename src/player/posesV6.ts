@@ -17,6 +17,9 @@ export const ASSIS = { baisseBassin: 0.33, cuisse: -88, genou: 88, bras: -30, br
 // inclinaison 0,12 ± 0,12 rad, 2,4 rad/s, répartie sur les trois vertèbres.
 export const BALANCEMENT = { moyenne: 0.12, amplitude: 0.12, pulsation: 2.4, part: [0.4, 0.3, 0.3] }
 
+// Étude assise : balancement plus doux que debout
+export const ETUDE_ASSIS = { moyenne: 0.06, amplitude: 0.08, pulsation: 2.1 }
+
 type Os = THREE.Bone
 
 // Axe du maillage (x : gauche-droite, z : avant), exprimé dans l'espace local
@@ -29,7 +32,7 @@ function axeRepos(sk: THREE.SkinnedMesh, os: Os, axe: THREE.Vector3): THREE.Vect
   return axe.clone().applyQuaternion(q).normalize()
 }
 
-export type PosesV6 = { appliquer: (etat: EtatAnim, t: number) => void; retablir: () => void }
+export type PosesV6 = { appliquer: (etat: EtatAnim, t: number, etude?: boolean) => void; retablir: () => void }
 
 export function creerPosesV6(sk: THREE.SkinnedMesh): PosesV6 {
   const nom = (b: Os) => b.name.replace(/mixamorig:?/, '')
@@ -62,7 +65,7 @@ export function creerPosesV6(sk: THREE.SkinnedMesh): PosesV6 {
       }
       sauves.clear()
     },
-    appliquer(etat, t) {
+    appliquer(etat, t, etude = false) {
       if (etat === 'assis') {
         if (hanches) {
           sauver(hanches)
@@ -77,6 +80,11 @@ export function creerPosesV6(sk: THREE.SkinnedMesh): PosesV6 {
           tourner(b.os, avant, b.signe * ASSIS.brasVersCorps)
         }
         tourner(vertebres[0], lateral, ASSIS.buste)
+        // Étude assise (havrouta) : léger balancement du buste
+        if (etude) {
+          const a = ETUDE_ASSIS.moyenne + Math.sin(t * ETUDE_ASSIS.pulsation) * ETUDE_ASSIS.amplitude
+          vertebres.forEach((v, i) => tourner(v, lateral, THREE.MathUtils.radToDeg(a * BALANCEMENT.part[i])))
+        }
       } else if (etat === 'balancement') {
         const a = BALANCEMENT.moyenne + Math.sin(t * BALANCEMENT.pulsation) * BALANCEMENT.amplitude
         vertebres.forEach((v, i) => tourner(v, lateral, THREE.MathUtils.radToDeg(a * BALANCEMENT.part[i])))

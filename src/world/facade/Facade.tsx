@@ -416,6 +416,26 @@ function Abords() {
       pc.push({ geo: new THREE.ConeGeometry(0.45, 2.2, 8), p: [s * 2.55, yC + 1.1, 0.7], m: 'haie' })
       // Haies basses le long du muret, côté cour
       pc.push({ t: [lg - 1.2, 0.7, 0.7], p: [s * (de + 0.6 + (lg - 1.2) / 2), yC + 0.35, zMur - 0.45], m: 'haie' })
+
+      // Côtés de la cour (demande de Samuel, 12/11/2026) : le même muret et
+      // la même grille continuent jusqu'à la façade, pour fermer la pelouse
+      // 2 cm au-delà du bord de la pelouse : pas de scintillement entre les deux faces
+      const xc = s * (xL - A.murEpaisseur / 2 + 0.02)
+      const z0 = 0.25
+      const lz = zMur + A.murEpaisseur - z0
+      const zc = z0 + lz / 2
+      pc.push({ t: [A.murEpaisseur, A.murHauteur + 0.3, lz], p: [xc, (A.murHauteur - 0.3) / 2, zc], m: 'briqueMuret', col: true })
+      pc.push({ t: [A.murEpaisseur + 0.1, 0.08, lz], p: [xc, A.murHauteur + 0.04, zc], m: 'pierre' })
+      const xg = xc
+      const nz = Math.floor((zMur - z0) / 0.15)
+      for (let i = 0; i <= nz; i++) pc.push({ t: [0.02, 0.75, 0.02], p: [xg, A.murHauteur + 0.45, z0 + i * 0.15], m: 'fer', ombre: false })
+      pc.push({ t: [0.04, 0.04, zMur - z0], p: [xg, A.murHauteur + 0.82, (z0 + zMur) / 2], m: 'fer', ombre: false })
+      pc.push({ t: [0.03, 0.03, zMur - z0], p: [xg, A.murHauteur + 0.2, (z0 + zMur) / 2], m: 'fer', ombre: false })
+      // Pilier d'angle, comme ceux de l'entrée
+      const pa = s * (xL - 0.25)
+      pc.push({ t: [0.55, A.murHauteur + 0.65, 0.55], p: [pa, (A.murHauteur + 0.65) / 2 - 0.15, zm], m: 'briqueMuret', col: true })
+      pc.push({ t: [0.65, 0.1, 0.65], p: [pa, A.murHauteur + 0.55, zm], m: 'pierre' })
+      pc.push({ geo: new THREE.ConeGeometry(0.42, 0.35, 4), p: [pa, A.murHauteur + 0.77, zm], r: [0, Math.PI / 4, 0], m: 'pierre' })
     }
     return { pieces: pc, rampes: [e1.rampe, e2.rampe] }
   }, [])

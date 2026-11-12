@@ -39,7 +39,7 @@ function diagnostics(): Map<string, DiagnosticPnj> | null {
   return (w.__pnjV6 ??= new Map())
 }
 
-export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }) {
+export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRefObject<Anim>; etude?: boolean }) {
   const gltf = useGLTF(URL, '/draco/')
   const { racine, sk } = useMemo(() => {
     const racine = clonerAvecSquelette(gltf.scene)
@@ -135,7 +135,7 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
     rouvrirBras(bras)
     mixer.update(dt)
     fermerBras(bras)
-    poses.appliquer(etat, t.current)
+    poses.appliquer(etat, t.current, etude)
     diagnostics()?.set(id, {
       etat,
       vitesse,

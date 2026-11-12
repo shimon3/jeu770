@@ -164,6 +164,43 @@ export function rouvrirBras(bras: BrasPrepare[]) {
   }
 }
 
+// Course : le talon arrière remonte très haut et le pied traverse le manteau
+// sur le côté. On rapproche les genoux de leur pose de repos (jambe tendue)
+// d'une part de la flexion, proportionnellement au poids du clip Running.
+const ADOUCIR_GENOUX_COURSE = 0.65
+
+type GenouPrepare = { os: THREE.Bone; repos: THREE.Quaternion }
+
+export function preparerGenoux(scene: THREE.Object3D): GenouPrepare[] {
+  let sk: THREE.SkinnedMesh | undefined
+  scene.traverse((o) => {
+    if (!sk && (o as THREE.SkinnedMesh).isSkinnedMesh) sk = o as THREE.SkinnedMesh
+  })
+  if (!sk) return []
+  const { bones, boneInverses } = sk.skeleton
+  const nom = (b: THREE.Bone) => b.name.replace(/mixamorig:?/, '')
+  const res: GenouPrepare[] = []
+  for (const cote of ['Left', 'Right']) {
+    const i = bones.findIndex((b) => nom(b) === `${cote}Leg`)
+    const ip = i >= 0 ? bones.indexOf(bones[i].parent as THREE.Bone) : -1
+    if (i < 0 || ip < 0) continue
+    // Pose de repos locale, tirée des matrices de liaison (indépendante de l'état courant)
+    const mondeOs = boneInverses[i].clone().invert()
+    const mondeParent = boneInverses[ip].clone().invert()
+    const local = mondeParent.invert().multiply(mondeOs)
+    const repos = new THREE.Quaternion()
+    local.decompose(new THREE.Vector3(), repos, new THREE.Vector3())
+    res.push({ os: bones[i], repos })
+  }
+  return res
+}
+
+export function adoucirGenoux(genoux: GenouPrepare[], poidsCourse: number) {
+  const k = ADOUCIR_GENOUX_COURSE * poidsCourse
+  if (k <= 0) return
+  for (const g of genoux) g.os.quaternion.slerp(g.repos, k)
+}
+
 function Modele({
   anim,
   groupe,
@@ -192,6 +229,7 @@ function Modele({
   const plafond = useMemo(() => plafondMipmapChoisi(), [])
   usePlafondMipmaps(gltf.scene, plafond)
   const bras = useMemo(() => preparerBras(gltf.scene, fermetureBrasChoisie(choix)), [gltf.scene, choix])
+  const genoux = useMemo(() => preparerGenoux(gltf.scene), [gltf.scene])
   // La scène du GLB est mise en cache : la rendre telle qu'on l'a trouvée
   useEffect(() => () => rouvrirBras(bras), [bras])
   const poses = useMemo(() => {
@@ -254,6 +292,7 @@ function Modele({
     poses?.retablir()
     rouvrirBras(bras)
     mixer.update(dt)
+    adoucirGenoux(genoux, actions.current.Running?.getEffectiveWeight() ?? 0)
     fermerBras(bras)
     poses?.appliquer(a.etat, t.current)
     // Outil de test en développement : état de l'animation et du rendu
