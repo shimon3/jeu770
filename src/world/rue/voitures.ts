@@ -136,7 +136,60 @@ function pompiers(): PieceLocale[] {
   return pc
 }
 
-const MODELES = { berline: berline(), monospace: monospace(), taxi: taxi(), police: police(), pompiers: pompiers() }
+// Panneau de texte sur un flanc : boîte fine dont les faces ±z portent la
+// texture (lisible des deux côtés, quel que soit le sens du véhicule)
+function flancs(l: number, h: number, x: number, y: number, demiLargeur: number, m: Piece['m']): PieceLocale[] {
+  return [-1, 1].map((s) => ({ geo: boite(l, h, 0.02, x, y, s * (demiLargeur + 0.015)), m }))
+}
+
+// Bus « Mashiah » : bus jaune de 12 m, texte sur les flancs (aucune image)
+function busMashiah(): PieceLocale[] {
+  const L = 6
+  const pc: PieceLocale[] = [
+    { geo: extrusion([[-L, 0.45], [L, 0.45], [L + 0.05, 2.9], [L - 0.1, 3.1], [-L, 3.1]], 2.55, 0.06), m: 'jauneMashiah' },
+    { geo: boite(0.05, 1.3, 2.3, L + 0.04, 2.15, 0), m: 'vitre' },
+    { geo: boite(0.05, 0.28, 1.6, L + 0.07, 2.92, 0), m: 'phare' },
+    { geo: boite(1.0, 2.1, 0.03, L - 1.2, 1.55, 1.29), m: 'vitre' },
+    ...roues([L - 2.0, -L + 2.4], 2.2, 0.5),
+    ...flancs(8.6, 0.95, -0.9, 1.35, 1.275, 'bandeauMashiah'),
+    { geo: boite(0.2, 0.3, 2.5, L + 0.05, 0.6, 0), m: 'noir' },
+    { geo: boite(0.2, 0.3, 2.5, -L - 0.05, 0.6, 0), m: 'noir' },
+  ]
+  for (const s of [-1, 1]) {
+    pc.push({ geo: boite(10.2, 0.85, 0.03, -0.6, 2.4, s * 1.29), m: 'vitre' })
+    pc.push({ geo: boite(0.06, 0.18, 0.3, L + 0.04, 0.95, s * 0.95), m: 'phare' })
+    pc.push({ geo: boite(0.06, 0.25, 0.25, -L - 0.04, 1.0, s * 1.0), m: 'feuArriere' })
+  }
+  return pc
+}
+
+// « Mitzvah Tank » (Mivtsaim) : camping-car blanc à bande bleue, texte sur
+// les flancs (aucune image)
+function mitzvahTank(): PieceLocale[] {
+  const L = 4
+  const pc: PieceLocale[] = [
+    { geo: extrusion([[-L, 0.45], [L, 0.45], [L + 0.05, 1.35], [L - 0.6, 2.2], [L - 1.0, 3.3], [-L, 3.3]], 2.4, 0.08), m: 'blancCamping' },
+    { geo: extrusion([[L + 0.02, 1.4], [L - 0.55, 2.15], [L - 0.95, 2.15], [L - 0.95, 1.4]], 2.2, 0.03), m: 'vitre' },
+    ...roues([L - 1.4, -L + 1.6], 2.1, 0.45),
+    ...flancs(6.2, 0.95, -0.9, 2.2, 1.2, 'bandeauMivtsaim'),
+    ...habillage({ avant: L + 0.05, arriere: -L - 0.04, hFeu: 1.0, demiLargeur: 1.2, retro: [L - 0.9, 2.0] }),
+  ]
+  for (const s of [-1, 1]) pc.push({ geo: boite(7.9, 0.14, 0.02, 0, 1.25, s * 1.215), m: 'policeBleu' })
+  // Haut-parleurs sur le toit
+  pc.push({ geo: new THREE.CylinderGeometry(0.18, 0.1, 0.4, 10).rotateZ(Math.PI / 2).translate(L - 1.4, 3.5, 0.5), m: 'zinc' })
+  pc.push({ geo: new THREE.CylinderGeometry(0.18, 0.1, 0.4, 10).rotateZ(Math.PI / 2).translate(L - 1.4, 3.5, -0.5), m: 'zinc' })
+  return pc
+}
+
+const MODELES = {
+  berline: berline(),
+  monospace: monospace(),
+  taxi: taxi(),
+  police: police(),
+  pompiers: pompiers(),
+  busMashiah: busMashiah(),
+  mitzvahTank: mitzvahTank(),
+}
 export type ModeleVoiture = keyof typeof MODELES
 
 // Dimensions hors tout (longueur, hauteur, largeur), pour les collisions
@@ -146,6 +199,8 @@ export const GABARIT: Record<ModeleVoiture, [number, number, number]> = {
   police: [4.75, 1.65, 1.9],
   monospace: [5.15, 1.8, 1.95],
   pompiers: [9.7, 3.3, 2.6],
+  busMashiah: [12.1, 3.15, 2.6],
+  mitzvahTank: [8.1, 3.6, 2.45],
 }
 
 // Pose un modèle garé : y0 = niveau de la chaussée, rotY = cap (0 : avant vers +x)

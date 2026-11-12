@@ -1,7 +1,40 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import { textureLosanges, textureMouchetee, textureInscription, textureFrise } from './texturesProcedurales'
+import { textureLosanges, textureMouchetee, textureInscription, textureFrise, textureBandeau } from './texturesProcedurales'
+
+// Flancs des bus et enseignes de la rue : texte seulement (RÈGLE ABSOLUE :
+// aucun portrait ni image du Rebbe)
+const HEB = '"Heebo", "Arial Hebrew", sans-serif'
+const LAT = '"Inter", Arial, sans-serif'
+function texturesRue() {
+  return {
+    mashiah: textureBandeau([
+      { texte: 'יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד', police: `bold 70px ${HEB}` },
+      { texte: 'MOSHIACH IS COMING — BE READY!', police: `bold 64px ${LAT}`, encre: '#b0101a' },
+    ]),
+    mivtsaim: textureBandeau(
+      [
+        { texte: 'MITZVAH TANK', police: `bold 84px ${LAT}` },
+        { texte: 'מבצע תפילין · Tefillin · Shabbat Candles', police: `bold 56px ${HEB}`, encre: '#1d3f8f' },
+      ],
+      1024,
+      256,
+      '#f4f2ea',
+      '#1d3f8f',
+    ),
+    journaux: textureBandeau(
+      [
+        { texte: 'עיתונים · NEWSPAPERS', police: `bold 60px ${HEB}`, encre: '#f6f1e4' },
+        { texte: 'ייִדיש · עברית · English', police: `bold 46px ${HEB}`, encre: '#f2c200' },
+      ],
+      512,
+      160,
+      '#23405f',
+    ),
+    arretBus: textureBandeau([{ texte: 'BUS STOP', police: `bold 120px ${LAT}`, encre: '#ffffff' }], 512, 192, '#1d4fa0'),
+  }
+}
 
 // Textures CC0 de Poly Haven (voir CREDITS.md). Les UV des géométries sont
 // en mètres : `repeat = 1 / taille du motif`.
@@ -40,6 +73,7 @@ function standard(jeu: THREE.Texture[], motif: number, params: THREE.MeshStandar
 
 function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
   const vitrail = textureLosanges()
+  const rue = texturesRue()
   return {
     brique770: standard(tex.brique770, 1.0, { normalScale: new THREE.Vector2(0.8, 0.8) }),
     briqueVoisin: standard(tex.briqueVoisin, 1.4, { color: '#c9a08a' }),
@@ -89,6 +123,13 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     gyroBleu: new THREE.MeshStandardMaterial({ color: '#1838d0', emissive: '#2050ff', emissiveIntensity: 0.8, roughness: 0.3 }),
     rougePompier: new THREE.MeshStandardMaterial({ color: '#b3121b', metalness: 0.4, roughness: 0.4 }),
     feuillageFonce: new THREE.MeshStandardMaterial({ color: '#3b5a2a', roughness: 1 }),
+    jauneMashiah: new THREE.MeshStandardMaterial({ color: '#f2c200', metalness: 0.3, roughness: 0.45 }),
+    blancCamping: new THREE.MeshStandardMaterial({ color: '#f4f2ea', metalness: 0.2, roughness: 0.5 }),
+    bandeauMashiah: new THREE.MeshStandardMaterial({ map: rue.mashiah, roughness: 0.5 }),
+    bandeauMivtsaim: new THREE.MeshStandardMaterial({ map: rue.mivtsaim, roughness: 0.5 }),
+    enseigneJournaux: new THREE.MeshStandardMaterial({ map: rue.journaux, roughness: 0.6 }),
+    panneauArretBus: new THREE.MeshStandardMaterial({ map: rue.arretBus, roughness: 0.5 }),
+    verreAbri: new THREE.MeshStandardMaterial({ color: '#cfdde3', metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.3, depthWrite: false }),
   }
 }
 

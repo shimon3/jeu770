@@ -11,6 +11,7 @@ import { t } from '../../i18n'
 import { evenementMission } from '../../missions/missions'
 import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from './voitures'
 import { Circulation } from './Circulation'
+import { abriBus, kiosqueJournaux } from './mobilier'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -66,6 +67,8 @@ const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: 
   { x: 21, modele: 'berline', rotY: Math.PI, couleur: 'voiture2' },
   { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
   { x: 33, modele: 'taxi', rotY: 0, couleur: 'taxi' },
+  // Mitzvah Tank (Mivtsaim) garé devant le 770
+  { x: 0, modele: 'mitzvahTank', rotY: Math.PI, couleur: 'voiture3' },
 ]
 // Côté sud, de l'autre côté de la chaussée (décor, hors de portée du joueur)
 const STATIONNEMENT_SUD: { x: number; modele: ModeleVoiture; couleur: CouleurVoiture }[] = [
@@ -140,6 +143,11 @@ export function Rue() {
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
     for (const v of STATIONNEMENT) pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, v.couleur))
     for (const v of STATIONNEMENT_SUD) pc.push(...voitureGaree(v.modele, v.x, -0.15, Z_FIN + 7.5, Math.PI, v.couleur))
+    // Arrêts de bus des deux côtés et kiosque à journaux (bord du trottoir,
+    // hors des allées des passants z 8,0 à 10,4)
+    pc.push(...abriBus(-31, 11.2, 0))
+    pc.push(...abriBus(25, Z_FIN + 2.2, Math.PI))
+    pc.push(...kiosqueJournaux(-10.5, 11.2, 0))
     // Bancs du terre-plein (décor)
     for (const x of [-12, -3, 8]) pc.push(...banc(x, Z_TERRE + 1.0, 0))
     return pc
@@ -148,7 +156,7 @@ export function Rue() {
   return (
     <>
       <Pieces pieces={pieces} />
-      <Circulation zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} y={-A.bordure} />
+      <Circulation zContreNord={Z_CONTRE + 4.3} zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} zContreSud={Z_FIN + 10.5} y={-A.bordure} />
       <SolLointain />
       {/* Limites de la zone jouable */}
       <Invisible taille={[L, 6, 0.3]} position={[0, 3, Z_CHAUSSEE - 0.2]} />
