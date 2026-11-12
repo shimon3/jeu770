@@ -19,10 +19,10 @@ const MARGE = 5 // distance d'arrêt derrière un obstacle (m)
 type Vehicule = { modele: ModeleVoiture; couleur: CouleurVoiture; z: number; vitesse: number; x0: number; collision?: boolean }
 
 // Positions partagées pour que chacun freine derrière le précédent
-type Etat = { x: number; z: number; v: number; demi: number }
-const flotte: Etat[] = []
+export type Etat = { x: number; z: number; v: number; demi: number }
+export const flotte: Etat[] = []
 
-function devant(e: Etat, sens: number) {
+export function devant(e: Etat, sens: number) {
   let libre = Infinity
   for (const o of flotte) {
     if (o === e || Math.abs(o.z - e.z) > 1.2) continue
