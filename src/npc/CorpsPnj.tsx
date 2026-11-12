@@ -1,5 +1,5 @@
 import { Suspense, type MutableRefObject } from 'react'
-import { Avatar, type Anim } from '../player/Avatar'
+import { Avatar, AvatarProcedural, type Anim } from '../player/Avatar'
 import { PnjV6 } from './PnjV6'
 import { PnjEnfant, type ModeleLeger } from './PnjEnfant'
 import { pnjModeleChoisi } from '../config/avatar'
@@ -22,10 +22,10 @@ export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte', etude = fal
         <PnjEnfant id={id} anim={anim} modele={modele} poussette={poussette} />
       </Suspense>
     )
-  const ancien = <Avatar anim={anim} peau={peau} barbe={barbe} />
-  if (CHOIX === 'ancien') return ancien
+  if (CHOIX === 'ancien') return <Avatar anim={anim} peau={peau} barbe={barbe} />
+  // Pendant le chargement : avatar dessiné en code (aucun téléchargement)
   return (
-    <Suspense fallback={ancien}>
+    <Suspense fallback={<AvatarProcedural anim={anim} peau={peau} barbe={barbe} />}>
       <PnjV6 id={id} anim={anim} etude={etude} />
     </Suspense>
   )

@@ -7,7 +7,7 @@ import { textureLosanges, textureMouchetee, textureInscription, textureFrise } f
 // en mètres : `repeat = 1 / taille du motif`.
 const T = '/assets/textures/'
 const FICHIERS = {
-  brique770: ['red_brick_03_diff_2k.jpg', 'red_brick_03_nor_2k.jpg', 'red_brick_03_rough_2k.jpg'],
+  brique770: ['red_brick_03_diff_1k.jpg', 'red_brick_03_nor_1k.jpg', 'red_brick_03_rough_1k.jpg'],
   briqueVoisin: ['brick_wall_02_diff_1k.jpg', 'brick_wall_02_nor_1k.jpg', 'brick_wall_02_rough_1k.jpg'],
   ardoise: ['roof_slates_02_diff_1k.jpg', 'roof_slates_02_nor_1k.jpg', 'roof_slates_02_rough_1k.jpg'],
   chevrons: ['herringbone_brick_diff_1k.jpg', 'herringbone_brick_nor_1k.jpg', 'herringbone_brick_rough_1k.jpg'],

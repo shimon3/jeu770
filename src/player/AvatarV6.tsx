@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo, useRef, type MutableRefObject } from 'rea
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { Avatar, type Anim } from './Avatar'
+import { AvatarProcedural, type Anim } from './Avatar'
 import { creerPosesV6 } from './posesV6'
 import { adoucirAnimationsBras, AMPLITUDE_BALANCEMENT_BRAS } from './animationsV6'
 import {
@@ -326,7 +326,7 @@ function Modele({
 export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>; choix?: ChoixGlb }) {
   const v6 = useRef<THREE.Group | null>(null)
   return (
-    <Suspense fallback={<Avatar anim={anim} />}>
+    <Suspense fallback={<AvatarProcedural anim={anim} />}>
       <Modele anim={anim} groupe={v6} choix={choix} />
     </Suspense>
   )

@@ -30,10 +30,10 @@ const S = ZAL.sol
 
 export function GrandZal() {
   const m = useMateriauxZal()
-  // Les PNJ du Zal ne sont dessinés que lorsque le joueur est dans le Zal ou
-  // l'escalier (ils restent actifs : leurs trajets continuent)
+  // Allègement : les PNJ du Zal n'existent que lorsque le joueur est dans le
+  // Zal ou l'escalier ; ailleurs, ils ne sont ni dessinés ni calculés
   const zone = useGame((s) => s.zone)
-  const pnjVisibles = zone === 'grand-zal' || zone === 'escalier-zal' || zone === 'chaise-rabbi'
+  const pnjActifs = zone === 'grand-zal' || zone === 'escalier-zal' || zone === 'chaise-rabbi'
   return (
     <>
       <EnveloppeZal m={m} />
@@ -48,7 +48,8 @@ export function GrandZal() {
       <ObjetsMissionsZal m={m} />
 
       {/* PNJ : hassidim anonymes. Aucun ne s'approche de la place vide (npc/routines.ts). */}
-      <group visible={pnjVisibles}>
+      {pnjActifs && (
+      <group>
       {/* Immobile seulement pour parler : le joueur peut lui adresser la parole */}
       <PnjZal id="pnj-entree-interieur" position={[28.5, S, -2.7]} rotationY={-Math.PI / 2} />
       <PnjZal id="pnj-zal" position={[5.0, S, -24.0]} rotationY={Math.PI * 0.85} nomCle="zal.pnjNom" peau="#d2a07f" barbe="#3a2a1e" />
@@ -102,6 +103,7 @@ export function GrandZal() {
         </>
       )}
       </group>
+      )}
     </>
   )
 }

@@ -23,7 +23,8 @@ test.describe('PNJ enfants, fille et femme', () => {
   test('les 15 PNJ légers se chargent et s\'animent (repos et marche)', async ({ page }) => {
     await demarrer(page)
     await page.evaluate(() => {
-      window.__770.teleporter(-8, 0.9, 9)
+      // Dans le Zal : ses PNJ n'existent que là ; ceux de la rue restent actifs
+      window.__770.teleporter(22.1, -2.5, -6)
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
     await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(15)

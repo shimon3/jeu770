@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { PerformanceMonitor } from '@react-three/drei'
+import { useQualite } from './config/qualite'
 import * as THREE from 'three'
 import { Monde } from './world/Monde'
 import { Accueil } from './ui/Accueil'
@@ -147,6 +149,8 @@ export default function App() {
     return () => window.removeEventListener('keydown', touche)
   }, [reprendre])
 
+  const dpr = useQualite((q) => q.dpr)
+  const qualite = useQualite.getState()
   return (
     <>
       <div
@@ -158,7 +162,7 @@ export default function App() {
       >
         <Canvas
           shadows
-          dpr={[1, 1.25]}
+          dpr={dpr}
           gl={{ antialias: true, powerPreference: 'high-performance' }}
           camera={{ fov: 62, near: 0.05, far: 400, position: [0, 3, 16] }}
           onCreated={({ gl }) => {
@@ -166,6 +170,14 @@ export default function App() {
             gl.toneMappingExposure = 1.0
           }}
         >
+          {/* Qualité automatique : sous 40 images/s, résolution et ombres baissent */}
+          <PerformanceMonitor
+            bounds={(r) => (r > 90 ? [55, 90] : [40, 58])}
+            flipflops={4}
+            onDecline={qualite.baisser}
+            onIncline={qualite.monter}
+            onFallback={qualite.minimum}
+          />
           <Monde cle={cle} />
         </Canvas>
       </div>
