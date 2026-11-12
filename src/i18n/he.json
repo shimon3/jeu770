@@ -67,6 +67,8 @@
   "action.porteVerrouillee": "דלת סגורה",
   "action.asseoir": "לשבת",
   "action.parler": "לדבר",
+  "action.conduire": "לנהוג ברכב",
+  "conduite.aide": "W A S D לנהיגה, E לרדת",
   "message.porteAntichambre": "דלת זו מובילה למסדרון ולחדר ההמתנה. מקומות אלה ייפתחו בשלב הבא.",
   "message.porteFermee": "הדלת סגורה.",
   "message.leverDebout": "לחצו E או מקש תנועה כדי לקום.",
