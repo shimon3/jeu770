@@ -13,10 +13,10 @@ export const DIST_OMBRE_REELLE = 8
 // vers le bord) : pas de texture (l'ancienne texture canvas restait invisible)
 function disque() {
   const anneaux = [
-    [0, 0.85],
-    [0.25, 0.75],
-    [0.5, 0.5],
-    [0.75, 0.2],
+    [0, 0.95],
+    [0.25, 0.85],
+    [0.5, 0.6],
+    [0.75, 0.25],
     [1, 0],
   ]
   const seg = 24
@@ -69,7 +69,7 @@ export function OmbreSol({ rayon = 0.45 }: { rayon?: number }) {
     // retour de Samuel 12/11) : resserrée sous les pieds quand l'ombre solaire
     // réelle existe aussi (près de la caméra, en surface), large sinon
     const pres = POS.y >= -1 && POS.distanceTo(camera.position) < DIST_OMBRE_REELLE
-    const k = pres ? 0.85 : 1
+    const k = 1
     o.scale.set(base.current * k, 1, base.current * k)
   })
   return <mesh ref={m} geometry={geo} material={mat} position={[0, 0.03, 0]} scale={[rayon * 2, 1, rayon * 2]} renderOrder={-1} />

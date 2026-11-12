@@ -161,7 +161,7 @@ function Soleil() {
       shadow-camera-near={1}
       shadow-camera-far={120}
       shadow-bias={-0.0004}
-      shadow-normalBias={0.03}
+      shadow-normalBias={0.008}
     />
   )
 }
