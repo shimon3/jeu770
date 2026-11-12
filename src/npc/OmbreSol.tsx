@@ -9,27 +9,46 @@ import * as THREE from 'three'
 
 export const DIST_OMBRE_REELLE = 8
 
-function texture() {
-  const c = document.createElement('canvas')
-  c.width = c.height = 64
-  const g = c.getContext('2d')!
-  const d = g.createRadialGradient(32, 32, 0, 32, 32, 32)
-  d.addColorStop(0, 'rgba(0,0,0,0.55)')
-  d.addColorStop(0.6, 'rgba(0,0,0,0.25)')
-  d.addColorStop(1, 'rgba(0,0,0,0)')
-  g.fillStyle = d
-  g.fillRect(0, 0, 64, 64)
-  const t = new THREE.CanvasTexture(c)
-  t.colorSpace = THREE.SRGBColorSpace
-  return t
+// Disque dégradé en couleurs de sommets (noir, alpha décroissant du centre
+// vers le bord) : pas de texture (l'ancienne texture canvas restait invisible)
+function disque() {
+  const anneaux = [
+    [0, 0.85],
+    [0.25, 0.75],
+    [0.5, 0.5],
+    [0.75, 0.2],
+    [1, 0],
+  ]
+  const seg = 24
+  const pos: number[] = []
+  const col: number[] = []
+  const idx: number[] = []
+  pos.push(0, 0, 0)
+  col.push(0, 0, 0, anneaux[0][1])
+  for (let r = 1; r < anneaux.length; r++)
+    for (let i = 0; i < seg; i++) {
+      const a = (i / seg) * Math.PI * 2
+      pos.push(Math.cos(a) * anneaux[r][0] * 0.5, 0, Math.sin(a) * anneaux[r][0] * 0.5)
+      col.push(0, 0, 0, anneaux[r][1])
+    }
+  const v = (r: number, i: number) => (r === 0 ? 0 : 1 + (r - 1) * seg + (i % seg))
+  for (let r = 0; r < anneaux.length - 1; r++)
+    for (let i = 0; i < seg; i++) {
+      if (r === 0) idx.push(0, v(1, i + 1), v(1, i))
+      else idx.push(v(r, i), v(r, i + 1), v(r + 1, i), v(r, i + 1), v(r + 1, i + 1), v(r + 1, i))
+    }
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4))
+  g.setIndex(idx)
+  return g
 }
 
-let partage: { geo: THREE.PlaneGeometry; mat: THREE.MeshBasicMaterial } | null = null
+let partage: { geo: THREE.BufferGeometry; mat: THREE.MeshBasicMaterial } | null = null
 function ressources() {
   if (!partage) {
-    const geo = new THREE.PlaneGeometry(1, 1)
-    geo.rotateX(-Math.PI / 2)
-    const mat = new THREE.MeshBasicMaterial({ map: texture(), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 })
+    const geo = disque()
+    const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -8 })
     partage = { geo, mat }
   }
   return partage
@@ -39,13 +58,19 @@ const POS = new THREE.Vector3()
 
 export function OmbreSol({ rayon = 0.45 }: { rayon?: number }) {
   const m = useRef<THREE.Mesh>(null)
+  const base = useRef(rayon * 2)
+  base.current = rayon * 2
   const { geo, mat } = ressources()
   useFrame(({ camera }) => {
     const o = m.current
     if (!o) return
     o.getWorldPosition(POS)
-    // Sous terre (Grand Zal), pas d'ombre solaire : l'ombre ronde reste toujours
-    o.visible = POS.y < -1 || POS.distanceTo(camera.position) >= DIST_OMBRE_REELLE
+    // Ombre de contact toujours présente (sans elle, les PNJ semblent flotter,
+    // retour de Samuel 12/11) : resserrée sous les pieds quand l'ombre solaire
+    // réelle existe aussi (près de la caméra, en surface), large sinon
+    const pres = POS.y >= -1 && POS.distanceTo(camera.position) < DIST_OMBRE_REELLE
+    const k = pres ? 0.85 : 1
+    o.scale.set(base.current * k, 1, base.current * k)
   })
-  return <mesh ref={m} geometry={geo} material={mat} position={[0, 0.02, 0]} scale={[rayon * 2, 1, rayon * 2]} renderOrder={-1} />
+  return <mesh ref={m} geometry={geo} material={mat} position={[0, 0.03, 0]} scale={[rayon * 2, 1, rayon * 2]} renderOrder={-1} />
 }

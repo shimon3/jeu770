@@ -4,6 +4,7 @@ import { CuboidCollider, RigidBody, type RapierRigidBody } from '@react-three/ra
 import * as THREE from 'three'
 import { useMateriaux } from '../materiaux'
 import { CorpsPnj, type ModelePnj } from '../../npc/CorpsPnj'
+import { OmbreSol } from '../../npc/OmbreSol'
 import type { Anim } from '../../player/Avatar'
 import { devant, flotte, type Etat } from './Circulation'
 import { GABARIT, PORTE_BUS, geometriesParMateriau } from './voitures'
@@ -174,6 +175,7 @@ function Voyageur({ id, rang, ligne, modele, attente, porte }: { id: string; ran
   return (
     <group ref={groupe} position={[attente[0], 0, attente[1]]}>
       <CorpsPnj id={id} anim={anim} modele={modele} />
+      <OmbreSol rayon={0.4} />
     </group>
   )
 }
