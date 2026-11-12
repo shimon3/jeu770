@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, type MutableRefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { DIST_OMBRE_REELLE } from './OmbreSol'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
 import { VITESSE_NATURELLE } from '../config/avatar'
@@ -26,7 +27,7 @@ const URLS: Record<ModeleLeger, string> = {
 const DECODEUR_DRACO = '/draco/'
 const FONDU = 0.3
 const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0 }
-const DIST_OMBRE = 8
+const DIST_OMBRE = DIST_OMBRE_REELLE
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
 const POS = new THREE.Vector3()
