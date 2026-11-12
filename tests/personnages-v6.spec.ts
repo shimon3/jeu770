@@ -86,7 +86,8 @@ test.describe('Personnages hassidiques v6', () => {
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].filter((p) => p.etat === 'balancement').length)).toBe(2)
     await expect.poll(
       () => page.evaluate(() => [...(window.__pnjV6?.entries() ?? [])].filter(([, p]) => p.etat === 'marche' && p.clip === 'Walking').map(([id]) => id)),
-      { timeout: 10_000 },
+      // 38 PNJ adultes en rendu logiciel (SwiftShader) : images lentes, marge large
+      { timeout: 30_000 },
     ).not.toEqual([])
   })
 
