@@ -9,6 +9,8 @@ export const conduite = {
   z: 0,
   cap: 0, // 0 : avant vers +x
   vitesse: 0,
+  // Véhicule conduit (id de VoitureConduite) : berline ou Mitzvah Tank
+  vehicule: null as string | null,
   // Où poser le joueur en descendant (lu une fois par Joueur.tsx)
   sortie: null as [number, number, number] | null,
 }

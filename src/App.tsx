@@ -4,6 +4,7 @@ import { PerformanceMonitor } from '@react-three/drei'
 import { useQualite } from './config/qualite'
 import * as THREE from 'three'
 import { Monde } from './world/Monde'
+import { ChronoMission } from './missions/MissionTank'
 import { Accueil } from './ui/Accueil'
 import { Hud } from './ui/Hud'
 import { Menu } from './ui/Menu'
@@ -182,6 +183,7 @@ export default function App() {
         </Canvas>
       </div>
       <Hud verrouille={verrouille} />
+      <ChronoMission />
       <ControlesTactiles />
       <Panneaux />
       <Menu onReprendre={reprendre} onLangue={changerLangue} onAccueil={accueil} />

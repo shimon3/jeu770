@@ -8,6 +8,7 @@ import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 import { joystick, toucheAction, touche } from '../../player/entrees'
 import { conduite, FILTRE_VOITURE } from './conduite'
+import { evenementMission } from '../../missions/missions'
 import { GABARIT, geometriesParMateriau, type CouleurVoiture, type ModeleVoiture } from './voitures'
 
 // Voiture que le joueur peut prendre (E) pour se promener : ZQSD/WASD ou
@@ -26,9 +27,9 @@ const LIMITES = { x: 56, z0: 12.4, z1: 44.6 }
 const q = new THREE.Quaternion()
 const axeY = new THREE.Vector3(0, 1, 0)
 
-type Props = { modele: ModeleVoiture; couleur: CouleurVoiture; x: number; z: number; y: number; cap: number }
+type Props = { id?: string; modele: ModeleVoiture; couleur: CouleurVoiture; x: number; z: number; y: number; cap: number }
 
-export function VoitureConduite({ modele, couleur, x, z, y, cap }: Props) {
+export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z, y, cap }: Props) {
   const mats = useMateriaux()
   const geos = useMemo(() => geometriesParMateriau(modele, couleur), [modele, couleur])
   const [l, h, w] = GABARIT[modele]
@@ -43,17 +44,29 @@ export function VoitureConduite({ modele, couleur, x, z, y, cap }: Props) {
     const c = world.createCharacterController(0.03)
     c.setSlideEnabled(true)
     ctrlRef.current = c
-    conduite.x = x
-    conduite.y = y
-    conduite.z = z
-    conduite.cap = cap
-    if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__conduite = conduite
+    if (import.meta.env.DEV) {
+      const w = window as unknown as Record<string, unknown>
+      w.__conduite = conduite
+      // Outil de test : déplacer ce véhicule (et sa caisse de collision)
+      const v = ((w.__vehicules as Record<string, (x: number, z: number) => void>) ??= {})
+      v[id] = (nx: number, nz: number) => {
+        corps.current?.setTranslation({ x: nx, y: corps.current.translation().y, z: nz }, true)
+        if (conduite.vehicule === id) {
+          conduite.x = nx
+          conduite.z = nz
+        }
+        if (groupe.current) groupe.current.position.set(nx, groupe.current.position.y, nz)
+      }
+    }
     return () => {
       ctrlRef.current = null
       world.removeCharacterController(c)
-      conduite.active = false
+      if (conduite.vehicule === id) {
+        conduite.active = false
+        conduite.vehicule = null
+      }
     }
-  }, [world, x, y, z, cap])
+  }, [world, id])
 
   const sortir = () => {
     const c = conduite.cap
@@ -62,22 +75,30 @@ export function VoitureConduite({ modele, couleur, x, z, y, cap }: Props) {
     const sz = THREE.MathUtils.clamp(conduite.z - Math.cos(c) * 1.7, 12.6, 24.4)
     conduite.sortie = [sx, 0.2, sz]
     conduite.active = false
+    conduite.vehicule = null
     conduite.vitesse = 0
     setGaree({ x: conduite.x, z: conduite.z, y: conduite.y, cap: conduite.cap })
     setActive(false)
   }
 
   useInteractif(
-    'voiture-conduite',
+    id,
     [garee.x, garee.y + 1, garee.z],
     active ? 0 : 3.2,
     () => t('action.conduire'),
     () => {
       if (conduite.active) return
       conduite.active = true
+      conduite.vehicule = id
+      conduite.x = garee.x
+      conduite.y = garee.y
+      conduite.z = garee.z
+      conduite.cap = garee.cap
       conduite.vitesse = 0
       setActive(true)
       useGame.getState().notifier('conduite.aide')
+      // Monter dans ce véhicule peut faire avancer une mission (Mitzvah Tank)
+      evenementMission('interagir', id)
     },
   )
 
@@ -94,7 +115,7 @@ export function VoitureConduite({ modele, couleur, x, z, y, cap }: Props) {
   useFrame((_, dtBrut) => {
     const rb = corps.current
     const ctrl = ctrlRef.current
-    if (!rb || !ctrl || !conduite.active) return
+    if (!rb || !ctrl || !conduite.active || conduite.vehicule !== id) return
     const dt = Math.min(dtBrut, 0.05)
     const st = useGame.getState()
     const bloque = st.pause || st.panneau !== null
@@ -127,9 +148,13 @@ export function VoitureConduite({ modele, couleur, x, z, y, cap }: Props) {
     const horiz = Math.hypot(voulu.x, voulu.z)
     if (horiz > 0.01 && Math.hypot(m.x, m.z) < horiz * 0.4) v *= 0.5
     conduite.vitesse = v
+    // Fluidité : la position de la voiture est intégrée ici, image par image,
+    // et non relue dans le moteur physique (pas fixe de 1/60 s) : relire
+    // rb.translation() ajoutait deux fois le même déplacement quand l'écran
+    // n'a pas le même rythme que la physique (saccades, aller-retour)
     const p = rb.translation()
-    conduite.x = THREE.MathUtils.clamp(p.x + m.x, -LIMITES.x, LIMITES.x)
-    conduite.z = THREE.MathUtils.clamp(p.z + m.z, LIMITES.z0, LIMITES.z1)
+    conduite.x = THREE.MathUtils.clamp(conduite.x + m.x, -LIMITES.x, LIMITES.x)
+    conduite.z = THREE.MathUtils.clamp(conduite.z + m.z, LIMITES.z0, LIMITES.z1)
     rb.setNextKinematicTranslation({ x: conduite.x, y: p.y, z: conduite.z })
     rb.setNextKinematicRotation(q.setFromAxisAngle(axeY, conduite.cap))
     if (groupe.current) {

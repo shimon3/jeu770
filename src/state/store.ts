@@ -59,7 +59,9 @@ let notifId = 0
 
 // Sur le trottoir, entre le 770 et 784-788 : on voit la porte du 770 à gauche
 // et l'escalier du grand Zal à droite
-export const DEPART_PAR_DEFAUT = { position: [7.8, 1.0, 10.8] as Vector3Tuple, yaw: 0 }
+// Départ sur le trottoir, face au 770 ; décalé (12/11/2026) pour que le poteau
+// des panneaux directionnels (8,6 ; 8,0) ne soit plus droit devant
+export const DEPART_PAR_DEFAUT = { position: [7.0, 1.0, 10.5] as Vector3Tuple, yaw: 0 }
 
 export const useGame = create<GameState>((set, get) => ({
   ecran: 'accueil',

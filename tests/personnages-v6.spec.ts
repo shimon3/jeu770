@@ -46,14 +46,14 @@ test.describe('Personnages hassidiques v6', () => {
     await expect.poll(() => page.evaluate(() => window.__avatarV6?.clip), { timeout: 10_000 }).toBe('Idle_11')
   })
 
-  test('les 38 PNJ adultes utilisent v6sym avec des animations indépendantes', async ({ page }) => {
+  test('les 39 PNJ adultes utilisent v6sym avec des animations indépendantes', async ({ page }) => {
     await demarrer(page)
     await page.evaluate(() => {
       window.__770.teleporter(22.1, -2.5, -6)
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
 
-    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length), { timeout: 30_000 }).toBe(38)
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length), { timeout: 30_000 }).toBe(39)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.brasFermes === 2))).toBe(true)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesBrasAdoucies === 12))).toBe(true)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesMainsCourseFixees === 2))).toBe(true)
@@ -78,6 +78,7 @@ test.describe('Personnages hassidiques v6', () => {
         'pnj-etudiant',
         'pnj-marcheur-1',
         'pnj-marcheur-2',
+        'pnj-mivtsaim',
         'pnj-trottoir',
         'pnj-zal',
         ...etude,

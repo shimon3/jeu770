@@ -498,3 +498,33 @@ html.mode-tactile .hud-fermer {
     top: calc(var(--sh) + 60px);
   }
 }
+
+/* Chrono de la mission « Mitzvah Tank » : en haut au centre, lisible */
+.chrono-mission {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 16px 8px;
+  border-radius: 12px;
+  background: rgba(20, 20, 24, 0.72);
+  color: #fff;
+  text-align: center;
+  pointer-events: none;
+  z-index: 20;
+}
+.chrono-titre {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffd23a;
+}
+.chrono-temps {
+  font-size: 30px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.chrono-distance {
+  font-size: 13px;
+  opacity: 0.9;
+}

@@ -171,5 +171,21 @@
   "tactile.saut": "Saut",
   "message.bureauFerme": "Le bureau du Rebbe est fermé. On peut en apercevoir l'intérieur par sa fenêtre, depuis la rue.",
   "zone.chaise-rabbi": "Pièce de la chaise du Rabbi",
-  "zal.chaiseTexte": "La chaise du Rabbi, conservée vide dans une petite pièce boisée, avec son tapis et son pupitre. Personne ne s'y assoit. L'emplacement de cette pièce dans le jeu est une reconstitution artistique."
+  "zal.chaiseTexte": "La chaise du Rabbi, conservée vide dans une petite pièce boisée, avec son tapis et son pupitre. Personne ne s'y assoit. L'emplacement de cette pièce dans le jeu est une reconstitution artistique.",
+  "mission.mitzvah-tank.titre": "Mitzvah Tank",
+  "mission.mitzvah-tank.description": "Le responsable des mivtsaïm vous confie le Mitzvah Tank : trois arrêts, cinq minutes, des tefilines pour chaque passant.",
+  "mission.mitzvah-tank.e1": "Monter dans le Mitzvah Tank (garé devant le 770)",
+  "mission.mitzvah-tank.e2": "Arrêt 1 : s'arrêter dans la colonne lumineuse, contre-allée à gauche",
+  "mission.mitzvah-tank.e3": "Arrêt 2 : rejoindre la colonne lumineuse sur la grande avenue, à droite",
+  "mission.mitzvah-tank.e4": "Arrêt 3 : rejoindre la colonne lumineuse sur la grande avenue, à gauche",
+  "mission.mitzvah-tank.e5": "Ramener le Mitzvah Tank devant le 770",
+  "mission.mitzvah-tank.debut": "Le Mitzvah Tank est prêt ! Monte dedans, fais trois arrêts et propose les tefilines aux passants. Tu as cinq minutes, vas-y !",
+  "mission.mitzvah-tank.rappel": "Le Mitzvah Tank t'attend devant le 770. Suis les colonnes lumineuses, le chrono tourne !",
+  "mission.mitzvah-tank.fin": "Trois Juifs ont mis les tefilines grâce à toi. Yasher koach !",
+  "mivtsaim.nom": "Le responsable des mivtsaïm",
+  "mivtsaim.repos": "Chaque mitsva compte !",
+  "mivtsaim.tefilines": "Un passant a mis les tefilines !",
+  "mivtsaim.echec": "Temps écoulé ! Retourne voir le responsable des mivtsaïm pour réessayer.",
+  "mivtsaim.chrono": "Temps restant",
+  "mivtsaim.distance": "Prochain arrêt : {m} m"
 }

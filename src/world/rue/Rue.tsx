@@ -73,8 +73,6 @@ const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: 
   { x: 21, modele: 'berline', rotY: Math.PI, couleur: 'voiture2' },
   { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
   { x: 33, modele: 'taxi', rotY: 0, couleur: 'taxi' },
-  // Mitzvah Tank (Mivtsaim) garé devant le 770
-  { x: 5, modele: 'mitzvahTank', rotY: Math.PI, couleur: 'voiture3' },
 ]
 // Côté sud, de l'autre côté de la chaussée (décor, hors de portée du joueur)
 const STATIONNEMENT_SUD: { x: number; modele: ModeleVoiture; couleur: CouleurVoiture }[] = [
@@ -199,6 +197,8 @@ export function Rue() {
       />
       {/* Voiture à prendre (E) pour se promener */}
       <VoitureConduite modele="berline" couleur="voiture2" x={-9} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={0} />
+      {/* Mitzvah Tank garé devant le 770 : conduisible (mission « Mitzvah Tank ») */}
+      <VoitureConduite id="mitzvah-tank" modele="mitzvahTank" couleur="voiture3" x={5} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={Math.PI} />
       {/* Collisions des voitures garées (toutes parallèles à la rue) */}
       {STATIONNEMENT.map((v) => {
         const [l, h, w] = GABARIT[v.modele]

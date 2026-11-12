@@ -26,6 +26,7 @@ function SignalMondePret() {
   return null
 }
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
+import { MissionTank } from '../missions/MissionTank'
 import * as THREE from 'three'
 
 const PNJ_LEGERS = pnjLegersActifs()
@@ -157,6 +158,7 @@ export function Monde({ cle }: { cle: number }) {
             <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             {PNJ_LEGERS && <FamillesRue />}
+            <MissionTank />
             <Joueur key={cle} />
             <SignalMondePret />
           </Physics>

@@ -123,6 +123,39 @@
           "texte": "mission.retrouver-livre.e2"
         }
       ]
+    },
+    {
+      "id": "mitzvah-tank",
+      "titre": "mission.mitzvah-tank.titre",
+      "description": "mission.mitzvah-tank.description",
+      "donneur": "pnj-mivtsaim",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "mitzvah-tank",
+          "texte": "mission.mitzvah-tank.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "mivtsa-1",
+          "texte": "mission.mitzvah-tank.e2"
+        },
+        {
+          "type": "interagir",
+          "cible": "mivtsa-2",
+          "texte": "mission.mitzvah-tank.e3"
+        },
+        {
+          "type": "interagir",
+          "cible": "mivtsa-3",
+          "texte": "mission.mitzvah-tank.e4"
+        },
+        {
+          "type": "interagir",
+          "cible": "retour-770",
+          "texte": "mission.mitzvah-tank.e5"
+        }
+      ]
     }
   ]
 }

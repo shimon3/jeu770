@@ -263,11 +263,17 @@ export function Joueur() {
       camera.lookAt(cible)
     } else {
       const epaule = zone.interieur ? 0.3 : 0.45
-      pivot.set(nouvelle.x + crx * epaule, nouvelle.y - CENTRE + (conduite.active ? 2.6 : 1.6), nouvelle.z + crz * epaule)
+      // En conduite : caméra plus haute et plus loin (bien plus pour le Mitzvah
+      // Tank, 8 m de long), sans test de collision (le rayon heurtait la
+      // carrosserie du véhicule et collait la caméra contre lui)
+      const tank = conduite.active && conduite.vehicule === 'mitzvah-tank'
+      pivot.set(nouvelle.x + crx * epaule, nouvelle.y - CENTRE + (conduite.active ? (tank ? 4.2 : 2.6) : 1.6), nouvelle.z + crz * epaule)
       let d = zone.interieur ? Math.min(s.dist, 2.6) : s.dist
-      if (conduite.active) d = Math.max(d, 7)
-      const hit = world.castRay(new rapier.Ray(pivot, { x: -f3.x, y: -f3.y, z: -f3.z }), d + 0.3, true, undefined, undefined, col)
-      if (hit) d = Math.max(0.35, hit.timeOfImpact - 0.3)
+      if (conduite.active) d = Math.max(d, tank ? 11 : 7)
+      else {
+        const hit = world.castRay(new rapier.Ray(pivot, { x: -f3.x, y: -f3.y, z: -f3.z }), d + 0.3, true, undefined, undefined, col)
+        if (hit) d = Math.max(0.35, hit.timeOfImpact - 0.3)
+      }
       s.distCourante = d < s.distCourante ? d : THREE.MathUtils.damp(s.distCourante, d, 4, dt)
       camera.position.copy(pivot).addScaledVector(f3, -s.distCourante)
       cible.copy(pivot).add(f3)
