@@ -9,6 +9,7 @@ import { glissementCamera, joystick, touche } from './entrees'
 import { joueur, useGame } from '../state/store'
 import { zoneEn } from '../world/zones'
 import { evenementMission } from '../missions/missions'
+import { conduite } from '../world/rue/conduite'
 
 // Capsule : demi-hauteur 0,55 + rayon 0,3 → 1,70 m ; centre à 0,85 m des pieds
 const DEMI = 0.55
@@ -138,7 +139,16 @@ export function Joueur() {
 
     let nouvelle = { x: p.x, y: p.y, z: p.z }
 
-    if (st.siege) {
+    if (conduite.active) {
+      // En voiture : le joueur suit la voiture, capsule désactivée
+      nouvelle = { x: conduite.x, y: conduite.y + CENTRE + 0.3, z: conduite.z }
+      if (col.isEnabled()) col.setEnabled(false)
+      rb.setNextKinematicTranslation(nouvelle)
+      s.cap = conduite.cap + Math.PI / 2
+      s.avance = Math.abs(conduite.vitesse) > 0.5
+      s.vy = 0
+      anim.current = { etat: 'repos', vitesse: 0 }
+    } else if (st.siege) {
       // Assis : position imposée par le siège
       const sp = st.siege.position
       nouvelle = { x: sp[0], y: sp[1] + CENTRE, z: sp[2] }
@@ -147,6 +157,14 @@ export function Joueur() {
       s.vy = 0
       anim.current = { etat: 'assis', vitesse: 0 }
     } else {
+      if (conduite.sortie) {
+        // Descendre de voiture : côté conducteur
+        const so = conduite.sortie
+        nouvelle = { x: so[0], y: so[1] + CENTRE, z: so[2] }
+        rb.setTranslation(nouvelle, true)
+        col.setEnabled(true)
+        conduite.sortie = null
+      }
       if (s.siegeAvant) {
         // Se lever : un pas devant le siège
         const r = s.siegeAvant.rotationY
@@ -209,7 +227,7 @@ export function Joueur() {
     if (a) {
       a.position.set(nouvelle.x, nouvelle.y - CENTRE, nouvelle.z)
       a.rotation.y = s.cap
-      a.visible = vue === '3e'
+      a.visible = vue === '3e' && !conduite.active
     }
 
     // Glissement du doigt (écran tactile) : comme la souris
@@ -240,13 +258,14 @@ export function Joueur() {
     const cp = Math.cos(s.pitch)
     f3.set(cfx * cp, Math.sin(s.pitch), cfz * cp)
     if (vue === '1re') {
-      camera.position.set(nouvelle.x, nouvelle.y - CENTRE + OEIL, nouvelle.z)
+      camera.position.set(nouvelle.x, nouvelle.y - CENTRE + (conduite.active ? 0.85 : OEIL), nouvelle.z)
       cible.copy(camera.position).add(f3)
       camera.lookAt(cible)
     } else {
       const epaule = zone.interieur ? 0.3 : 0.45
-      pivot.set(nouvelle.x + crx * epaule, nouvelle.y - CENTRE + 1.6, nouvelle.z + crz * epaule)
+      pivot.set(nouvelle.x + crx * epaule, nouvelle.y - CENTRE + (conduite.active ? 2.6 : 1.6), nouvelle.z + crz * epaule)
       let d = zone.interieur ? Math.min(s.dist, 2.6) : s.dist
+      if (conduite.active) d = Math.max(d, 7)
       const hit = world.castRay(new rapier.Ray(pivot, { x: -f3.x, y: -f3.y, z: -f3.z }), d + 0.3, true, undefined, undefined, col)
       if (hit) d = Math.max(0.35, hit.timeOfImpact - 0.3)
       s.distCourante = d < s.distCourante ? d : THREE.MathUtils.damp(s.distCourante, d, 4, dt)
@@ -269,7 +288,7 @@ export function Joueur() {
           meilleur = it.id
         }
       }
-      if (st.siege) meilleur = null
+      if (st.siege || conduite.active) meilleur = null
       if (meilleur !== st.cible) st.set({ cible: meilleur })
     }
   })

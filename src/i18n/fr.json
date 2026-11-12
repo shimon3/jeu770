@@ -67,6 +67,8 @@
   "action.porteVerrouillee": "Porte fermée",
   "action.asseoir": "S'asseoir",
   "action.parler": "Parler",
+  "action.conduire": "Conduire la voiture",
+  "conduite.aide": "Z Q S D pour conduire, E pour descendre",
   "message.porteAntichambre": "Cette porte mène vers le couloir et l'antichambre. Ces lieux seront ouverts dans une prochaine phase.",
   "message.porteFermee": "Cette porte est fermée.",
   "message.leverDebout": "Appuyez sur E ou une touche de déplacement pour vous lever.",

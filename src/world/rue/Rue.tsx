@@ -12,6 +12,9 @@ import { evenementMission } from '../../missions/missions'
 import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from './voitures'
 import { Circulation } from './Circulation'
 import { abriBus, kiosqueJournaux } from './mobilier'
+import { VoitureConduite } from './VoitureConduite'
+import { GROUPE_MUR_PIETON } from './conduite'
+import { CuboidCollider } from '@react-three/rapier'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -68,7 +71,7 @@ const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: 
   { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
   { x: 33, modele: 'taxi', rotY: 0, couleur: 'taxi' },
   // Mitzvah Tank (Mivtsaim) garé devant le 770
-  { x: 0, modele: 'mitzvahTank', rotY: Math.PI, couleur: 'voiture3' },
+  { x: 5, modele: 'mitzvahTank', rotY: Math.PI, couleur: 'voiture3' },
 ]
 // Côté sud, de l'autre côté de la chaussée (décor, hors de portée du joueur)
 const STATIONNEMENT_SUD: { x: number; modele: ModeleVoiture; couleur: CouleurVoiture }[] = [
@@ -159,9 +162,12 @@ export function Rue() {
       <Circulation zContreNord={Z_CONTRE + 4.3} zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} zContreSud={Z_FIN + 10.5} y={-A.bordure} />
       <SolLointain />
       {/* Limites de la zone jouable */}
-      <Invisible taille={[L, 6, 0.3]} position={[0, 3, Z_CHAUSSEE - 0.2]} />
-      <Invisible taille={[0.3, 6, Z_CHAUSSEE + 4]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} />
-      <Invisible taille={[0.3, 6, Z_CHAUSSEE + 4]} position={[40, 3, Z_CHAUSSEE / 2 - 2]} />
+      {/* Piéton seulement : la voiture conduite les traverse (conduite.ts) */}
+      <CuboidCollider args={[L / 2, 3, 0.15]} position={[0, 3, Z_CHAUSSEE - 0.2]} collisionGroups={GROUPE_MUR_PIETON} />
+      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      {/* Voiture à prendre (E) pour se promener */}
+      <VoitureConduite modele="berline" couleur="voiture2" x={-9} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={0} />
       {/* Collisions des voitures garées (toutes parallèles à la rue) */}
       {STATIONNEMENT.map((v) => {
         const [l, h, w] = GABARIT[v.modele]
