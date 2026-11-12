@@ -26,6 +26,10 @@ const URLS: Record<ModeleLeger, string> = {
 const DECODEUR_DRACO = '/draco/'
 const FONDU = 0.3
 const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0 }
+const DIST_OMBRE = 18
+const DIST_MOYEN = 15
+const DIST_LOIN = 30
+const POS = new THREE.Vector3()
 
 // Gabarit physique : capsule (demi-hauteur, rayon) centrée à centreY
 export function gabaritPnj(modele: ModeleLeger | 'adulte') {
@@ -59,6 +63,9 @@ export function PnjEnfant({ id, anim, modele }: { id: string; anim: MutableRefOb
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
   const courant = useRef<string | null>(null)
   const ombreReglee = useRef(false)
+  const sousTerre = useRef(false)
+  const ombreActive = useRef(true)
+  const attente = useRef(0)
 
   useEffect(() => {
     actions.current = Object.fromEntries(gltf.animations.map((c) => [c.name, mixer.clipAction(c)]))
@@ -76,13 +83,25 @@ export function PnjEnfant({ id, anim, modele }: { id: string; anim: MutableRefOb
     return () => void d?.delete(id)
   }, [anim, id, modele])
 
-  useFrame((_, dtBrut) => {
-    const dt = Math.min(dtBrut, 0.05)
+  useFrame(({ camera }, dtBrut) => {
+    racine.getWorldPosition(POS)
     if (!ombreReglee.current) {
-      const p = racine.getWorldPosition(new THREE.Vector3())
-      if (p.y < -1) racine.traverse((o) => void (o.castShadow = false))
+      sousTerre.current = POS.y < -1
       ombreReglee.current = true
     }
+    // Niveau de détail : loin de la caméra, pas d'ombre et animation moins
+    // fréquente (le corps reste visible et bouge, mais coûte moins)
+    const d = POS.distanceTo(camera.position)
+    const ombre = !sousTerre.current && d < DIST_OMBRE
+    if (ombre !== ombreActive.current) {
+      racine.traverse((o) => void (o.castShadow = ombre))
+      ombreActive.current = ombre
+    }
+    attente.current += dtBrut
+    const pas = d > DIST_LOIN ? 1 / 10 : d > DIST_MOYEN ? 1 / 20 : 0
+    if (attente.current < pas) return
+    const dt = Math.min(attente.current, 0.12)
+    attente.current = 0
     const { etat, vitesse } = anim.current
     const clip = etat === 'marche' ? 'Walking' : 'Idle_11'
     const suivante = actions.current[clip]
