@@ -53,11 +53,12 @@ test.describe('Personnages hassidiques v6', () => {
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
 
-    await expect.poll(() => page.evaluate(() => window.__pnjV6?.size ?? 0), { timeout: 30_000 }).toBe(38)
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length), { timeout: 30_000 }).toBe(38)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.brasFermes === 2))).toBe(true)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesBrasAdoucies === 12))).toBe(true)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].every((p) => p.pistesMainsCourseFixees === 2))).toBe(true)
-    const ids = await page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].sort())
+    // Les voyageurs du bus (rue/Bus.tsx) vont et viennent : non comptés
+    const ids = await page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).sort())
     // 21 hommes qui étudient en havrouta (grand-zal/EtudeZal.tsx)
     const etude = Array.from({ length: 21 }, (_, k) => `etude-${k + 1}`)
     expect(ids).toEqual(
@@ -82,7 +83,7 @@ test.describe('Personnages hassidiques v6', () => {
         ...etude,
       ].sort(),
     )
-    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].filter((p) => p.etat === 'assis').length)).toBe(26)
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.entries() ?? [])].filter(([id, p]) => !id.includes('-voyageur-') && p.etat === 'assis').length)).toBe(26)
     await expect.poll(() => page.evaluate(() => [...(window.__pnjV6?.values() ?? [])].filter((p) => p.etat === 'balancement').length)).toBe(2)
     await expect.poll(
       () => page.evaluate(() => [...(window.__pnjV6?.entries() ?? [])].filter(([, p]) => p.etat === 'marche' && p.clip === 'Walking').map(([id]) => id)),
@@ -95,6 +96,6 @@ test.describe('Personnages hassidiques v6', () => {
     await demarrer(page, '?avatar=ancien&pnj=ancien')
     await page.waitForTimeout(1000)
     expect(await page.evaluate(() => window.__avatarV6)).toBeUndefined()
-    expect(await page.evaluate(() => window.__pnjV6?.size ?? 0)).toBe(0)
+    expect(await page.evaluate(() => [...(window.__pnjV6?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length)).toBe(0)
   })
 })

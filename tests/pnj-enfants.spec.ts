@@ -27,8 +27,9 @@ test.describe('PNJ enfants, fille et femme', () => {
       window.__770.teleporter(22.1, -2.5, -6)
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
-    await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(15)
-    const modeles = await page.evaluate(() => [...(window.__pnjLeger?.entries() ?? [])].map(([id, p]) => `${id}:${p.modele}`).sort())
+    await expect.poll(() => page.evaluate(() => [...(window.__pnjLeger?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length), { timeout: 60_000 }).toBe(15)
+    // Les voyageurs du bus (rue/Bus.tsx) vont et viennent : non comptés
+    const modeles = await page.evaluate(() => [...(window.__pnjLeger?.entries() ?? [])].filter(([id]) => !id.includes('-voyageur-')).map(([id, p]) => `${id}:${p.modele}`).sort())
     expect(modeles).toEqual([
       'enfant-rue-1:enfant',
       'enfant-rue-2:enfant',
@@ -55,6 +56,6 @@ test.describe('PNJ enfants, fille et femme', () => {
   test('?enfants=0 retire les PNJ légers', async ({ page }) => {
     await demarrer(page, '?enfants=0')
     await page.waitForTimeout(3000)
-    expect(await page.evaluate(() => window.__pnjLeger?.size ?? 0)).toBe(0)
+    expect(await page.evaluate(() => [...(window.__pnjLeger?.keys() ?? [])].filter((id) => !id.includes('-voyageur-')).length)).toBe(0)
   })
 })
