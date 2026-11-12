@@ -150,19 +150,36 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
     // bouton de laiton. Côté Zal (-z) : jour vitré étroit entre deux colonnes
     // de panneaux carrés, panneaux haut et bas, plaque de laiton au pied,
     // poignée chromée verticale.
-    const yv0 = hauteur * 0.42
-    const yv1 = hauteur * 0.8
-    const rv = Math.abs(xDe(0.28) - xDe(0.72)) / 2
+    // Côté palier (photos de l'entrée, Samuel 12/11/2026) : jour vitré
+    // cintré étroit au centre, cadre mouluré en arc, panneaux verticaux de
+    // part et d'autre, deux panneaux carrés en haut, panneau bas, butée de
+    // laiton en haut et en bas, poignée verticale de laiton côté battement.
+    const yv0 = hauteur * 0.36
+    const yv1 = hauteur * 0.74
+    const rv = Math.abs(xDe(0.34) - xDe(0.66)) / 2
+    const xm = (xDe(0.34) + xDe(0.66)) / 2
     details.push(
-      face(0.28, 0.72, yv0, yv1, m.vitreEclairee, 'e-v', 1, 0.004),
-      <mesh key="e-arc" position={[(xDe(0.28) + xDe(0.72)) / 2, yv1, epaisseur / 2 + 0.003]} material={m.vitreEclairee}>
+      face(0.34, 0.66, yv0, yv1, m.vitreEclairee, 'e-v', 1, 0.004),
+      <mesh key="e-arc" position={[xm, yv1, epaisseur / 2 + 0.003]} material={m.vitreEclairee}>
         <circleGeometry args={[rv, 16, 0, Math.PI]} />
       </mesh>,
-      face(0.22, 0.28, yv0, yv1 + rv, m.cheneFonce, 'e-c1', 1, 0.02),
-      face(0.72, 0.78, yv0, yv1 + rv, m.cheneFonce, 'e-c2', 1, 0.02),
-      face(0.18, 0.82, 0.18, yv0 - 0.12, m.cheneFonce, 'e-pb', 1, 0.024),
-      face(0.18, 0.82, hauteur - 0.2, hauteur - 0.08, m.cheneFonce, 'e-ph', 1, 0.024),
-      face(0.05, 0.09, hauteur * 0.43, hauteur * 0.47, m.laiton, 'e-h', 1, 0.06),
+      <mesh key="e-arc-cadre" position={[xm, yv1, epaisseur / 2 + 0.008]} material={m.cheneFonce}>
+        <ringGeometry args={[rv, rv + 0.045, 16, 1, 0, Math.PI]} />
+      </mesh>,
+      face(0.29, 0.34, yv0 - 0.05, yv1, m.cheneFonce, 'e-c1', 1, 0.022),
+      face(0.66, 0.71, yv0 - 0.05, yv1, m.cheneFonce, 'e-c2', 1, 0.022),
+      face(0.1, 0.25, yv0, yv1 + 0.1, m.cheneFonce, 'e-l1', 1, 0.024),
+      face(0.75, 0.9, yv0, yv1 + 0.1, m.cheneFonce, 'e-l2', 1, 0.024),
+      face(0.1, 0.46, hauteur - 0.42, hauteur - 0.1, m.cheneFonce, 'e-t1', 1, 0.024),
+      face(0.54, 0.9, hauteur - 0.42, hauteur - 0.1, m.cheneFonce, 'e-t2', 1, 0.024),
+      face(0.1, 0.9, 0.2, yv0 - 0.14, m.cheneFonce, 'e-pb', 1, 0.024),
+      face(0.04, 0.07, hauteur * 0.4, hauteur * 0.58, m.laiton, 'e-h', 1, 0.07),
+      <mesh key="e-bh" position={[xDe(0.5), hauteur - 0.05, epaisseur / 2 + 0.03]} material={m.laiton}>
+        <sphereGeometry args={[0.035, 10, 8]} />
+      </mesh>,
+      <mesh key="e-bb" position={[xDe(0.5), 0.08, epaisseur / 2 + 0.03]} material={m.laiton}>
+        <sphereGeometry args={[0.035, 10, 8]} />
+      </mesh>,
       face(0.43, 0.57, yv0, hauteur * 0.85, m.vitreEclairee, 'i-v', -1, 0.004),
       face(0.15, 0.85, hauteur - 0.32, hauteur - 0.1, m.chene, 'i-ph', -1, 0.024),
       face(0.15, 0.85, 0.32, 0.66, m.chene, 'i-pb', -1, 0.024),

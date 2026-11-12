@@ -98,8 +98,11 @@ export const ENTREE = {
   // cotes des portes.
   // Cette disposition remplace l'ancienne descente latérale (escalier
   // parallèle à la façade, partant de la gauche, puis une seule porte).
-  x0: 19.35, // nu extérieur du mur de soutènement ouest — ESTIMÉ
-  x1: 23.45, // nu extérieur du mur de soutènement est — ESTIMÉ
+  // Photos de Samuel (12/11/2026) : trois portes doubles (six battants) entre
+  // deux pilastres étroits, escalier large à rampe de chaque côté, palier
+  // couvert. Largeur intérieure 6,4 m (ESTIMÉE d'après les photos).
+  x0: 18.15, // nu extérieur du mur de soutènement ouest — ESTIMÉ
+  x1: 25.05, // nu extérieur du mur de soutènement est — ESTIMÉ
   mur: 0.25, // épaisseur des murs de soutènement — ESTIMÉ
   z0: -1.0, // façade de 784
   palier: 1.4, // profondeur du palier bas devant les portes — ESTIMÉ
@@ -107,10 +110,13 @@ export const ENTREE = {
   giron: 0.28, // ESTIMÉ
   nombre: 18, // ESTIMÉ (18 × 0,189 m = 3,40 m, profondeur du Zal)
   porteHauteur: 2.3, // ESTIMÉ
-  // Les deux portes du bas. La première garde l'id historique « porte-zal ».
+  // Les trois portes doubles du bas (deux battants de 0,85 m chacune), qui
+  // s'ouvrent vers l'extérieur (vers le palier). Celle du milieu garde l'id
+  // historique « porte-zal ». Cotes ESTIMÉES d'après les photos.
   portes: [
-    { id: 'porte-zal-2', x0: 19.85, largeur: 1.3 }, // ESTIMÉ
-    { id: 'porte-zal', x0: 21.65, largeur: 1.3 }, // ESTIMÉ
+    { id: 'porte-zal-a', x0: 18.67, largeur: 1.7 },
+    { id: 'porte-zal', x0: 20.75, largeur: 1.7 },
+    { id: 'porte-zal-c', x0: 22.83, largeur: 1.7 },
   ],
 }
 

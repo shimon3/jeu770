@@ -111,11 +111,16 @@ export function Complexe784() {
       const cxp = (xa + xb) / 2
       for (const [zz, sg] of [[F.z + 0.04, 1], [F.z - ep - 0.04, -1]] as const) {
         pc.push({ t: [xb - xa, hP, 0.06], p: [cxp, S + hP / 2, zz], m: 'cheneFonce' })
-        pc.push({ t: [Math.max(0.04, xb - xa - 0.12), hP * 0.55, 0.02], p: [cxp, S + hP * 0.42, zz + sg * 0.04], m: 'chene' })
+        pc.push({ t: [Math.max(0.04, xb - xa - 0.12), hP * 0.55, 0.02], p: [cxp, S + hP * 0.42, zz + sg * 0.04], m: 'cheneFonce' })
         if (xb - xa > 0.2) pc.push({ t: [0.12, 0.1, 0.01], p: [cxp, S + hP * 0.85, zz + sg * 0.035], m: 'laiton' })
       }
     }
     for (const d of E.portes) pc.push({ t: [0.5, 0.05, 0.1], p: [d.x0 + d.largeur / 2, S + hP + 0.42, zFace + 0.1], m: 'vitreEclairee', ombre: false })
+    // Palier couvert (photos) : plafond sombre au-dessus des portes
+    pc.push({ t: [larg, 0.35, 1.5], p: [xC, S + hP + 0.95, F.z + 0.75], m: 'noir', col: true })
+    // Étagères contre le mur gauche du palier (livres, photos de Samuel)
+    pc.push({ t: [0.32, 2.1, 1.2], p: [C.xa + 0.16, S + 1.05, F.z + 0.75], m: 'cheneFonce' })
+    for (let k = 0; k < 5; k++) pc.push({ t: [0.3, 0.32, 1.12], p: [C.xa + 0.19, S + 0.3 + k * 0.4, F.z + 0.75], m: k % 2 ? 'voiture0' : 'voiture1', ombre: false })
     pc.push({ t: [0.34, 0.2, 0.18], p: [xC, S + hP + 0.6, zFace + 0.1], m: 'noir' })
     pc.push({ t: [0.26, 0.14, 0.04], p: [xC, S + hP + 0.6, zFace + 0.2], m: 'vitreEclairee', ombre: false })
     return { pieces: pc, rampe: e.rampe }
@@ -126,15 +131,20 @@ export function Complexe784() {
   // Pierre angulaire « אבן הפינה / THE CORNERSTONE » (photo de l'entrée,
   // Samuel 12/11/2026) : sur le mur de droite en descendant (est), à mi-escalier
   const pierre = useMemo(() => new THREE.MeshStandardMaterial({ map: texturePierreAngulaire(), roughness: 0.6 }), [])
-  const zPierre = (C.zBas + C.zHaut) / 2 + 0.6
-  const yPierre = Math.min(-0.45, ZAL.sol + ((zPierre - C.zBas) / ENTREE.giron) * ENTREE.contremarche + 1.35)
+  const pierreGranit = useMemo(() => new THREE.MeshStandardMaterial({ color: '#4e4542', roughness: 0.6 }), [])
+  const zPierre = C.zHaut - 0.45
+  const yPierre = 0.95
   const zMil = (ENTREE.z0 + C.zHaut) / 2
   const S = ZAL.sol
   return (
     <>
       <Pieces pieces={pieces} />
-      <mesh position={[C.xb - 0.012, yPierre, zPierre]} rotation={[0, -Math.PI / 2, 0]} material={pierre}>
-        <planeGeometry args={[0.75, 0.75]} />
+      {/* Pilier de granit en haut à droite de l'escalier, pierre angulaire face à la descente */}
+      <mesh position={[ENTREE.x1 - 0.25, 0.95, zPierre]} material={pierreGranit} castShadow>
+        <boxGeometry args={[0.5, 1.6, 0.7]} />
+      </mesh>
+      <mesh position={[ENTREE.x1 - 0.506, yPierre, zPierre]} rotation={[0, -Math.PI / 2, 0]} material={pierre}>
+        <planeGeometry args={[0.6, 0.6]} />
       </mesh>
       <Invisible taille={rampe.taille} position={rampe.position} rotation={rampe.rotation} />
       {/* Garde-corps : on ne tombe pas dans la courette par les côtés */}
@@ -144,24 +154,14 @@ export function Complexe784() {
       {/* Applique : éclaire le palier et les portes */}
       <pointLight position={[(C.xa + C.xb) / 2, S + ENTREE.porteHauteur + 0.4, ENTREE.z0 + 0.6]} intensity={6} distance={7} decay={2} color="#ffd9a0" />
       {/* Les deux portes d'entrée du Zal, au bas de l'escalier ; elles s'ouvrent vers l'intérieur */}
-      <Porte
-        id={ENTREE.portes[0].id}
-        charniere={[ENTREE.portes[0].x0 + 0.03, S, F.z - 0.15]}
-        largeur={ENTREE.portes[0].largeur - 0.06}
-        hauteur={ENTREE.porteHauteur - 0.02}
-        sens={1}
-        angleOuverture={1.55}
-        modele="zal"
-      />
-      <Porte
-        id={ENTREE.portes[1].id}
-        charniere={[ENTREE.portes[1].x0 + ENTREE.portes[1].largeur - 0.03, S, F.z - 0.15]}
-        largeur={ENTREE.portes[1].largeur - 0.06}
-        hauteur={ENTREE.porteHauteur - 0.02}
-        sens={-1}
-        angleOuverture={-1.55}
-        modele="zal"
-      />
+      {/* Trois portes doubles : six battants, ouverture vers l'extérieur (palier) */}
+      {ENTREE.portes.flatMap((d) => {
+        const lb = d.largeur / 2 - 0.02
+        return [
+          <Porte key={`${d.id}-g`} id={`${d.id}-g`} charniere={[d.x0 + 0.01, S, F.z + 0.03]} largeur={lb} hauteur={ENTREE.porteHauteur - 0.02} sens={1} angleOuverture={-1.45} modele="zal" />,
+          <Porte key={`${d.id}-d`} id={`${d.id}-d`} charniere={[d.x0 + d.largeur - 0.01, S, F.z + 0.03]} largeur={lb} hauteur={ENTREE.porteHauteur - 0.02} sens={-1} angleOuverture={1.45} modele="zal" />,
+        ]
+      })}
     </>
   )
 }
