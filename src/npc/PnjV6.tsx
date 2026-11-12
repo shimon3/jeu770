@@ -40,7 +40,7 @@ function diagnostics(): Map<string, DiagnosticPnj> | null {
 }
 
 export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }) {
-  const gltf = useGLTF(URL)
+  const gltf = useGLTF(URL, '/draco/')
   const { racine, sk } = useMemo(() => {
     const racine = clonerAvecSquelette(gltf.scene)
     let sk: THREE.SkinnedMesh | undefined
@@ -149,4 +149,4 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   return <primitive object={racine} />
 }
 
-useGLTF.preload(URL)
+useGLTF.preload(URL, '/draco/')

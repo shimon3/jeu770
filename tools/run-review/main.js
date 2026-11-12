@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { adoucirAnimationsBras } from '../../src/player/animationsV6.ts'
 
 const LARGEUR = 1280
@@ -131,7 +132,8 @@ function environnement(texte, couleur) {
 }
 
 async function charger(url, avant) {
-  const gltf = await new GLTFLoader().loadAsync(url)
+  const draco = new DRACOLoader().setDecoderPath('/draco/')
+  const gltf = await new GLTFLoader().setDRACOLoader(draco).loadAsync(url)
   const clips = avant ? adoucirAnimationsBras(gltf.animations).clips : gltf.animations
   const clip = clips.find((c) => c.name === 'Running')
   const mixer = new THREE.AnimationMixer(gltf.scene)

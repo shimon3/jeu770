@@ -175,7 +175,7 @@ function Modele({
 }) {
   const courseCorrigeeSource = choix === 'v6sym'
   const url = courseCorrigeeSource ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choix]
-  const gltf = useGLTF(url)
+  const gltf = useGLTF(url, '/draco/')
   const mixer = useMemo(() => new THREE.AnimationMixer(gltf.scene), [gltf.scene])
   const animations = useMemo(
     () => adoucirAnimationsBras(gltf.animations, courseCorrigeeSource),
@@ -296,5 +296,5 @@ export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>;
 // Préchargement du seul GLB choisi
 const choixInitial = avatarChoisi()
 if (choixInitial !== 'ancien') {
-  useGLTF.preload(choixInitial === 'v6sym' ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choixInitial])
+  useGLTF.preload(choixInitial === 'v6sym' ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choixInitial], '/draco/')
 }
