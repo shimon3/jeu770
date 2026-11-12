@@ -214,9 +214,9 @@ export function Rue() {
         ]}
       />
       {/* Voiture à prendre (E) pour se promener */}
-      <VoitureConduite modele="berline" couleur="voiture2" x={-9} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={0} />
+      <VoitureConduite modele="berline" couleur="voiture2" x={-14} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={Math.PI} />
       {/* Mitzvah Tank garé devant le 770 : conduisible (mission « Mitzvah Tank ») */}
-      <VoitureConduite id="mitzvah-tank" modele="mitzvahTank" couleur="voiture3" x={5} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={Math.PI} />
+      <VoitureConduite id="mitzvah-tank" modele="mitzvahTank" couleur="voiture3" x={5} z={Z_CONTRE + 1.6} y={Y_CONTRE} cap={Math.PI} />
       {/* Collisions des voitures garées (toutes parallèles à la rue) */}
       {STATIONNEMENT.map((v) => {
         const [l, h, w] = GABARIT[v.modele]

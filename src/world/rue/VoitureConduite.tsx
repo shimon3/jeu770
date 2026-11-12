@@ -46,6 +46,7 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
     if (import.meta.env.DEV) {
       const w = window as unknown as Record<string, unknown>
       w.__conduite = conduite
+      w.__monde = world
       // Outil de test : déplacer ce véhicule (et sa caisse de collision)
       const v = ((w.__vehicules as Record<string, (x: number, z: number) => void>) ??= {})
       v[id] = (nx: number, nz: number) => {
@@ -141,8 +142,21 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
     const fz = -Math.sin(conduite.cap)
     const col = rb.collider(0)
     const voulu = { x: fx * v * dt, y: 0, z: fz * v * dt }
-    ctrl.computeColliderMovement(col, voulu, undefined, FILTRE_VOITURE)
+    // Ignorer les objets désactivés : la capsule du conducteur, désactivée
+    // pendant la conduite, restait comptée et bloquait le véhicule (le tank
+    // ne bougeait pas du tout)
+    ctrl.computeColliderMovement(col, voulu, undefined, FILTRE_VOITURE, (c) => c.isEnabled() && !c.isSensor())
     const m = ctrl.computedMovement()
+    if (import.meta.env.DEV) {
+      const n = ctrl.numComputedCollisions()
+      const chocs = []
+      for (let i = 0; i < n; i++) {
+        const k = ctrl.computedCollision(i)
+        const c = k?.collider
+        if (c) chocs.push({ x: c.translation().x, y: c.translation().y, z: c.translation().z, forme: c.shape.type, he: (c.shape as unknown as { halfExtents?: unknown }).halfExtents, normale: k?.normal1 })
+      }
+      ;(window as unknown as Record<string, unknown>).__chocVoiture = { voulu, m: { x: m.x, y: m.y, z: m.z }, chocs }
+    }
     // Choc : la voiture rebondit légèrement
     const horiz = Math.hypot(voulu.x, voulu.z)
     if (horiz > 0.01 && Math.hypot(m.x, m.z) < horiz * 0.4) v *= 0.5

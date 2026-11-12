@@ -143,7 +143,9 @@ export function Joueur() {
       // En voiture : le joueur suit la voiture, capsule désactivée
       nouvelle = { x: conduite.x, y: conduite.y + CENTRE + 0.3, z: conduite.z }
       if (col.isEnabled()) col.setEnabled(false)
-      rb.setNextKinematicTranslation(nouvelle)
+      // La capsule (désactivée) est rangée sous le sol : sinon le moteur
+      // physique la comptait encore et bloquait le véhicule (tank immobile)
+      rb.setNextKinematicTranslation({ x: nouvelle.x, y: nouvelle.y - 100, z: nouvelle.z })
       s.cap = conduite.cap + Math.PI / 2
       s.avance = Math.abs(conduite.vitesse) > 0.5
       s.vy = 0
