@@ -19,6 +19,7 @@ import { GrandZal } from './grand-zal/GrandZal'
 import { MaisonRabbi } from './maison/MaisonRabbi'
 import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
+import { GroupeDiscussion } from '../npc/GroupeDiscussion'
 import * as THREE from 'three'
 
 const PNJ_LEGERS = pnjLegersActifs()
@@ -29,25 +30,53 @@ function FamillesRue() {
   return (
     <>
       <PnjZal id="enfant-rue-1" modele="enfant" parle={false} position={[-12, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[-12, 9.8], [-1, 9.8]]} />
-      <PnjZal id="enfant-rue-2" modele="enfant" parle={false} position={[2.2, 0, 8.4]} rotationY={0.3} />
       <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
       <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 10.0]} rotationY={Math.PI / 2} chemin={[[-30, 10.0], [-19, 10.0]]} />
-      <PnjZal id="fille-rue-2" modele="fille" parle={false} position={[3.0, 0, 7.6]} rotationY={-0.4} />
-      {/* Rue animée : passants (allées z 8 et 10,4) et petits groupes arrêtés */}
+      {/* Rue animée : passants (allées z 8 et 10,4) et groupes qui discutent
+          puis repartent (jamais plus de 3 min 20 arrêtés) */}
       <PnjZal id="adulte-rue-1" parle={false} position={[-36, 0, 10.4]} rotationY={Math.PI / 2} chemin={[[-36, 10.4], [-20, 10.4]]} />
       <PnjZal id="adulte-rue-2" parle={false} position={[36, 0, 10.4]} rotationY={-Math.PI / 2} chemin={[[36, 10.4], [20, 10.4]]} peau="#d2a07f" barbe="#2b1d14" />
-      <PnjZal id="adulte-rue-3" parle={false} position={[-8.5, 0, 7.4]} rotationY={0.84} peau="#c58f6c" barbe="#6b6b6b" />
-      <PnjZal id="adulte-rue-4" parle={false} position={[-7.6, 0, 8.2]} rotationY={0.84 + Math.PI} barbe="#3a2a1e" />
+      <GroupeDiscussion
+        id="groupe-hommes"
+        y={0}
+        lieux={LIEUX_HOMMES}
+        membres={[
+          { id: 'adulte-rue-3', peau: '#c58f6c', barbe: '#6b6b6b' },
+          { id: 'adulte-rue-4', barbe: '#3a2a1e' },
+        ]}
+      />
+      <GroupeDiscussion
+        id="groupe-mere-filles"
+        y={0}
+        lieux={LIEUX_MERE_FILLES}
+        membres={[
+          { id: 'femme-rue-3', modele: 'femme' },
+          { id: 'fille-rue-4', modele: 'fille' },
+          { id: 'fille-rue-2', modele: 'fille' },
+        ]}
+      />
+      <GroupeDiscussion
+        id="groupe-garcons"
+        y={0}
+        lieux={LIEUX_GARCONS}
+        membres={[
+          { id: 'enfant-rue-2', modele: 'enfant' },
+          { id: 'enfant-rue-4', modele: 'enfant' },
+          { id: 'enfant-rue-5', modele: 'enfant' },
+        ]}
+      />
       <PnjZal id="femme-rue-2" modele="femme" parle={false} position={[36, 0, 8.2]} rotationY={-Math.PI / 2} chemin={[[36, 8.2], [22, 8.2]]} />
       <PnjZal id="fille-rue-3" modele="fille" parle={false} position={[36, 0, 8.9]} rotationY={-Math.PI / 2} chemin={[[36, 8.9], [22, 8.9]]} />
       <PnjZal id="enfant-rue-3" modele="enfant" parle={false} position={[-36, 0, 8.0]} rotationY={Math.PI / 2} chemin={[[-36, 8.0], [-24, 8.0]]} />
-      <PnjZal id="femme-rue-3" modele="femme" parle={false} position={[14.5, 0, 9.0]} rotationY={0.3} />
-      <PnjZal id="fille-rue-4" modele="fille" parle={false} position={[15.2, 0, 9.4]} rotationY={-0.2} />
-      <PnjZal id="enfant-rue-4" modele="enfant" parle={false} position={[-18, 0, 8.0]} rotationY={0.93} />
-      <PnjZal id="enfant-rue-5" modele="enfant" parle={false} position={[-17.2, 0, 8.6]} rotationY={0.93 + Math.PI} />
     </>
   )
 }
+
+// Lieux de discussion sur le trottoir (z 8,2 à 9,4) : loin des bancs, des
+// arbres, des lampadaires et des panneaux
+const LIEUX_HOMMES: [number, number][] = [[-8.0, 8.6], [-23.5, 9.0], [-33.0, 8.8], [-12.0, 9.2]]
+const LIEUX_MERE_FILLES: [number, number][] = [[14.8, 9.2], [24.0, 9.0], [32.0, 9.4], [19.0, 8.8]]
+const LIEUX_GARCONS: [number, number][] = [[-17.6, 8.4], [-29.0, 8.6], [-11.0, 8.2], [-2.0, 9.0]]
 
 // Le soleil vise le centre du complexe (770 + grand Zal) et son ombre couvre
 // tout le grand Zal souterrain, sinon le sol du Zal serait éclairé à travers

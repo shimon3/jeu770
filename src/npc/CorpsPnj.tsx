@@ -13,9 +13,9 @@ const CHOIX = pnjModeleChoisi()
 
 export type ModelePnj = 'adulte' | ModeleLeger
 
-type Props = { id: string; anim: MutableRefObject<Anim>; peau?: string; barbe?: string; modele?: ModelePnj }
+type Props = { id: string; anim: MutableRefObject<Anim>; peau?: string; barbe?: string; modele?: ModelePnj; etude?: boolean }
 
-export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte' }: Props) {
+export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte', etude = false }: Props) {
   if (modele !== 'adulte')
     return (
       <Suspense fallback={null}>
@@ -26,7 +26,7 @@ export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte' }: Props) {
   if (CHOIX === 'ancien') return ancien
   return (
     <Suspense fallback={ancien}>
-      <PnjV6 id={id} anim={anim} />
+      <PnjV6 id={id} anim={anim} etude={etude} />
     </Suspense>
   )
 }

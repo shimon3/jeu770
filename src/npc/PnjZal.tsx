@@ -29,11 +29,12 @@ type Props = {
   peau?: string
   barbe?: string
   modele?: ModelePnj // corps : adulte (défaut), enfant, fille ou femme
+  etude?: boolean // assis : léger balancement d'étude (havrouta)
 }
 
 const v = new THREE.Vector3()
 
-export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte' }: Props) {
+export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false }: Props) {
   const g = gabaritPnj(modele)
   const anim = useRef<Anim>({ etat, vitesse: 0 })
   const groupe = useRef<THREE.Group>(null)
@@ -123,7 +124,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
         </RigidBody>
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
-        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} />
+        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} etude={etude} />
         <OmbreSol rayon={g.rayon * 1.5} />
       </group>
     </>

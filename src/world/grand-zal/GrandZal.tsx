@@ -11,8 +11,17 @@ import { ObjetsMissionsZal } from './ObjetsMissionsZal'
 import { PnjZal } from '../../npc/PnjZal'
 import { useGame } from '../../state/store'
 import { pnjLegersActifs } from '../../npc/PnjEnfant'
+import { GroupeDiscussion } from '../../npc/GroupeDiscussion'
+import { EtudeZal } from './EtudeZal'
 
 const PNJ_LEGERS = pnjLegersActifs()
+// Autour des tables d'étude, sans traverser les bancs ni les tables
+const LIEUX_GARCONS_ZAL: [number, number][] = [
+  [8.8, -23.2],
+  [8.8, -28.4],
+  [-2.85, -28.4],
+  [-2.85, -23.2],
+]
 
 // Grand Zal souterrain (état de référence : Tichri 2025). Voir
 // config/grandZal.ts pour ce qui est confirmé et ce qui est reconstitué.
@@ -40,7 +49,8 @@ export function GrandZal() {
 
       {/* PNJ : hassidim anonymes. Aucun ne s'approche de la place vide (npc/routines.ts). */}
       <group visible={pnjVisibles}>
-      <PnjZal id="pnj-entree-interieur" position={[28.5, S, -2.7]} rotationY={-Math.PI / 2} parle={false} />
+      {/* Immobile seulement pour parler : le joueur peut lui adresser la parole */}
+      <PnjZal id="pnj-entree-interieur" position={[28.5, S, -2.7]} rotationY={-Math.PI / 2} />
       <PnjZal id="pnj-zal" position={[5.0, S, -24.0]} rotationY={Math.PI * 0.85} nomCle="zal.pnjNom" peau="#d2a07f" barbe="#3a2a1e" />
       <PnjZal id="pnj-etudiant" position={[3.6, S, -26.4]} rotationY={0} etat="assis" nomCle="zal.etudiantNom" repliqueCle="zal.etudiantRepos" peau="#c58f6c" barbe="#1f1712" />
       <PnjZal id="pnj-balancement-1" position={[10.0, S, -16.0]} rotationY={Math.PI / 2} etat="balancement" parle={false} barbe="#6b6b6b" />
@@ -75,21 +85,18 @@ export function GrandZal() {
           [-2.85, -28.3],
         ]}
       />
+      {/* Hommes qui étudient en havrouta (groupes de 2 ou 4) */}
+      <EtudeZal />
       {/* Garçons (section des hommes : ni fille ni femme ici) */}
       {PNJ_LEGERS && (
         <>
-          <PnjZal id="enfant-zal-1" modele="enfant" parle={false} position={[5.8, S, -23.2]} rotationY={Math.PI * 0.9} />
-          <PnjZal
-            id="enfant-zal-2"
-            modele="enfant"
-            parle={false}
-            position={[8.2, S, -27.7]}
-            rotationY={-Math.PI / 2}
-            chemin={[
-              [8.2, -27.7],
-              [-2.2, -27.7],
-              [-2.2, -24.4],
-              [8.2, -24.4],
+          <GroupeDiscussion
+            id="groupe-garcons-zal"
+            y={S}
+            lieux={LIEUX_GARCONS_ZAL}
+            membres={[
+              { id: 'enfant-zal-1', modele: 'enfant' },
+              { id: 'enfant-zal-2', modele: 'enfant' },
             ]}
           />
         </>
