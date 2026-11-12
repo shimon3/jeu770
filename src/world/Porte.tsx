@@ -9,7 +9,7 @@ import { t } from '../i18n'
 import { evenementMission } from '../missions/missions'
 import type { V3 } from './primitives'
 
-type Modele = 'principale' | 'interieure'
+type Modele = 'principale' | 'interieure' | 'zal'
 
 type Props = {
   id: string
@@ -55,6 +55,9 @@ export function fermerPorteProche(): boolean {
   meilleure?.fermer()
   return !!meilleure
 }
+
+// Poignée chromée des portes du Zal (photo de l'intérieur, Samuel 12/11/2026)
+const CHROME = new THREE.MeshStandardMaterial({ color: '#c9cdd2', metalness: 0.9, roughness: 0.25 })
 
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
@@ -133,8 +136,42 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
     </mesh>
   )
 
+  // Face d'un seul côté (cote = 1 : +z local, -1 : -z local)
+  const face = (u0: number, u1: number, y0: number, y1: number, mat: THREE.Material, k: string, cote: 1 | -1, saillie = 0.012) => (
+    <mesh key={k} position={[(xDe(u0) + xDe(u1)) / 2, (y0 + y1) / 2, cote * (epaisseur / 2 + saillie / 2)]} material={mat}>
+      <boxGeometry args={[Math.abs(xDe(u0) - xDe(u1)), y1 - y0, saillie]} />
+    </mesh>
+  )
+
   const details: ReactNode[] = []
-  if (modele === 'principale') {
+  if (modele === 'zal') {
+    // Portes du grand Zal (photos fournies par Samuel, 12/11/2026).
+    // Côté courette (+z) : noyer foncé, haut jour vitré cintré, panneau bas,
+    // bouton de laiton. Côté Zal (-z) : jour vitré étroit entre deux colonnes
+    // de panneaux carrés, panneaux haut et bas, plaque de laiton au pied,
+    // poignée chromée verticale.
+    const yv0 = hauteur * 0.42
+    const yv1 = hauteur * 0.8
+    const rv = Math.abs(xDe(0.28) - xDe(0.72)) / 2
+    details.push(
+      face(0.28, 0.72, yv0, yv1, m.vitreEclairee, 'e-v', 1, 0.004),
+      <mesh key="e-arc" position={[(xDe(0.28) + xDe(0.72)) / 2, yv1, epaisseur / 2 + 0.003]} material={m.vitreEclairee}>
+        <circleGeometry args={[rv, 16, 0, Math.PI]} />
+      </mesh>,
+      face(0.22, 0.28, yv0, yv1 + rv, m.cheneFonce, 'e-c1', 1, 0.02),
+      face(0.72, 0.78, yv0, yv1 + rv, m.cheneFonce, 'e-c2', 1, 0.02),
+      face(0.18, 0.82, 0.18, yv0 - 0.12, m.cheneFonce, 'e-pb', 1, 0.024),
+      face(0.18, 0.82, hauteur - 0.2, hauteur - 0.08, m.cheneFonce, 'e-ph', 1, 0.024),
+      face(0.05, 0.09, hauteur * 0.43, hauteur * 0.47, m.laiton, 'e-h', 1, 0.06),
+      face(0.43, 0.57, yv0, hauteur * 0.85, m.vitreEclairee, 'i-v', -1, 0.004),
+      face(0.15, 0.85, hauteur - 0.32, hauteur - 0.1, m.chene, 'i-ph', -1, 0.024),
+      face(0.15, 0.85, 0.32, 0.66, m.chene, 'i-pb', -1, 0.024),
+      face(0, 1, 0.02, 0.28, m.laiton, 'i-k', -1, 0.006),
+      face(0.04, 0.08, hauteur * 0.36, hauteur * 0.62, CHROME, 'i-h', -1, 0.07),
+    )
+    for (const [u0, u1] of [[0.15, 0.37], [0.63, 0.85]] as const)
+      for (const [y0, y1] of [[0.76, 1.08], [1.18, 1.5], [1.6, 1.92]] as const) details.push(face(u0, u1, y0, y1, m.chene, `i-c-${u0}-${y0}`, -1, 0.024))
+  } else if (modele === 'principale') {
     // Disposition relevée sur Commons 3 (porte restaurée) : deux jours vitrés
     // en haut, panneaux à plates-bandes, traverse médiane.
     details.push(

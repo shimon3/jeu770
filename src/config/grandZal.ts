@@ -62,7 +62,8 @@ export const BIMAH = {
 }
 
 export const ARON = {
-  // Contre le mur est, sur une estrade avec marches et garde-corps (COLlive 2025)
+  // Contre le mur est, posé sur le carrelage, sans estrade (photo du heichal
+  // fournie par Samuel, 12/11/2026)
   x: 40.0,
   z: -16.0,
   // Toujours FERMÉ : parokhet tiré en permanence (photo n° 3 fournie par
@@ -70,9 +71,6 @@ export const ARON = {
   largeur: 3.9, // ESTIMÉ — à calibrer (élargi pour un meuble plus imposant)
   hauteur: 3.2, // ESTIMÉ — à calibrer (limité par le faux plafond)
   profondeur: 1.15, // ESTIMÉ
-  estradeHauteur: 0.9, // ESTIMÉ
-  estradeProfondeur: 2.8, // ESTIMÉ
-  estradeLargeur: 7.0, // ESTIMÉ
 }
 
 export const PLACE_VIDE = {

@@ -18,6 +18,13 @@ import { PanneauxDirection } from './rue/PanneauxDirection'
 import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
 import { useQualite } from '../config/qualite'
+import { useChargement } from '../state/chargement'
+
+// Rendu une fois les matériaux de la rue et le ciel chargés (Suspense levé)
+function SignalMondePret() {
+  useEffect(() => useChargement.setState({ monde: true }), [])
+  return null
+}
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
 import * as THREE from 'three'
 
@@ -151,6 +158,7 @@ export function Monde({ cle }: { cle: number }) {
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             {PNJ_LEGERS && <FamillesRue />}
             <Joueur key={cle} />
+            <SignalMondePret />
           </Physics>
         </FournisseurMateriaux>
       </Suspense>

@@ -1,4 +1,6 @@
 import { useMemo } from 'react'
+import * as THREE from 'three'
+import { texturePierreAngulaire } from '../texturesProcedurales'
 import { COURETTE, ENTREE, ZAL } from '../../config/grandZal'
 import { escalier, geoPignon, Invisible, mur, Pieces, type Piece } from '../primitives'
 import { grilleFenetres } from '../rue/Voisins'
@@ -93,10 +95,27 @@ export function Complexe784() {
     const zFace = F.z + 0.02
     for (const d of E.portes) {
       const cx = d.x0 + d.largeur / 2
-      for (const x of [d.x0 - 0.06, d.x0 + d.largeur + 0.06]) pc.push({ t: [0.12, hP + 0.12, 0.1], p: [x, S + (hP + 0.12) / 2, zFace], m: 'chene' })
-      pc.push({ t: [d.largeur + 0.24, 0.12, 0.1], p: [cx, S + hP + 0.06, zFace], m: 'chene' })
+      for (const x of [d.x0 - 0.06, d.x0 + d.largeur + 0.06]) pc.push({ t: [0.12, hP + 0.12, 0.1], p: [x, S + (hP + 0.12) / 2, zFace], m: 'cheneFonce' })
+      pc.push({ t: [d.largeur + 0.24, 0.12, 0.1], p: [cx, S + hP + 0.06, zFace], m: 'cheneFonce' })
     }
     pc.push({ t: [larg, 0.18, 0.18], p: [xC, S + hP + 0.24, zFace + 0.03], m: 'pierre' })
+    // Photos de l'entrée (Samuel, 12/11/2026) : rangée de vantaux de noyer.
+    // Entre et de part et d'autre des deux portes, pilastres de bois à
+    // panneaux avec petite plaque de laiton, côté courette et côté Zal ;
+    // un luminaire au-dessus de chaque porte.
+    const bords = [C.xa, ...E.portes.flatMap((d) => [d.x0, d.x0 + d.largeur]), C.xb].sort((a, b) => a - b)
+    for (let i = 0; i < bords.length; i += 2) {
+      const xa = bords[i] + (i === 0 ? 0 : 0.06)
+      const xb = bords[i + 1] - (i + 1 === bords.length - 1 ? 0 : 0.06)
+      if (xb - xa < 0.08) continue
+      const cxp = (xa + xb) / 2
+      for (const [zz, sg] of [[F.z + 0.04, 1], [F.z - ep - 0.04, -1]] as const) {
+        pc.push({ t: [xb - xa, hP, 0.06], p: [cxp, S + hP / 2, zz], m: 'cheneFonce' })
+        pc.push({ t: [Math.max(0.04, xb - xa - 0.12), hP * 0.55, 0.02], p: [cxp, S + hP * 0.42, zz + sg * 0.04], m: 'chene' })
+        if (xb - xa > 0.2) pc.push({ t: [0.12, 0.1, 0.01], p: [cxp, S + hP * 0.85, zz + sg * 0.035], m: 'laiton' })
+      }
+    }
+    for (const d of E.portes) pc.push({ t: [0.5, 0.05, 0.1], p: [d.x0 + d.largeur / 2, S + hP + 0.42, zFace + 0.1], m: 'vitreEclairee', ombre: false })
     pc.push({ t: [0.34, 0.2, 0.18], p: [xC, S + hP + 0.6, zFace + 0.1], m: 'noir' })
     pc.push({ t: [0.26, 0.14, 0.04], p: [xC, S + hP + 0.6, zFace + 0.2], m: 'vitreEclairee', ombre: false })
     return { pieces: pc, rampe: e.rampe }
@@ -104,11 +123,19 @@ export function Complexe784() {
 
   const C = COURETTE
   const zLong = C.zHaut - ENTREE.z0
+  // Pierre angulaire « אבן הפינה / THE CORNERSTONE » (photo de l'entrée,
+  // Samuel 12/11/2026) : sur le mur de droite en descendant (est), à mi-escalier
+  const pierre = useMemo(() => new THREE.MeshStandardMaterial({ map: texturePierreAngulaire(), roughness: 0.6 }), [])
+  const zPierre = (C.zBas + C.zHaut) / 2 + 0.6
+  const yPierre = Math.min(-0.45, ZAL.sol + ((zPierre - C.zBas) / ENTREE.giron) * ENTREE.contremarche + 1.35)
   const zMil = (ENTREE.z0 + C.zHaut) / 2
   const S = ZAL.sol
   return (
     <>
       <Pieces pieces={pieces} />
+      <mesh position={[C.xb - 0.012, yPierre, zPierre]} rotation={[0, -Math.PI / 2, 0]} material={pierre}>
+        <planeGeometry args={[0.75, 0.75]} />
+      </mesh>
       <Invisible taille={rampe.taille} position={rampe.position} rotation={rampe.rotation} />
       {/* Garde-corps : on ne tombe pas dans la courette par les côtés */}
       {[ENTREE.x0 + ENTREE.mur / 2, ENTREE.x1 - ENTREE.mur / 2].map((x) => (
@@ -124,6 +151,7 @@ export function Complexe784() {
         hauteur={ENTREE.porteHauteur - 0.02}
         sens={1}
         angleOuverture={1.55}
+        modele="zal"
       />
       <Porte
         id={ENTREE.portes[1].id}
@@ -132,6 +160,7 @@ export function Complexe784() {
         hauteur={ENTREE.porteHauteur - 0.02}
         sens={-1}
         angleOuverture={-1.55}
+        modele="zal"
       />
     </>
   )

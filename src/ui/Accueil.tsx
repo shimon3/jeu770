@@ -1,4 +1,6 @@
+import { useRef } from 'react'
 import { useProgress } from '@react-three/drei'
+import { useChargement } from '../state/chargement'
 import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { Commandes } from './Commandes'
@@ -15,7 +17,17 @@ type Props = {
 export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   const t = useT()
   const { active, progress } = useProgress()
-  const pret = !active || progress >= 100
+  // Prêt dès que la rue et le joueur sont affichés ; sinon, fin de tous les
+  // chargements. Le bouton ne s'active pas avant le début du chargement (sinon
+  // il s'activait puis se grisait aussitôt, et un clic à ce moment-là était
+  // perdu) et ne se grise plus une fois actif (les chargements différés du
+  // Zal et des PNJ relancent le compteur).
+  const essentiel = useChargement((c) => c.monde && c.joueur)
+  const commence = useRef(false)
+  const dejaPret = useRef(false)
+  if (active) commence.current = true
+  if (essentiel || (commence.current && !active && progress >= 100)) dejaPret.current = true
+  const pret = dejaPret.current
   const ecran = useGame((s) => s.ecran)
   if (ecran !== 'accueil') return null
   return (
