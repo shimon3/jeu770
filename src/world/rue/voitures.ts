@@ -168,33 +168,57 @@ function busMashiah(): PieceLocale[] {
 // (textureFlancTank : texte et icônes, sans aucun portrait)
 function mitzvahTank(): PieceLocale[] {
   const L = 4
+  // Vitre latérale fine (forme en profil x, y), posée de chaque côté à ±z
+  const vitreCote = (pts: [number, number][], z: number): PieceLocale[] =>
+    [-1, 1].map((s) => ({ geo: extrusion(pts, 0.03, 0.005).translate(0, 0, s * z), m: 'vitre' as MatLocal }))
   const pc: PieceLocale[] = [
-    // Cellule et cabine : capot bas, pare-brise incliné, capucine en avancée
+    // Cabine de fourgon (plus étroite) : capot, pare-brise incliné
+    { geo: extrusion([[2.25, 0.45], [L + 0.05, 0.45], [L + 0.1, 1.28], [3.45, 1.42], [2.82, 2.28], [2.25, 2.28]], 2.1, 0.07), m: 'turquoiseTank' },
+    // Cellule et capucine arrondie au-dessus de la cabine
     {
-      geo: extrusion([[-L, 0.45], [L + 0.05, 0.45], [L + 0.08, 1.3], [L - 0.7, 1.5], [L - 1.25, 2.35], [L - 0.85, 2.5], [L - 0.8, 3.05], [L - 1.1, 3.3], [-L, 3.3]], 2.4, 0.08),
+      geo: extrusion([[-L, 0.55], [2.35, 0.55], [2.35, 2.32], [3.15, 2.36], [3.38, 2.62], [3.36, 3.08], [3.12, 3.3], [-L, 3.3]], 2.4, 0.08),
       m: 'turquoiseTank',
     },
-    // Pare-brise
-    { geo: extrusion([[L - 0.68, 1.55], [L - 1.2, 2.3], [L - 1.32, 2.3], [L - 0.8, 1.55]], 2.15, 0.02), m: 'vitre' },
-    // Grille et bas de caisse rouge à l'avant
-    { geo: boite(0.06, 0.4, 1.6, L + 0.09, 0.95, 0), m: 'noir' },
-    { geo: boite(0.1, 0.35, 2.42, L + 0.06, 0.62, 0), m: 'rougeTank' },
-    ...roues([L - 1.5, -L + 1.9], 2.1, 0.45),
-    ...flancs(6.6, 2.75, -0.65, 1.9, 1.2, 'flancTank'),
-    ...habillage({ avant: L + 0.1, arriere: -L - 0.04, hFeu: 1.05, demiLargeur: 1.2, retro: [L - 1.0, 1.9] }),
+    // Pare-brise (bande vitrée suivant la pente)
+    { geo: extrusion([[3.47, 1.44], [2.84, 2.27], [2.8, 2.22], [3.42, 1.4]], 1.9, 0.01), m: 'vitre' },
+    // Calandre, phares et pare-chocs
+    { geo: boite(0.05, 0.42, 1.2, L + 0.12, 0.98, 0), m: 'noir' },
+    { geo: boite(0.16, 0.22, 2.12, L + 0.1, 0.55, 0), m: 'zinc' },
+    ...[-1, 1].map((s) => ({ geo: boite(0.06, 0.2, 0.32, L + 0.11, 1.05, s * 0.78), m: 'phare' as MatLocal })),
+    // Roues : avant simple, arrière jumelée
+    ...roues([3.0], 1.9, 0.42),
+    ...roues([-1.9], 2.05, 0.42),
+    ...roues([-1.9], 1.55, 0.42),
+    // Livrée sur la cellule
+    ...flancs(6.3, 2.62, -0.83, 1.96, 1.2, 'flancTank'),
+    // Feux arrière et pare-chocs arrière
+    { geo: boite(0.16, 0.2, 2.3, -L - 0.06, 0.62, 0), m: 'noir' },
     // Climatiseurs et galerie de toit
-    { geo: boite(0.9, 0.3, 0.8, -2.2, 3.47, 0), m: 'blancCamping' },
-    { geo: boite(0.9, 0.3, 0.8, 1.2, 3.47, 0), m: 'blancCamping' },
+    { geo: boite(0.9, 0.3, 0.8, -2.4, 3.47, 0), m: 'blancCamping' },
+    { geo: boite(0.9, 0.3, 0.8, 0.9, 3.47, 0), m: 'blancCamping' },
   ]
   for (const s of [-1, 1]) {
-    // Vitre de portière de la cabine et petite fenêtre de la cellule
-    pc.push({ geo: boite(0.6, 0.6, 0.02, L - 1.2, 1.95, s * 1.217), m: 'vitre' })
-    pc.push({ geo: boite(0.6, 0.35, 0.02, 2.65, 2.85, s * 1.218), m: 'vitre' })
-    // Rouge sur les flancs de la cabine
-    pc.push({ geo: boite(1.6, 0.3, 0.02, L - 0.75, 0.62, s * 1.217), m: 'rougeTank' })
+    // Portière de cabine : vitre trapézoïdale qui suit le pare-brise
+    pc.push(...vitreCote([[2.42, 1.5], [3.25, 1.5], [2.78, 2.14], [2.42, 2.14]], 1.06).filter((_, i) => (i === 0) === (s === -1)))
+    // Rétroviseur, poignée, bas de caisse rouge de la cabine
+    pc.push({ geo: boite(0.1, 0.32, 0.08, 3.3, 1.75, s * 1.2), m: 'noir' })
+    pc.push({ geo: boite(0.16, 0.04, 0.02, 2.55, 1.35, s * 1.065), m: 'zinc' })
+    pc.push({ geo: boite(1.85, 0.32, 0.02, 3.15, 0.62, s * 1.065), m: 'rougeTank' })
+    // Fenêtre de la capucine et passages de roue noirs
+    pc.push({ geo: boite(0.55, 0.32, 0.02, 2.75, 2.85, s * 1.24), m: 'vitre' })
+    pc.push({ geo: boite(1.1, 0.12, 0.03, -1.9, 1.0, s * 1.235), m: 'noir' })
+    pc.push({ geo: boite(1.0, 0.12, 0.03, 3.0, 0.98, s * 1.07), m: 'noir' })
+    // Feux arrière
+    pc.push({ geo: boite(0.05, 0.4, 0.2, -L - 0.05, 1.1, s * 1.0), m: 'feuArriere' })
     // Galerie de toit
     pc.push({ geo: boite(5.5, 0.05, 0.05, -0.6, 3.6, s * 1.0), m: 'zinc' })
   }
+  // Échelle arrière
+  for (const y of [1.0, 1.5, 2.0, 2.5, 3.0]) pc.push({ geo: boite(0.04, 0.04, 0.45, -L - 0.12, y, -0.7), m: 'zinc' })
+  for (const z of [-0.92, -0.48]) pc.push({ geo: boite(0.04, 2.6, 0.04, -L - 0.12, 2.0, z), m: 'zinc' })
+  // Plaques
+  pc.push({ geo: boite(0.03, 0.15, 0.5, L + 0.18, 0.55, 0), m: 'papier' })
+  pc.push({ geo: boite(0.03, 0.15, 0.5, -L - 0.15, 0.62, 0), m: 'papier' })
   return pc
 }
 

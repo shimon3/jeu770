@@ -551,11 +551,13 @@ html.mode-tactile .hud-fermer {
   font-size: 1.05rem;
   cursor: pointer;
 }
+/* Téléphone : sous le nom du lieu, à gauche, pour ne pas chevaucher la mission */
 html.mode-tactile .hud-dollars {
-  top: calc(var(--sh) + 10px);
+  top: calc(var(--sh) + 62px);
   inset-inline-end: auto;
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
+  inset-inline-start: calc(var(--sl) + 10px);
+  font-size: 0.95rem;
+  padding: 4px 12px;
 }
 .magasin-liste { list-style: none; padding: 0; }
 .magasin-liste li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; }
