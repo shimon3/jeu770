@@ -13,6 +13,7 @@ import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from '
 import { Circulation } from './Circulation'
 import { abriBus, kiosqueJournaux } from './mobilier'
 import { VoitureConduite } from './VoitureConduite'
+import { LigneBus } from './Bus'
 import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
 
@@ -63,10 +64,12 @@ function arbreRond(x: number, z: number, h = 7, y = 0): Piece[] {
 // Collisions dans Rue().
 const Y_CONTRE = -0.15
 const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: CouleurVoiture }[] = [
-  { x: -33, modele: 'berline', rotY: 0, couleur: 'voiture2' },
-  { x: -27, modele: 'police', rotY: 0, couleur: 'voiture3' },
-  { x: -21, modele: 'monospace', rotY: 0, couleur: 'voiture0' },
-  { x: -15, modele: 'berline', rotY: 0, couleur: 'voiture1' },
+  // Arrêt de bus nord (x -31) : zone du bus laissée libre de x -38 à -12
+  // (le bus s'y rabat vers le trottoir)
+  { x: -46, modele: 'berline', rotY: 0, couleur: 'voiture2' },
+  { x: 39, modele: 'police', rotY: Math.PI, couleur: 'voiture3' },
+  { x: -53, modele: 'monospace', rotY: 0, couleur: 'voiture0' },
+  { x: 46, modele: 'berline', rotY: 0, couleur: 'voiture1' },
   { x: 21, modele: 'berline', rotY: Math.PI, couleur: 'voiture2' },
   { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
   { x: 33, modele: 'taxi', rotY: 0, couleur: 'taxi' },
@@ -166,6 +169,34 @@ export function Rue() {
       <CuboidCollider args={[L / 2, 3, 0.15]} position={[0, 3, Z_CHAUSSEE - 0.2]} collisionGroups={GROUPE_MUR_PIETON} />
       <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
       <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      {/* Bus de ville : un de chaque côté, arrêt et montée des voyageurs */}
+      <LigneBus
+        id="bus-nord"
+        sens={-1}
+        zVoie={Z_CONTRE + 4.3}
+        zQuai={Z_CONTRE + 1.5}
+        xArret={-31}
+        y={Y_CONTRE}
+        porte={[-31, Z_CONTRE - 0.15]}
+        voyageurs={[
+          { modele: 'femme', attente: [-31.6, 11.3] },
+          { modele: 'enfant', attente: [-30.4, 11.4] },
+          { modele: 'vieux', attente: [-28.3, 11.6] },
+        ]}
+      />
+      <LigneBus
+        id="bus-sud"
+        sens={1}
+        zVoie={Z_CHAUSSEE + A.largeurChaussee * 0.8}
+        zQuai={Z_FIN - 1.5}
+        xArret={25}
+        y={-A.bordure}
+        porte={[25, Z_FIN + 0.15]}
+        voyageurs={[
+          { modele: 'adulte', attente: [24.2, Z_FIN + 1.4] },
+          { modele: 'fille', attente: [26.2, Z_FIN + 1.2] },
+        ]}
+      />
       {/* Voiture à prendre (E) pour se promener */}
       <VoitureConduite modele="berline" couleur="voiture2" x={-9} z={Z_CONTRE + 1.2} y={Y_CONTRE} cap={0} />
       {/* Collisions des voitures garées (toutes parallèles à la rue) */}

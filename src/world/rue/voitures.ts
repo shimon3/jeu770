@@ -181,7 +181,31 @@ function mitzvahTank(): PieceLocale[] {
   return pc
 }
 
+// Bus de ville générique (12 m, sans logo) : blanc à bande bleue, porte
+// avant droite (côté trottoir), girouette lumineuse
+export const PORTE_BUS = 4.8 // position de la porte avant le long du bus (m)
+function busVille(): PieceLocale[] {
+  const L = 6
+  const pc: PieceLocale[] = [
+    { geo: extrusion([[-L, 0.4], [L, 0.4], [L + 0.05, 2.9], [L - 0.1, 3.1], [-L, 3.1]], 2.55, 0.06), m: 'voiture3' },
+    { geo: boite(0.05, 1.4, 2.3, L + 0.04, 2.1, 0), m: 'vitre' },
+    { geo: boite(0.05, 0.3, 1.8, L + 0.07, 2.93, 0), m: 'phare' },
+    { geo: boite(1.0, 2.2, 0.03, PORTE_BUS, 1.5, 1.29), m: 'vitre' },
+    ...roues([L - 2.0, -L + 2.4], 2.2, 0.5),
+    { geo: boite(0.2, 0.3, 2.5, L + 0.05, 0.55, 0), m: 'noir' },
+    { geo: boite(0.2, 0.3, 2.5, -L - 0.05, 0.55, 0), m: 'noir' },
+  ]
+  for (const s of [-1, 1]) {
+    pc.push({ geo: boite(9.6, 1.0, 0.03, -0.9, 2.3, s * 1.29), m: 'vitre' })
+    pc.push({ geo: boite(11.9, 0.35, 0.02, 0, 1.15, s * 1.285), m: 'policeBleu' })
+    pc.push({ geo: boite(0.06, 0.18, 0.3, L + 0.04, 0.95, s * 0.95), m: 'phare' })
+    pc.push({ geo: boite(0.06, 0.25, 0.25, -L - 0.04, 1.0, s * 1.0), m: 'feuArriere' })
+  }
+  return pc
+}
+
 const MODELES = {
+  busVille: busVille(),
   berline: berline(),
   monospace: monospace(),
   taxi: taxi(),
@@ -200,6 +224,7 @@ export const GABARIT: Record<ModeleVoiture, [number, number, number]> = {
   monospace: [5.15, 1.8, 1.95],
   pompiers: [9.7, 3.3, 2.6],
   busMashiah: [12.1, 3.15, 2.6],
+  busVille: [12.1, 3.15, 2.6],
   mitzvahTank: [8.1, 3.6, 2.45],
 }
 
