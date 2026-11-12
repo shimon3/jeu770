@@ -19,7 +19,7 @@ import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
 import { useQualite } from '../config/qualite'
 import { useChargement } from '../state/chargement'
-import { prechauffer } from './prechauffage'
+import { compilationParallele, prechauffer } from './prechauffage'
 import { useThree } from '@react-three/fiber'
 
 // Rendu une fois les matériaux de la rue et le ciel chargés (Suspense levé)
@@ -33,6 +33,10 @@ function SignalMondePret() {
 function PrechauffeScene() {
   const { gl, scene, camera } = useThree()
   useEffect(() => {
+    if (!compilationParallele(gl)) {
+      useChargement.setState({ prechauffe: true })
+      return
+    }
     let vivant = true
     let lance = false
     const lancer = () => {

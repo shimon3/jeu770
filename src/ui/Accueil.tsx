@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useProgress } from '@react-three/drei'
 import { useChargement } from '../state/chargement'
 import { useT } from '../i18n'
@@ -30,6 +30,13 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   // bloquée par la compilation des shaders)
   const prechauffe = useChargement((c) => c.prechauffe)
   if (essentiel || (prechauffe && commence.current && !active && progress >= 100)) dejaPret.current = true
+  // Sécurité : sur un appareil très lent, le bouton s'active au bout de 15 s
+  const [delai, setDelai] = useState(false)
+  useEffect(() => {
+    const id = window.setTimeout(() => setDelai(true), 15000)
+    return () => window.clearTimeout(id)
+  }, [])
+  if (delai) dejaPret.current = true
   const pret = dejaPret.current
   // Pourcentage affiché : il ne redescend jamais (chaque nouvelle vague de
   // téléchargements remettait le compteur de drei à 0) ; téléchargements

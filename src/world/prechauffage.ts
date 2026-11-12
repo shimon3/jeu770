@@ -14,6 +14,12 @@ import * as THREE from 'three'
 
 const BUDGET_MS = 16
 
+// Sans compilation parallèle des shaders (rendu logiciel, vieux appareils),
+// compileAsync bloquerait autant que le premier affichage : on s'en passe
+export function compilationParallele(gl: THREE.WebGLRenderer) {
+  return gl.extensions.has('KHR_parallel_shader_compile')
+}
+
 function texturesDe(objet: THREE.Object3D) {
   const res = new Set<THREE.Texture>()
   objet.traverse((o) => {
@@ -88,6 +94,10 @@ export function usePrechauffe(objet: THREE.Object3D | null) {
   const [pret, setPret] = useState(false)
   useEffect(() => {
     if (!objet) return
+    if (!compilationParallele(gl)) {
+      setPret(true)
+      return
+    }
     let vivant = true
     setPret(false)
     prechauffer(gl, objet, camera, scene, () => vivant)
