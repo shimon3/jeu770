@@ -375,3 +375,90 @@ export function texturePierreAngulaire() {
   g.fill()
   return finaliser(c)
 }
+
+// ---------------------------------------------------------------------------
+// Flanc du Mitzvah Tank turquoise (photos de Samuel, 12/11/2026) : rangée
+// d'icônes des mitsvot, bandeau « LET'S WELCOME MOSHIACH », vague jaune,
+// bas de caisse rouge. RÈGLE ABSOLUE : le portrait du Rebbe présent sur les
+// photos n'est PAS reproduit ; un encadré de texte le remplace.
+const TURQUOISE = '#58bfcb'
+export function textureFlancTank() {
+  const w = 2048
+  const h = 860
+  const { c, g } = canvas(w, h)
+  g.fillStyle = TURQUOISE
+  g.fillRect(0, 0, w, h)
+  // Bas de caisse rouge et vague jaune
+  g.fillStyle = '#c7262c'
+  g.fillRect(0, h - 120, w, 120)
+  g.fillStyle = '#f5cf1f'
+  g.beginPath()
+  g.moveTo(0, h - 120)
+  g.bezierCurveTo(w * 0.3, h - 260, w * 0.55, h - 60, w, h - 220)
+  g.lineTo(w, h - 120)
+  g.closePath()
+  g.fill()
+  // Verset en haut
+  g.fillStyle = '#fff'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.font = `bold 40px ${'"Heebo", "Arial Hebrew", sans-serif'}`
+  g.fillText('יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד', w / 2, 34, w * 0.9)
+  // Rangée d'icônes des mitsvot (pastilles blanches cerclées de couleur)
+  const icones = ['✡', 'א', '🕯', '📜', '₪', '🍷', '🍞', '❤', '📖', '🏠', '💧']
+  const couleurs = ['#c7262c', '#2f8f46', '#f2a516', '#2b5fae', '#7a3fa0', '#c7262c', '#2f8f46', '#e2457a', '#2b5fae', '#f2a516', '#1d8fbf']
+  icones.forEach((ic, i) => {
+    const x = 150 + i * 160
+    g.fillStyle = couleurs[i]
+    g.beginPath()
+    g.arc(x, 130, 62, 0, Math.PI * 2)
+    g.fill()
+    g.fillStyle = '#fff'
+    g.beginPath()
+    g.arc(x, 130, 50, 0, Math.PI * 2)
+    g.fill()
+    g.fillStyle = couleurs[i]
+    g.font = 'bold 54px "Segoe UI Emoji", "Noto Color Emoji", sans-serif'
+    g.fillText(ic, x, 134)
+  })
+  // Bandeau sombre « pinceau » avec le slogan
+  g.fillStyle = '#163a5c'
+  g.beginPath()
+  g.moveTo(160, 230)
+  g.lineTo(1500, 220)
+  g.lineTo(1530, 460)
+  g.lineTo(140, 470)
+  g.closePath()
+  g.fill()
+  g.fillStyle = '#ffffff'
+  g.font = `bold 92px ${'"Inter", Arial, sans-serif'}`
+  g.fillText("LET'S WELCOME MOSHIACH", 840, 290, 1300)
+  g.fillStyle = '#f5cf1f'
+  g.font = `bold 76px ${'"Inter", Arial, sans-serif'}`
+  g.fillText('WITH ACTS OF GOODNESS AND KINDNESS!', 840, 400, 1300)
+  // Grand titre
+  g.fillStyle = '#c7262c'
+  g.font = `900 120px ${'"Inter", Arial, sans-serif'}`
+  g.fillText('MITZVAH TANK', 760, 580, 1200)
+  // Liste des mitsvot (petit texte blanc)
+  g.fillStyle = '#ffffff'
+  g.font = `bold 34px ${'"Inter", Arial, sans-serif'}`
+  g.textAlign = 'left'
+  ;['• Tefillin', '• Shabbat Candles', '• Mezuzah', '• Tzedakah', '• Torah Study', '• Kashrut'].forEach((l, i) =>
+    g.fillText(l, 180 + (i % 3) * 380, 655 + Math.floor(i / 3) * 44),
+  )
+  // Encadré à la place du portrait : « Kosher food on board / Come on board »
+  g.textAlign = 'center'
+  g.fillStyle = '#ffffff'
+  g.fillRect(1600, 230, 380, 400)
+  g.fillStyle = '#163a5c'
+  g.font = `bold 58px ${'"Inter", Arial, sans-serif'}`
+  g.fillText('KOSHER', 1790, 300)
+  g.fillText('FOOD', 1790, 365)
+  g.fillText('ON BOARD', 1790, 430, 340)
+  g.fillStyle = '#c7262c'
+  g.font = `bold 50px ${'"Inter", Arial, sans-serif'}`
+  g.fillText('COME', 1790, 520)
+  g.fillText('ON BOARD!', 1790, 580, 340)
+  return finaliser(c)
+}

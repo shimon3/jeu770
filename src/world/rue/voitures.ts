@@ -163,21 +163,38 @@ function busMashiah(): PieceLocale[] {
   return pc
 }
 
-// « Mitzvah Tank » (Mivtsaim) : camping-car blanc à bande bleue, texte sur
-// les flancs (aucune image)
+// « Mitzvah Tank » turquoise (photos de Samuel, 12/11/2026) : camping-car
+// de classe C (cabine de fourgon, capucine au-dessus), flancs habillés
+// (textureFlancTank : texte et icônes, sans aucun portrait)
 function mitzvahTank(): PieceLocale[] {
   const L = 4
   const pc: PieceLocale[] = [
-    { geo: extrusion([[-L, 0.45], [L, 0.45], [L + 0.05, 1.35], [L - 0.6, 2.2], [L - 1.0, 3.3], [-L, 3.3]], 2.4, 0.08), m: 'blancCamping' },
-    { geo: extrusion([[L + 0.02, 1.4], [L - 0.55, 2.15], [L - 0.95, 2.15], [L - 0.95, 1.4]], 2.2, 0.03), m: 'vitre' },
-    ...roues([L - 1.4, -L + 1.6], 2.1, 0.45),
-    ...flancs(6.2, 0.95, -0.9, 2.2, 1.2, 'bandeauMivtsaim'),
-    ...habillage({ avant: L + 0.05, arriere: -L - 0.04, hFeu: 1.0, demiLargeur: 1.2, retro: [L - 0.9, 2.0] }),
+    // Cellule et cabine : capot bas, pare-brise incliné, capucine en avancée
+    {
+      geo: extrusion([[-L, 0.45], [L + 0.05, 0.45], [L + 0.08, 1.3], [L - 0.7, 1.5], [L - 1.25, 2.35], [L - 0.85, 2.5], [L - 0.8, 3.05], [L - 1.1, 3.3], [-L, 3.3]], 2.4, 0.08),
+      m: 'turquoiseTank',
+    },
+    // Pare-brise
+    { geo: extrusion([[L - 0.68, 1.55], [L - 1.2, 2.3], [L - 1.32, 2.3], [L - 0.8, 1.55]], 2.15, 0.02), m: 'vitre' },
+    // Grille et bas de caisse rouge à l'avant
+    { geo: boite(0.06, 0.4, 1.6, L + 0.09, 0.95, 0), m: 'noir' },
+    { geo: boite(0.1, 0.35, 2.42, L + 0.06, 0.62, 0), m: 'rougeTank' },
+    ...roues([L - 1.5, -L + 1.9], 2.1, 0.45),
+    ...flancs(6.6, 2.75, -0.65, 1.9, 1.2, 'flancTank'),
+    ...habillage({ avant: L + 0.1, arriere: -L - 0.04, hFeu: 1.05, demiLargeur: 1.2, retro: [L - 1.0, 1.9] }),
+    // Climatiseurs et galerie de toit
+    { geo: boite(0.9, 0.3, 0.8, -2.2, 3.47, 0), m: 'blancCamping' },
+    { geo: boite(0.9, 0.3, 0.8, 1.2, 3.47, 0), m: 'blancCamping' },
   ]
-  for (const s of [-1, 1]) pc.push({ geo: boite(7.9, 0.14, 0.02, 0, 1.25, s * 1.215), m: 'policeBleu' })
-  // Haut-parleurs sur le toit
-  pc.push({ geo: new THREE.CylinderGeometry(0.18, 0.1, 0.4, 10).rotateZ(Math.PI / 2).translate(L - 1.4, 3.5, 0.5), m: 'zinc' })
-  pc.push({ geo: new THREE.CylinderGeometry(0.18, 0.1, 0.4, 10).rotateZ(Math.PI / 2).translate(L - 1.4, 3.5, -0.5), m: 'zinc' })
+  for (const s of [-1, 1]) {
+    // Vitre de portière de la cabine et petite fenêtre de la cellule
+    pc.push({ geo: boite(0.6, 0.6, 0.02, L - 1.2, 1.95, s * 1.217), m: 'vitre' })
+    pc.push({ geo: boite(0.6, 0.35, 0.02, 2.65, 2.85, s * 1.218), m: 'vitre' })
+    // Rouge sur les flancs de la cabine
+    pc.push({ geo: boite(1.6, 0.3, 0.02, L - 0.75, 0.62, s * 1.217), m: 'rougeTank' })
+    // Galerie de toit
+    pc.push({ geo: boite(5.5, 0.05, 0.05, -0.6, 3.6, s * 1.0), m: 'zinc' })
+  }
   return pc
 }
 

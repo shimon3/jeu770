@@ -48,8 +48,28 @@ export function kiosqueJournaux(x: number, z: number, rotY: number): Piece[] {
   ]
   for (let i = 0; i < 6; i++)
     pc.push({ t: [0.32, 0.06 + (i % 3) * 0.03, 0.4], p: [-0.9 + i * 0.36, 0.98, 0.95], m: i % 2 ? 'papier' : 'zinc' })
-  // Rangées de journaux accrochés au fond
-  for (let r = 0; r < 2; r++) for (let i = 0; i < 5; i++) pc.push({ t: [0.34, 0.45, 0.02], p: [-0.8 + i * 0.4, 1.35 + r * 0.55, -0.68], m: 'papier' })
+  // Journaux et magazines accrochés au fond (couvertures de couleur)
+  const couv: Piece['m'][] = ['papier', 'jauneMashiah', 'policeBleu', 'rougePompier', 'papier', 'voiture2', 'taxi', 'papier', 'voiture0', 'rougeTank']
+  for (let r = 0; r < 2; r++)
+    for (let i = 0; i < 5; i++) {
+      pc.push({ t: [0.34, 0.45, 0.02], p: [-0.8 + i * 0.4, 1.55 + r * 0.5, -0.68], m: couv[r * 5 + i] })
+      pc.push({ t: [0.28, 0.06, 0.025], p: [-0.8 + i * 0.4, 1.7 + r * 0.5, -0.665], m: 'noir', ombre: false })
+    }
+  // Étagère latérale gauche : siddourim et tehilim (dos colorés)
+  pc.push({ t: [0.3, 0.03, 1.2], p: [-0.95, 1.2, -0.05], m: 'bancBois' })
+  pc.push({ t: [0.3, 0.03, 1.2], p: [-0.95, 1.6, -0.05], m: 'bancBois' })
+  const dos: Piece['m'][] = ['policeBleu', 'rougePompier', 'noir', 'vertLampadaire', 'jauneMashiah', 'policeBleu']
+  for (let e = 0; e < 2; e++)
+    for (let i = 0; i < 6; i++) pc.push({ t: [0.2, 0.26, 0.12], p: [-0.95, 1.35 + e * 0.4, -0.55 + i * 0.19], m: dos[(i + e * 2) % 6], ombre: false })
+  // Réfrigérateur à boissons à droite (porte vitrée, bouteilles)
+  pc.push({ t: [0.5, 1.7, 0.55], p: [0.82, 0.85, -0.4], m: 'zinc', col: true })
+  pc.push({ t: [0.02, 1.4, 0.45], p: [0.56, 0.95, -0.4], m: 'vitre', ombre: false })
+  for (let e = 0; e < 3; e++)
+    for (let i = 0; i < 3; i++) pc.push({ t: [0.08, 0.24, 0.08], p: [0.65, 0.45 + e * 0.45, -0.55 + i * 0.15], m: (['rougePompier', 'voiture0', 'taxi'] as Piece['m'][])[(i + e) % 3], ombre: false })
+  // Bocaux de bonbons sur le comptoir
+  for (const bx of [-0.95, 0.95]) pc.push({ t: [0.18, 0.22, 0.18], p: [bx, 1.06, 0.95], m: 'taxi', ombre: false })
+  // Caisse enregistreuse
+  pc.push({ t: [0.32, 0.18, 0.26], p: [0.55, 1.04, 0.88], m: 'noir' })
   return poser(pc, x, z, rotY)
 }
 

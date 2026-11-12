@@ -1,3 +1,4 @@
+import { PnjZal } from '../../npc/PnjZal'
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { ABORDS } from '../../config/dimensions'
@@ -265,7 +266,8 @@ function KiosqueMagasin() {
   useInteractif('kiosque-magasin', [-10.5, 1, 12.4], 1.8, () => t('action.magasin'), () => {
     useGame.getState().set({ panneau: { type: 'magasin' } })
   })
-  return null
+  // Le vendeur, derrière le comptoir, face au trottoir
+  return <PnjZal id="pnj-kiosque" position={[-10.5, 0, 11.05]} rotationY={0} parle={false} peau="#d7a888" barbe="#6b4a2e" />
 }
 
 // Banc devant le muret (photo Clio) : on peut s'y asseoir

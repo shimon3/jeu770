@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import { textureLosanges, textureMouchetee, textureInscription, textureFrise, textureBandeau } from './texturesProcedurales'
+import { textureLosanges, textureMouchetee, textureInscription, textureFrise, textureBandeau, textureFlancTank } from './texturesProcedurales'
 
 // Flancs des bus et enseignes de la rue : texte seulement (RÈGLE ABSOLUE :
 // aucun portrait ni image du Rebbe)
@@ -23,6 +23,7 @@ function texturesRue() {
       '#f4f2ea',
       '#1d3f8f',
     ),
+    flancTank: textureFlancTank(),
     journaux: textureBandeau(
       [
         { texte: 'עיתונים · NEWSPAPERS', police: `bold 60px ${HEB}`, encre: '#f6f1e4' },
@@ -126,6 +127,9 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     jauneMashiah: new THREE.MeshStandardMaterial({ color: '#f2c200', metalness: 0.3, roughness: 0.45 }),
     blancCamping: new THREE.MeshStandardMaterial({ color: '#f4f2ea', metalness: 0.2, roughness: 0.5 }),
     bandeauMashiah: new THREE.MeshStandardMaterial({ map: rue.mashiah, roughness: 0.5 }),
+    turquoiseTank: new THREE.MeshStandardMaterial({ color: '#58bfcb', metalness: 0.25, roughness: 0.45 }),
+    rougeTank: new THREE.MeshStandardMaterial({ color: '#c7262c', metalness: 0.25, roughness: 0.45 }),
+    flancTank: new THREE.MeshStandardMaterial({ map: rue.flancTank, metalness: 0.15, roughness: 0.45 }),
     bandeauMivtsaim: new THREE.MeshStandardMaterial({ map: rue.mivtsaim, roughness: 0.5 }),
     enseigneJournaux: new THREE.MeshStandardMaterial({ map: rue.journaux, roughness: 0.6 }),
     panneauArretBus: new THREE.MeshStandardMaterial({ map: rue.arretBus, roughness: 0.5 }),
