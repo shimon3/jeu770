@@ -9,6 +9,7 @@ import { fermerBras, preparerBras, rouvrirBras, usePlafondMipmaps } from '../pla
 import { URL_AVATAR, VITESSE_NATURELLE, fermetureBrasChoisie, plafondMipmapChoisi } from '../config/avatar'
 import { creerPosesV6 } from '../player/posesV6'
 import { adoucirAnimationsBras } from '../player/animationsV6'
+import { creerPiedsAuSol } from '../player/piedsAuSol'
 
 // Corps d'un PNJ avec le personnage hassidique v6 (bras gauche en miroir).
 // Le GLB est chargé une fois : chaque PNJ en reçoit un clone qui partage le
@@ -68,6 +69,7 @@ export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRe
 
   const poses = useMemo(() => creerPosesV6(sk), [sk])
   const bras = useMemo(() => preparerBras(racine, fermetureBrasChoisie('v6sym')), [racine])
+  const pieds = useMemo(() => creerPiedsAuSol(racine), [racine])
 
   useEffect(() => {
     // Actions créées ici (et non dans un useMemo) : compatible avec le double
@@ -136,6 +138,8 @@ export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRe
     mixer.update(dt)
     fermerBras(bras)
     poses.appliquer(etat, t.current, etude)
+    if (etat === 'marche') pieds.appliquer()
+    else racine.position.y = 0
     diagnostics()?.set(id, {
       etat,
       vitesse,

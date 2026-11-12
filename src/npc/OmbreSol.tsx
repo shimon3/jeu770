@@ -61,16 +61,13 @@ export function OmbreSol({ rayon = 0.45 }: { rayon?: number }) {
   const base = useRef(rayon * 2)
   base.current = rayon * 2
   const { geo, mat } = ressources()
-  useFrame(({ camera }) => {
+  useFrame(() => {
     const o = m.current
     if (!o) return
     o.getWorldPosition(POS)
     // Ombre de contact toujours présente (sans elle, les PNJ semblent flotter,
-    // retour de Samuel 12/11) : resserrée sous les pieds quand l'ombre solaire
-    // réelle existe aussi (près de la caméra, en surface), large sinon
-    const pres = POS.y >= -1 && POS.distanceTo(camera.position) < DIST_OMBRE_REELLE
-    const k = 1
-    o.scale.set(base.current * k, 1, base.current * k)
+    // retour de Samuel 12/11)
+    o.scale.set(base.current, 1, base.current)
   })
   return <mesh ref={m} geometry={geo} material={mat} position={[0, 0.03, 0]} scale={[rayon * 2, 1, rayon * 2]} renderOrder={-1} />
 }

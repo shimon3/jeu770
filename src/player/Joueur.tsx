@@ -16,6 +16,9 @@ import { conduite } from '../world/rue/conduite'
 const DEMI = 0.55
 const RAYON = 0.3
 const CENTRE = DEMI + RAYON
+// Marge du contrôleur Rapier : la capsule flotte de cette hauteur au-dessus du
+// sol ; l'avatar est redescendu d'autant (sinon il marche 2 cm en l'air)
+const MARGE_CTRL = 0.02
 const MARCHE = 2.2
 const COURSE = 4.8
 const SAUT = 4.6
@@ -66,7 +69,7 @@ export function Joueur() {
   // montage de StrictMode
   const ctrlRef = useRef<ReturnType<typeof world.createCharacterController> | null>(null)
   useEffect(() => {
-    const c = world.createCharacterController(0.02)
+    const c = world.createCharacterController(MARGE_CTRL)
     c.enableAutostep(0.32, 0.12, false)
     c.enableSnapToGround(0.35)
     c.setMaxSlopeClimbAngle((50 * Math.PI) / 180)
@@ -228,7 +231,7 @@ export function Joueur() {
     // Avatar
     const a = avatar.current
     if (a) {
-      a.position.set(nouvelle.x, nouvelle.y - CENTRE, nouvelle.z)
+      a.position.set(nouvelle.x, nouvelle.y - CENTRE - MARGE_CTRL, nouvelle.z)
       a.rotation.y = s.cap
       a.visible = vue === '3e' && !conduite.active
     }

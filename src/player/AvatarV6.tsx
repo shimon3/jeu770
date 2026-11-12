@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { AvatarProcedural, type Anim } from './Avatar'
 import { useChargement } from '../state/chargement'
 import { creerPosesV6 } from './posesV6'
+import { creerPiedsAuSol } from './piedsAuSol'
 import { adoucirAnimationsBras, AMPLITUDE_BALANCEMENT_BRAS } from './animationsV6'
 import {
   URL_AVATAR,
@@ -231,6 +232,7 @@ function Modele({
   usePlafondMipmaps(gltf.scene, plafond)
   const bras = useMemo(() => preparerBras(gltf.scene, fermetureBrasChoisie(choix)), [gltf.scene, choix])
   const genoux = useMemo(() => preparerGenoux(gltf.scene), [gltf.scene])
+  const pieds = useMemo(() => creerPiedsAuSol(gltf.scene), [gltf.scene])
   // Personnage du joueur chargé : le bouton Jouer peut s'activer
   useEffect(() => useChargement.setState({ joueur: true }), [])
   // La scène du GLB est mise en cache : la rendre telle qu'on l'a trouvée
@@ -298,6 +300,8 @@ function Modele({
     adoucirGenoux(genoux, actions.current.Running?.getEffectiveWeight() ?? 0)
     fermerBras(bras)
     poses?.appliquer(a.etat, t.current)
+    if (a.etat === 'marche' || a.etat === 'course' || a.etat === 'repos') pieds.appliquer()
+    else gltf.scene.position.y = 0
     // Outil de test en développement : état de l'animation et du rendu
     if (import.meta.env.DEV) {
       ;(window as unknown as Record<string, unknown>).__avatarV6 = {
