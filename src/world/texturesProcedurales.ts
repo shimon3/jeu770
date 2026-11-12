@@ -117,3 +117,19 @@ export function textureTexte(texte: string, w = 256, h = 128, fond = '#d9cdb2', 
   g.fillText(texte, w / 2, h / 2)
   return finaliser(c)
 }
+
+// Bandeau de texte sur plusieurs lignes (flancs des bus, enseignes). Texte
+// seulement : aucune image de personne.
+export function textureBandeau(lignes: { texte: string; police: string; encre?: string }[], w = 1024, h = 256, fond = '#f2c200', encre = '#14213d') {
+  const { c, g } = canvas(w, h)
+  g.fillStyle = fond
+  g.fillRect(0, 0, w, h)
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  lignes.forEach((l, i) => {
+    g.fillStyle = l.encre ?? encre
+    g.font = l.police
+    g.fillText(l.texte, w / 2, (h * (i + 0.5)) / lignes.length, w * 0.94)
+  })
+  return finaliser(c)
+}
