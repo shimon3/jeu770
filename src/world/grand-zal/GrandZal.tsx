@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useChargement } from '../../state/chargement'
 import { ZAL } from '../../config/grandZal'
 import { useMateriauxZal } from './materiauxZal'
 import { EnveloppeZal } from './EnveloppeZal'
@@ -29,6 +31,8 @@ const LIEUX_GARCONS_ZAL: [number, number][] = [
 const S = ZAL.sol
 
 export function GrandZal() {
+  // Monté : le préchauffage de la scène peut l'inclure
+  useEffect(() => void useChargement.setState({ zal: true }), [])
   const m = useMateriauxZal()
   // Allègement : les PNJ du Zal n'existent que lorsque le joueur est dans le
   // Zal ou l'escalier ; ailleurs, ils ne sont ni dessinés ni calculés

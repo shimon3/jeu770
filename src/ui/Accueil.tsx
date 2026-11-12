@@ -22,11 +22,14 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   // il s'activait puis se grisait aussitôt, et un clic à ce moment-là était
   // perdu) et ne se grise plus une fois actif (les chargements différés du
   // Zal et des PNJ relancent le compteur).
-  const essentiel = useChargement((c) => c.monde && c.joueur)
+  const essentiel = useChargement((c) => c.monde && c.joueur && c.prechauffe)
   const commence = useRef(false)
   const dejaPret = useRef(false)
   if (active) commence.current = true
-  if (essentiel || (commence.current && !active && progress >= 100)) dejaPret.current = true
+  // Toujours après le préchauffage (sinon le premier clic tombe sur une image
+  // bloquée par la compilation des shaders)
+  const prechauffe = useChargement((c) => c.prechauffe)
+  if (essentiel || (prechauffe && commence.current && !active && progress >= 100)) dejaPret.current = true
   const pret = dejaPret.current
   const ecran = useGame((s) => s.ecran)
   if (ecran !== 'accueil') return null

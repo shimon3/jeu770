@@ -1,3 +1,4 @@
+import { useChargement } from '../../state/chargement'
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -289,6 +290,8 @@ function appartement(m: MM): PieceLibre[] {
 
 // ---------------------------------------------------------------------------
 export function MaisonRabbi() {
+  // Monté : le préchauffage de la scène peut l'inclure
+  useEffect(() => void useChargement.setState({ maison: true }), [])
   const m = useMateriauxMaison()
   const pieces = useMemo(() => [...structure(m), ...bureau(m), ...antichambre(m), ...couloirEtPetitZal(m), ...appartement(m)], [m])
   return (

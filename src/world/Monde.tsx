@@ -19,10 +19,41 @@ import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
 import { useQualite } from '../config/qualite'
 import { useChargement } from '../state/chargement'
+import { prechauffer } from './prechauffage'
+import { useThree } from '@react-three/fiber'
 
 // Rendu une fois les matériaux de la rue et le ciel chargés (Suspense levé)
 function SignalMondePret() {
   useEffect(() => useChargement.setState({ monde: true }), [])
+  return null
+}
+
+// Préchauffage de toute la scène une fois la rue, le Zal et la maison montés
+// (filet de sécurité : 25 s au plus, le jeu démarre alors quand même)
+function PrechauffeScene() {
+  const { gl, scene, camera } = useThree()
+  useEffect(() => {
+    let vivant = true
+    let lance = false
+    const lancer = () => {
+      if (lance) return
+      lance = true
+      prechauffer(gl, scene, camera, scene, () => vivant)
+        .catch(() => undefined)
+        .then(() => vivant && useChargement.setState({ prechauffe: true }))
+    }
+    const verifier = (c: ReturnType<typeof useChargement.getState>) => {
+      if (c.monde && c.zal && c.maison) lancer()
+    }
+    verifier(useChargement.getState())
+    const desabo = useChargement.subscribe(verifier)
+    const secours = window.setTimeout(() => useChargement.setState({ prechauffe: true }), 25000)
+    return () => {
+      vivant = false
+      desabo()
+      window.clearTimeout(secours)
+    }
+  }, [gl, scene, camera])
   return null
 }
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
@@ -161,6 +192,7 @@ export function Monde({ cle }: { cle: number }) {
             <MissionTank />
             <Joueur key={cle} />
             <SignalMondePret />
+            <PrechauffeScene />
           </Physics>
         </FournisseurMateriaux>
       </Suspense>

@@ -1,4 +1,5 @@
-import { Suspense, useLayoutEffect, useMemo, useRef } from 'react'
+import { Suspense, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { usePrechauffe } from '../prechauffage'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useMateriaux } from '../materiaux'
@@ -50,7 +51,8 @@ function CorpsGlb({ url, ombre }: { url: string; ombre: boolean }) {
     })
     return o
   }, [scene, ombre])
-  return <primitive object={objet} />
+  const visible = usePrechauffe(objet)
+  return <primitive object={objet} visible={visible} />
 }
 
 // Corps d'une voiture : modèle Meshy s'il existe, sinon voiture dessinée en code
@@ -78,6 +80,8 @@ function InstancesArbre({ espece, arbres }: { espece: keyof typeof ARBRES_GLB; a
     return m!
   }, [scene])
   const ref = useRef<THREE.InstancedMesh>(null)
+  const [im, setIm] = useState<THREE.InstancedMesh | null>(null)
+  const visible = usePrechauffe(im)
   useLayoutEffect(() => {
     const im = ref.current
     if (!im) return
@@ -93,7 +97,18 @@ function InstancesArbre({ espece, arbres }: { espece: keyof typeof ARBRES_GLB; a
     im.instanceMatrix.needsUpdate = true
     im.computeBoundingSphere()
   }, [arbres, espece])
-  return <instancedMesh ref={ref} args={[mesh.geometry, mesh.material as THREE.Material, arbres.length]} castShadow receiveShadow />
+  return (
+    <instancedMesh
+      ref={(o: THREE.InstancedMesh | null) => {
+        ref.current = o
+        if (o !== im) setIm(o)
+      }}
+      args={[mesh.geometry, mesh.material as THREE.Material, arbres.length]}
+      visible={visible}
+      castShadow
+      receiveShadow
+    />
+  )
 }
 
 export function ArbresRue({ platanes, feviers }: { platanes: Arbre[]; feviers: Arbre[] }) {

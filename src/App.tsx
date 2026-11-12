@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
 import { useQualite } from './config/qualite'
+import { useChargement } from './state/chargement'
 import * as THREE from 'three'
 import { Monde } from './world/Monde'
 import { ChronoMission } from './missions/MissionTank'
@@ -151,6 +152,9 @@ export default function App() {
   }, [reprendre])
 
   const dpr = useQualite((q) => q.dpr)
+  // Rendu en pause tant que le préchauffage n'est pas fini (aucune image
+  // bloquée par la compilation des shaders) ; le menu est affiché par-dessus
+  const prechauffe = useChargement((c) => c.prechauffe)
   const qualite = useQualite.getState()
   return (
     <>
@@ -164,6 +168,7 @@ export default function App() {
         <Canvas
           shadows
           dpr={dpr}
+          frameloop={prechauffe ? 'always' : 'never'}
           gl={{ antialias: true, powerPreference: 'high-performance' }}
           camera={{ fov: 62, near: 0.05, far: 400, position: [0, 3, 16] }}
           onCreated={({ gl }) => {

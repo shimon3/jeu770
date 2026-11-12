@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { DIST_OMBRE_REELLE } from './OmbreSol'
+import { usePrechauffe } from '../world/prechauffage'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
 import { VITESSE_NATURELLE } from '../config/avatar'
@@ -113,7 +114,8 @@ function Poussette() {
   const { scene } = useGLTF(URL_POUSSETTE, DECODEUR_DRACO)
   // Clone léger : géométrie et matériaux partagés entre toutes les poussettes
   const objet = useMemo(() => scene.clone(), [scene])
-  return <primitive object={objet} position={[0, 0, AVANCE_POUSSETTE]} />
+  const visible = usePrechauffe(objet)
+  return <primitive object={objet} position={[0, 0, AVANCE_POUSSETTE]} visible={visible} />
 }
 
 export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string; anim: MutableRefObject<Anim>; modele: ModeleLeger; poussette?: boolean }) {
@@ -130,6 +132,8 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
     return r
   }, [gltf.scene])
 
+  // Invisible tant que shaders et textures ne sont pas prêts (pas de blocage)
+  const visible = usePrechauffe(racine)
   const mixer = useMemo(() => new THREE.AnimationMixer(racine), [racine])
   const bras = useMemo(() => (poussette ? trouverBras(racine) : []), [poussette, racine])
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
@@ -193,7 +197,7 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
 
   return (
     <>
-      <primitive object={racine} />
+      <primitive object={racine} visible={visible} />
       {poussette && <Poussette />}
     </>
   )
