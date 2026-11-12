@@ -9,6 +9,7 @@ import { textureTexte } from '../texturesProcedurales'
 import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 import { evenementMission } from '../../missions/missions'
+import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from './voitures'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -43,16 +44,17 @@ function lampadaire(x: number, z: number): Piece[] {
   ]
 }
 
-function voiture(x: number, z: number, couleur: number): Piece[] {
-  const m = (['voiture0', 'voiture1', 'voiture2', 'voiture3'] as const)[couleur % 4]
-  return [
-    { t: [4.4, 0.75, 1.8], p: [x, -0.15 + 0.6, z], m, col: true },
-    { t: [2.4, 0.6, 1.6], p: [x - 0.2, -0.15 + 1.25, z], m: 'vitre' },
-    ...[-1.4, 1.4].flatMap((dx) =>
-      [-0.85, 0.85].map((dz) => ({ geo: new THREE.CylinderGeometry(0.33, 0.33, 0.22, 12), p: [x + dx, -0.15 + 0.33, z + dz] as V3, r: [Math.PI / 2, 0, 0] as V3, m: 'noir' as const })),
-    ),
-  ]
-}
+// Voitures garées le long de la contre-allée (chaussée à y = -0.15) : berlines
+// et monospaces alternés, sens de stationnement varié. Collisions dans Rue().
+const Y_CONTRE = -0.15
+const COULEURS: CouleurVoiture[] = ['voiture0', 'voiture1', 'voiture2', 'voiture3']
+const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number }[] = [
+  { x: -21, modele: 'monospace', rotY: 0 },
+  { x: -15, modele: 'berline', rotY: 0 },
+  { x: 21, modele: 'berline', rotY: Math.PI },
+  { x: 27, modele: 'monospace', rotY: 0 },
+  { x: 33, modele: 'berline', rotY: 0 },
+]
 
 function banc(x: number, z: number, rotY: number): Piece[] {
   const c = Math.cos(rotY)
@@ -108,7 +110,7 @@ export function Rue() {
     for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
     for (const x of [-20, 0, 20]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
-    ;[-21, -15, 21, 27, 33].forEach((x, i) => pc.push(...voiture(x, Z_CONTRE + 1.2, i)))
+    STATIONNEMENT.forEach((v, i) => pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, COULEURS[i % 4])))
     // Bancs du terre-plein (décor)
     for (const x of [-12, -3, 8]) pc.push(...banc(x, Z_TERRE + 1.0, 0))
     return pc
@@ -122,6 +124,11 @@ export function Rue() {
       <Invisible taille={[L, 6, 0.3]} position={[0, 3, Z_CHAUSSEE - 0.2]} />
       <Invisible taille={[0.3, 6, Z_CHAUSSEE + 4]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} />
       <Invisible taille={[0.3, 6, Z_CHAUSSEE + 4]} position={[40, 3, Z_CHAUSSEE / 2 - 2]} />
+      {/* Collisions des voitures garées (toutes parallèles à la rue) */}
+      {STATIONNEMENT.map((v) => {
+        const [l, h, w] = GABARIT[v.modele]
+        return <Invisible key={v.x} taille={[l, h, w]} position={[v.x, Y_CONTRE + h / 2, Z_CONTRE + 1.2]} />
+      })}
       <PanneauHistoire />
       <BancInteractif id="banc-gauche" x={-5.2} z={Z_TROTTOIR + 0.45} />
       <BancInteractif id="banc-droite" x={4.8} z={Z_TROTTOIR + 0.45} />

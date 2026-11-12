@@ -80,6 +80,9 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     voiture1: new THREE.MeshStandardMaterial({ color: '#8e9296', metalness: 0.6, roughness: 0.35 }),
     voiture2: new THREE.MeshStandardMaterial({ color: '#5a1e1e', metalness: 0.6, roughness: 0.35 }),
     voiture3: new THREE.MeshStandardMaterial({ color: '#d8d8d4', metalness: 0.6, roughness: 0.35 }),
+    // Feux des voitures garées (éteints, légèrement lumineux)
+    phare: new THREE.MeshStandardMaterial({ color: '#f4f1e6', emissive: '#fff6dc', emissiveIntensity: 0.15, roughness: 0.2 }),
+    feuArriere: new THREE.MeshStandardMaterial({ color: '#8e1414', emissive: '#5a0808', emissiveIntensity: 0.3, roughness: 0.3 }),
   }
 }
 
