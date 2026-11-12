@@ -31,6 +31,12 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   const prechauffe = useChargement((c) => c.prechauffe)
   if (essentiel || (prechauffe && commence.current && !active && progress >= 100)) dejaPret.current = true
   const pret = dejaPret.current
+  // Pourcentage affiché : il ne redescend jamais (chaque nouvelle vague de
+  // téléchargements remettait le compteur de drei à 0) ; téléchargements
+  // jusqu'à 80 %, préparation des graphismes (préchauffage) jusqu'à 100 %
+  const affiche = useRef(0)
+  const brut = prechauffe ? 100 : Math.min(80, progress * 0.8)
+  affiche.current = Math.max(affiche.current, brut)
   const ecran = useGame((s) => s.ecran)
   if (ecran !== 'accueil') return null
   return (
@@ -50,7 +56,7 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
             </>
           ) : (
             <button className="principal" disabled={!pret} onClick={() => onJouer(true)}>
-              {pret ? t('accueil.jouer') : `${t('accueil.chargement')} ${Math.round(progress)} %`}
+              {pret ? t('accueil.jouer') : `${t('accueil.chargement')} ${Math.round(affiche.current)} %`}
             </button>
           )}
           <button onClick={onLangue}>{t('accueil.langue')}</button>
