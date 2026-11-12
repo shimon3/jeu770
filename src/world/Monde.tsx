@@ -29,7 +29,7 @@ function SignalMondePret() {
 }
 
 // Préchauffage de toute la scène une fois la rue, le Zal et la maison montés
-// (filet de sécurité : 25 s au plus, le jeu démarre alors quand même)
+// (filet de sécurité : 8 s au plus, le jeu démarre alors quand même)
 function PrechauffeScene() {
   const { gl, scene, camera } = useThree()
   useEffect(() => {
@@ -47,7 +47,7 @@ function PrechauffeScene() {
     }
     verifier(useChargement.getState())
     const desabo = useChargement.subscribe(verifier)
-    const secours = window.setTimeout(() => useChargement.setState({ prechauffe: true }), 25000)
+    const secours = window.setTimeout(() => useChargement.setState({ prechauffe: true }), 8000)
     return () => {
       vivant = false
       desabo()
