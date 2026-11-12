@@ -3,7 +3,8 @@ import { useFrame } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
 import type { Anim, EtatAnim } from '../player/Avatar'
-import { CorpsPnj } from './CorpsPnj'
+import { CorpsPnj, type ModelePnj } from './CorpsPnj'
+import { gabaritPnj } from './PnjEnfant'
 import { useInteractif } from '../world/interaction'
 import { useGame } from '../state/store'
 import { t } from '../i18n'
@@ -26,11 +27,13 @@ type Props = {
   repliqueCle?: string // réplique quand il n'a pas de mission à donner
   peau?: string
   barbe?: string
+  modele?: ModelePnj // corps : adulte (défaut), enfant, fille ou femme
 }
 
 const v = new THREE.Vector3()
 
-export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626' }: Props) {
+export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte' }: Props) {
+  const g = gabaritPnj(modele)
   const anim = useRef<Anim>({ etat, vitesse: 0 })
   const groupe = useRef<THREE.Group>(null)
   const corps = useRef<RapierRigidBody>(null)
@@ -44,7 +47,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
 
   useInteractif(
     id,
-    [position[0], position[1] + 1.2, position[2]],
+    [position[0], position[1] + g.hauteurBulle, position[2]],
     parle ? 1.8 : 0,
     () => t('action.parler'),
     () => {
@@ -103,7 +106,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
     anim.current = { etat: 'marche', vitesse: 1.1 }
     groupe.current?.position.set(e.x, position[1], e.z)
     if (groupe.current) groupe.current.rotation.y = e.cap
-    corps.current?.setNextKinematicTranslation({ x: e.x, y: position[1] + 0.85, z: e.z })
+    corps.current?.setNextKinematicTranslation({ x: e.x, y: position[1] + g.centreY, z: e.z })
   })
 
   if (!autorise) {
@@ -114,12 +117,12 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
   return (
     <>
       {etat !== 'assis' && (
-        <RigidBody ref={corps} type={route.length ? 'kinematicPosition' : 'fixed'} colliders={false} position={[position[0], position[1] + 0.85, position[2]]}>
-          <CapsuleCollider args={[0.55, 0.3]} />
+        <RigidBody ref={corps} type={route.length ? 'kinematicPosition' : 'fixed'} colliders={false} position={[position[0], position[1] + g.centreY, position[2]]}>
+          <CapsuleCollider args={[g.demiHauteur, g.rayon]} />
         </RigidBody>
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
-        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} />
+        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} />
       </group>
     </>
   )

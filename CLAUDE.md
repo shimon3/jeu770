@@ -22,6 +22,17 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
   `hasidic_man_v6_brasSym.glb` peuvent avoir son visage réaliste (personnage
   générique généré, sans ressemblance voulue avec une personne réelle). Les
   autres règles ci-dessus restent entières.
+  Exception décidée par Samuel le 12/11/2026 : les PNJ enfants qui utilisent
+  le modèle de l'enfant Habad à la kippa Yechi (`enfant_habad_*.glb`) peuvent
+  aussi avoir son visage réaliste (enfant générique généré, sans ressemblance
+  voulue avec une personne réelle). Les autres règles restent entières.
+  Exception décidée par Samuel le 12/11/2026 : les PNJ fille et femme Habad
+  (`fille_habad_*.glb`, `femme_habad_*.glb`) peuvent aussi avoir un visage
+  réaliste (personnages génériques générés, sans ressemblance voulue avec une
+  personne réelle). Tenue tsniout obligatoire : jupe sous le genou, coudes et
+  clavicules couverts ; la femme porte une perruque. Fille et femme ne sont
+  jamais placées dans le grand Zal (section des hommes). Les autres règles
+  restent entières.
 - Ne jamais générer ni télécharger d'image du Rebbe, même comme placeholder.
   Une photo de référence qui le montre est supprimée de references/ et ignorée.
 - Si une tâche semble exiger de contourner cette règle : s'arrêter et demander.

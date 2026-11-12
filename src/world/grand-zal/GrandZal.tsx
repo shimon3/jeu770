@@ -10,6 +10,9 @@ import { DecorZal, EclairageZal, PlafonniersZal } from './PlafonniersZal'
 import { ObjetsMissionsZal } from './ObjetsMissionsZal'
 import { PnjZal } from '../../npc/PnjZal'
 import { useGame } from '../../state/store'
+import { pnjLegersActifs } from '../../npc/PnjEnfant'
+
+const PNJ_LEGERS = pnjLegersActifs()
 
 // Grand Zal souterrain (état de référence : Tichri 2025). Voir
 // config/grandZal.ts pour ce qui est confirmé et ce qui est reconstitué.
@@ -72,6 +75,25 @@ export function GrandZal() {
           [-2.85, -28.3],
         ]}
       />
+      {/* Garçons (section des hommes : ni fille ni femme ici) */}
+      {PNJ_LEGERS && (
+        <>
+          <PnjZal id="enfant-zal-1" modele="enfant" parle={false} position={[5.8, S, -23.2]} rotationY={Math.PI * 0.9} />
+          <PnjZal
+            id="enfant-zal-2"
+            modele="enfant"
+            parle={false}
+            position={[8.2, S, -27.7]}
+            rotationY={-Math.PI / 2}
+            chemin={[
+              [8.2, -27.7],
+              [-2.2, -27.7],
+              [-2.2, -24.4],
+              [8.2, -24.4],
+            ]}
+          />
+        </>
+      )}
       </group>
     </>
   )

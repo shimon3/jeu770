@@ -18,7 +18,24 @@ import { PanneauxDirection } from './rue/PanneauxDirection'
 import { GrandZal } from './grand-zal/GrandZal'
 import { MaisonRabbi } from './maison/MaisonRabbi'
 import { PnjZal } from '../npc/PnjZal'
+import { pnjLegersActifs } from '../npc/PnjEnfant'
 import * as THREE from 'three'
+
+const PNJ_LEGERS = pnjLegersActifs()
+
+// Trottoir d'Eastern Parkway (z 6,4 à 12) : enfants, fille et femme.
+// Trajets filtrés par cheminAutorise (dans PnjZal). Ils ne parlent pas.
+function FamillesRue() {
+  return (
+    <>
+      <PnjZal id="enfant-rue-1" modele="enfant" parle={false} position={[-12, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[-12, 9.8], [-1, 9.8]]} />
+      <PnjZal id="enfant-rue-2" modele="enfant" parle={false} position={[2.2, 0, 8.4]} rotationY={0.3} />
+      <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
+      <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 10.0]} rotationY={Math.PI / 2} chemin={[[-30, 10.0], [-19, 10.0]]} />
+      <PnjZal id="fille-rue-2" modele="fille" parle={false} position={[3.0, 0, 7.6]} rotationY={-0.4} />
+    </>
+  )
+}
 
 // Le soleil vise le centre du complexe (770 + grand Zal) et son ombre couvre
 // tout le grand Zal souterrain, sinon le sol du Zal serait éclairé à travers
@@ -70,6 +87,7 @@ export function Monde({ cle }: { cle: number }) {
             <GrandZal />
             <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
+            {PNJ_LEGERS && <FamillesRue />}
             <Joueur key={cle} />
           </Physics>
         </FournisseurMateriaux>
