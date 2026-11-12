@@ -25,16 +25,17 @@ import * as THREE from 'three'
 const PNJ_LEGERS = pnjLegersActifs()
 
 // Trottoir d'Eastern Parkway (z 6,4 à 12) : enfants, fille et femme.
+// Bordure z ≥ 10,4 réservée aux abris de bus et au kiosque (branche voitures).
 // Trajets filtrés par cheminAutorise (dans PnjZal). Ils ne parlent pas.
 function FamillesRue() {
   return (
     <>
       <PnjZal id="enfant-rue-1" modele="enfant" parle={false} position={[-12, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[-12, 9.8], [-1, 9.8]]} />
       <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
-      <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 10.0]} rotationY={Math.PI / 2} chemin={[[-30, 10.0], [-19, 10.0]]} />
+      <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 9.6]} rotationY={Math.PI / 2} chemin={[[-30, 9.6], [-19, 9.6]]} />
       {/* Rue animée : passants (allées z 8 et 10,4) et groupes qui discutent
           puis repartent (jamais plus de 3 min 20 arrêtés) */}
-      <PnjZal id="adulte-rue-1" parle={false} position={[-36, 0, 10.4]} rotationY={Math.PI / 2} chemin={[[-36, 10.4], [-20, 10.4]]} />
+      <PnjZal id="adulte-rue-1" parle={false} position={[-36, 0, 10.0]} rotationY={Math.PI / 2} chemin={[[-36, 10.0], [-20, 10.0]]} />
       <PnjZal id="adulte-rue-2" parle={false} position={[36, 0, 10.4]} rotationY={-Math.PI / 2} chemin={[[36, 10.4], [20, 10.4]]} peau="#d2a07f" barbe="#2b1d14" />
       <GroupeDiscussion
         id="groupe-hommes"
