@@ -10,6 +10,7 @@ import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 import { evenementMission } from '../../missions/missions'
 import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { Circulation } from './Circulation'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -44,16 +45,39 @@ function lampadaire(x: number, z: number): Piece[] {
   ]
 }
 
-// Voitures garées le long de la contre-allée (chaussée à y = -0.15) : berlines
-// et monospaces alternés, sens de stationnement varié. Collisions dans Rue().
+// Seconde essence d'arbre (houppier plus rond et plus sombre) pour varier
+// l'alignement
+function arbreRond(x: number, z: number, h = 7, y = 0): Piece[] {
+  const pc: Piece[] = [{ geo: new THREE.CylinderGeometry(0.15, 0.22, h * 0.5, 7), p: [x, y + h * 0.25, z], m: 'tronc' }]
+  pc.push({ geo: new THREE.IcosahedronGeometry(0.34 * h, 1), p: [x, y + 0.7 * h, z], m: 'feuillageFonce' })
+  pc.push({ geo: new THREE.IcosahedronGeometry(0.22 * h, 1), p: [x + 0.18 * h, y + 0.62 * h, z - 0.1 * h], m: 'feuillageFonce' })
+  return pc
+}
+
+// Véhicules garés le long de la contre-allée (chaussée à y = -0.15), sens de
+// stationnement varié. Aucun dans l'axe du point de départ (x 8 à 19).
+// Collisions dans Rue().
 const Y_CONTRE = -0.15
-const COULEURS: CouleurVoiture[] = ['voiture0', 'voiture1', 'voiture2', 'voiture3']
-const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number }[] = [
-  { x: -21, modele: 'monospace', rotY: 0 },
-  { x: -15, modele: 'berline', rotY: 0 },
-  { x: 21, modele: 'berline', rotY: Math.PI },
-  { x: 27, modele: 'monospace', rotY: 0 },
-  { x: 33, modele: 'berline', rotY: 0 },
+const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: CouleurVoiture }[] = [
+  { x: -33, modele: 'berline', rotY: 0, couleur: 'voiture2' },
+  { x: -27, modele: 'police', rotY: 0, couleur: 'voiture3' },
+  { x: -21, modele: 'monospace', rotY: 0, couleur: 'voiture0' },
+  { x: -15, modele: 'berline', rotY: 0, couleur: 'voiture1' },
+  { x: 21, modele: 'berline', rotY: Math.PI, couleur: 'voiture2' },
+  { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
+  { x: 33, modele: 'taxi', rotY: 0, couleur: 'taxi' },
+]
+// Côté sud, de l'autre côté de la chaussée (décor, hors de portée du joueur)
+const STATIONNEMENT_SUD: { x: number; modele: ModeleVoiture; couleur: CouleurVoiture }[] = [
+  { x: -44, modele: 'monospace', couleur: 'voiture1' },
+  { x: -37, modele: 'berline', couleur: 'voiture0' },
+  { x: -25, modele: 'berline', couleur: 'voiture2' },
+  { x: -12, modele: 'berline', couleur: 'voiture3' },
+  { x: -5, modele: 'taxi', couleur: 'taxi' },
+  { x: 9, modele: 'monospace', couleur: 'voiture2' },
+  { x: 16, modele: 'berline', couleur: 'voiture1' },
+  { x: 30, modele: 'monospace', couleur: 'voiture0' },
+  { x: 37, modele: 'berline', couleur: 'voiture2' },
 ]
 
 function banc(x: number, z: number, rotY: number): Piece[] {
@@ -104,13 +128,18 @@ export function Rue() {
     // L'arbre de trottoir devant 784 est décalé (x 22 → 27) pour dégager la
     // vue sur la descente frontale du grand Zal.
     for (const x of [-26, -16, 12, 27]) pc.push(...arbre(x, Z_CONTRE - 0.9, 8))
+    // Arbres ajoutés au bord du trottoir (entre les allées des passants, z 10,4
+    // à 12, et loin des lampadaires) et une seconde rangée côté sud
+    for (const x of [-36, -21, 21.5, 36]) pc.push(...arbreRond(x, Z_CONTRE - 0.9, 7.5))
+    for (let x = -50; x <= 50; x += 10) pc.push(...(x % 20 === 0 ? arbreRond(x + 3, Z_FIN + 15, 8) : arbre(x + 3, Z_FIN + 15, 8.5)))
     for (let x = -48; x <= 48; x += 9) if (Math.abs(x + 2) >= 9) pc.push(...arbre(x + 2, (Z_TERRE + Z_CHAUSSEE) / 2, 9))
     for (let x = -48; x <= 48; x += 11) pc.push(...arbre(x, Z_FIN + 3, 8))
     // Lampadaires
     for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
     for (const x of [-20, 0, 20]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
-    STATIONNEMENT.forEach((v, i) => pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, COULEURS[i % 4])))
+    for (const v of STATIONNEMENT) pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, v.couleur))
+    for (const v of STATIONNEMENT_SUD) pc.push(...voitureGaree(v.modele, v.x, -0.15, Z_FIN + 7.5, Math.PI, v.couleur))
     // Bancs du terre-plein (décor)
     for (const x of [-12, -3, 8]) pc.push(...banc(x, Z_TERRE + 1.0, 0))
     return pc
@@ -119,6 +148,7 @@ export function Rue() {
   return (
     <>
       <Pieces pieces={pieces} />
+      <Circulation zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} y={-A.bordure} />
       <SolLointain />
       {/* Limites de la zone jouable */}
       <Invisible taille={[L, 6, 0.3]} position={[0, 3, Z_CHAUSSEE - 0.2]} />

@@ -1,17 +1,16 @@
 import * as THREE from 'three'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import type { Piece, V3 } from '../primitives'
 
-// Deux modèles de voitures garées, modélisés en code (aucun fichier à
-// télécharger) : une berline et un monospace familial, silhouettes génériques
-// sans marque. Chaque modèle est construit une seule fois en repère local
-// (avant vers +x, sol à y = 0), puis posé à chaque emplacement ; Pieces
-// fusionne ensuite toutes les voitures par matériau (quelques appels de dessin
-// pour toute la rue).
+// Véhicules modélisés en code (aucun fichier à télécharger) : berline,
+// monospace familial, voiture de police et camion de pompiers, silhouettes
+// génériques sans marque ni logo. Chaque modèle est construit une seule fois en
+// repère local (avant vers +x, sol à y = 0), puis posé à chaque emplacement ;
+// Pieces fusionne ensuite tous les véhicules garés par matériau.
 
-export type CouleurVoiture = 'voiture0' | 'voiture1' | 'voiture2' | 'voiture3'
-type PieceLocale = { geo: THREE.BufferGeometry; m: Piece['m'] | 'carrosserie' }
-
-const R_ROUE = 0.33
+export type CouleurVoiture = 'voiture0' | 'voiture1' | 'voiture2' | 'voiture3' | 'taxi'
+type MatLocal = Piece['m'] | 'carrosserie'
+type PieceLocale = { geo: THREE.BufferGeometry; m: MatLocal }
 
 function extrusion(points: [number, number][], largeur: number, biseau = 0.05) {
   const forme = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)))
@@ -30,14 +29,14 @@ function extrusion(points: [number, number][], largeur: number, biseau = 0.05) {
 
 const boite = (w: number, h: number, d: number, x: number, y: number, z: number) => new THREE.BoxGeometry(w, h, d).translate(x, y, z)
 
-function roues(empattement: number, voie: number): PieceLocale[] {
+function roues(essieux: number[], voie: number, r = 0.33): PieceLocale[] {
   const pc: PieceLocale[] = []
-  for (const x of [-empattement / 2, empattement / 2])
+  for (const x of essieux)
     for (const s of [-1, 1]) {
       const z = (s * voie) / 2
-      pc.push({ geo: new THREE.CylinderGeometry(R_ROUE, R_ROUE, 0.24, 16).rotateX(Math.PI / 2).translate(x, R_ROUE, z), m: 'noir' })
+      pc.push({ geo: new THREE.CylinderGeometry(r, r, 0.24 + r * 0.2, 16).rotateX(Math.PI / 2).translate(x, r, z), m: 'noir' })
       // Jante, légèrement en saillie côté extérieur
-      pc.push({ geo: new THREE.CylinderGeometry(0.2, 0.2, 0.04, 12).rotateX(Math.PI / 2).translate(x, R_ROUE, z + s * 0.11), m: 'zinc' })
+      pc.push({ geo: new THREE.CylinderGeometry(r * 0.6, r * 0.6, 0.04, 12).rotateX(Math.PI / 2).translate(x, r, z + s * (0.13 + r * 0.1)), m: 'zinc' })
     }
   return pc
 }
@@ -69,9 +68,24 @@ function berline(): PieceLocale[] {
     },
     { geo: extrusion([[1.25, 0.9], [0.35, 1.38], [-0.8, 1.4], [-1.4, 0.95]], 1.56, 0.04), m: 'vitre' },
     { geo: boite(1.2, 0.05, 1.5, -0.22, 1.42, 0), m: 'carrosserie' },
-    ...roues(2.8, 1.62),
+    ...roues([-1.4, 1.4], 1.62),
     ...habillage({ avant: L + 0.02, arriere: -L - 0.02, hFeu: 0.68, demiLargeur: 0.9, retro: [1.05, 1.0] }),
   ]
+}
+
+// Taxi : berline jaune avec enseigne de toit
+function taxi(): PieceLocale[] {
+  return [...berline(), { geo: boite(0.25, 0.16, 0.7, -0.1, 1.53, 0), m: 'phare' }]
+}
+
+// Voiture de police générique : berline blanche, bande bleue, rampe de gyrophares
+function police(): PieceLocale[] {
+  const pc = berline()
+  for (const s of [-1, 1]) pc.push({ geo: boite(4.2, 0.14, 0.02, 0, 0.66, s * 0.94), m: 'policeBleu' })
+  pc.push({ geo: boite(0.3, 0.1, 1.1, 0.1, 1.5, 0), m: 'noir' })
+  pc.push({ geo: boite(0.26, 0.1, 0.5, 0.1, 1.58, -0.27), m: 'gyroRouge' })
+  pc.push({ geo: boite(0.26, 0.1, 0.5, 0.1, 1.58, 0.27), m: 'gyroBleu' })
+  return pc
 }
 
 // Monospace familial : environ 5,15 × 1,95 × 1,8 m
@@ -81,7 +95,7 @@ function monospace(): PieceLocale[] {
     { geo: extrusion([[-L, 0.32], [L, 0.32], [L + 0.03, 0.6], [L - 0.1, 0.84], [1.6, 1.02], [-L + 0.05, 1.05], [-L - 0.03, 0.62]], 1.92), m: 'carrosserie' },
     { geo: extrusion([[1.6, 1.02], [0.85, 1.66], [-L + 0.25, 1.7], [-L + 0.05, 1.05]], 1.7, 0.04), m: 'vitre' },
     { geo: boite(3.25, 0.06, 1.66, -0.75, 1.74, 0), m: 'carrosserie' },
-    ...roues(3.0, 1.7),
+    ...roues([-1.5, 1.5], 1.7),
     ...habillage({ avant: L + 0.02, arriere: -L - 0.02, hFeu: 0.74, demiLargeur: 0.96, retro: [1.4, 1.1] }),
   ]
   for (const s of [-1, 1]) {
@@ -92,16 +106,49 @@ function monospace(): PieceLocale[] {
   return pc
 }
 
-const MODELES = { berline: berline(), monospace: monospace() }
+// Camion de pompiers générique : environ 9,6 × 2,5 × 3,3 m, échelle sur le toit
+function pompiers(): PieceLocale[] {
+  const pc: PieceLocale[] = [
+    // Cabine (avant plat, léger arrondi)
+    { geo: extrusion([[2.5, 0.55], [4.75, 0.55], [4.8, 1.3], [4.7, 2.95], [2.5, 3.0]], 2.5, 0.08), m: 'rougePompier' },
+    // Caisse arrière avec coffres
+    { geo: boite(7.1, 2.3, 2.46, -1.05, 1.7, 0), m: 'rougePompier' },
+    { geo: boite(0.08, 1.0, 2.1, 4.78, 2.35, 0), m: 'vitre' },
+    ...roues([3.4, -2.0, -3.3], 2.1, 0.5),
+    // Pare-chocs, phares, plaque
+    { geo: boite(0.25, 0.3, 2.5, 4.85, 0.75, 0), m: 'zinc' },
+    { geo: boite(0.06, 0.16, 0.4, 4.83, 1.15, 0.85), m: 'phare' },
+    { geo: boite(0.06, 0.16, 0.4, 4.83, 1.15, -0.85), m: 'phare' },
+    { geo: boite(0.06, 0.16, 0.3, -4.62, 1.0, 0.95), m: 'feuArriere' },
+    { geo: boite(0.06, 0.16, 0.3, -4.62, 1.0, -0.95), m: 'feuArriere' },
+    // Rampe de gyrophares de la cabine
+    { geo: boite(0.35, 0.16, 1.9, 4.2, 3.1, 0), m: 'gyroRouge' },
+  ]
+  for (const s of [-1, 1]) {
+    // Fenêtres de cabine, bande blanche, poignées de coffres
+    pc.push({ geo: boite(1.4, 0.8, 0.04, 3.6, 2.4, s * 1.27), m: 'vitre' })
+    pc.push({ geo: boite(9.4, 0.14, 0.04, -0.05, 1.25, s * 1.26), m: 'voiture3' })
+    for (const x of [-3.6, -2.1, -0.6, 0.9]) pc.push({ geo: boite(1.3, 1.5, 0.03, x, 1.9, s * 1.245), m: 'zinc' })
+    // Montants de l'échelle
+    pc.push({ geo: boite(7.4, 0.08, 0.08, -0.9, 3.05, s * 0.45), m: 'zinc' })
+  }
+  for (let x = -4.4; x <= 2.6; x += 0.5) pc.push({ geo: boite(0.05, 0.05, 0.9, x, 3.05, 0), m: 'zinc' })
+  return pc
+}
+
+const MODELES = { berline: berline(), monospace: monospace(), taxi: taxi(), police: police(), pompiers: pompiers() }
 export type ModeleVoiture = keyof typeof MODELES
 
 // Dimensions hors tout (longueur, hauteur, largeur), pour les collisions
 export const GABARIT: Record<ModeleVoiture, [number, number, number]> = {
   berline: [4.75, 1.45, 1.82],
+  taxi: [4.75, 1.6, 1.82],
+  police: [4.75, 1.65, 1.9],
   monospace: [5.15, 1.8, 1.95],
+  pompiers: [9.7, 3.3, 2.6],
 }
 
-// Pose un modèle : y0 = niveau de la chaussée, rotY = cap (0 : avant vers +x)
+// Pose un modèle garé : y0 = niveau de la chaussée, rotY = cap (0 : avant vers +x)
 export function voitureGaree(modele: ModeleVoiture, x: number, y0: number, z: number, rotY: number, couleur: CouleurVoiture): Piece[] {
   return MODELES[modele].map((p) => ({
     geo: p.geo,
@@ -109,4 +156,17 @@ export function voitureGaree(modele: ModeleVoiture, x: number, y0: number, z: nu
     r: [0, rotY, 0] as V3,
     m: p.m === 'carrosserie' ? couleur : p.m,
   }))
+}
+
+// Géométries d'un modèle fusionnées par matériau, pour un véhicule qui roule
+// (un seul objet déplacé par image, quelques appels de dessin par véhicule)
+export function geometriesParMateriau(modele: ModeleVoiture, couleur: CouleurVoiture): [Piece['m'], THREE.BufferGeometry][] {
+  const parMat = new Map<Piece['m'], THREE.BufferGeometry[]>()
+  for (const p of MODELES[modele]) {
+    const m = p.m === 'carrosserie' ? couleur : p.m
+    const g = p.geo.index ? p.geo.toNonIndexed() : p.geo.clone()
+    for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(k)) g.deleteAttribute(k)
+    parMat.set(m, [...(parMat.get(m) ?? []), g])
+  }
+  return [...parMat].map(([m, geos]) => [m, mergeGeometries(geos)])
 }

@@ -83,6 +83,12 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     // Feux des voitures garées (éteints, légèrement lumineux)
     phare: new THREE.MeshStandardMaterial({ color: '#f4f1e6', emissive: '#fff6dc', emissiveIntensity: 0.15, roughness: 0.2 }),
     feuArriere: new THREE.MeshStandardMaterial({ color: '#8e1414', emissive: '#5a0808', emissiveIntensity: 0.3, roughness: 0.3 }),
+    taxi: new THREE.MeshStandardMaterial({ color: '#f2b705', metalness: 0.5, roughness: 0.35 }),
+    policeBleu: new THREE.MeshStandardMaterial({ color: '#1d3f8f', roughness: 0.4 }),
+    gyroRouge: new THREE.MeshStandardMaterial({ color: '#d01818', emissive: '#ff2020', emissiveIntensity: 0.8, roughness: 0.3 }),
+    gyroBleu: new THREE.MeshStandardMaterial({ color: '#1838d0', emissive: '#2050ff', emissiveIntensity: 0.8, roughness: 0.3 }),
+    rougePompier: new THREE.MeshStandardMaterial({ color: '#b3121b', metalness: 0.4, roughness: 0.4 }),
+    feuillageFonce: new THREE.MeshStandardMaterial({ color: '#3b5a2a', roughness: 1 }),
   }
 }
 
