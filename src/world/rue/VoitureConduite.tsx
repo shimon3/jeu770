@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CuboidCollider, RigidBody, useRapier, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
-import { useMateriaux } from '../materiaux'
 import { useInteractif } from '../interaction'
 import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 import { joystick, toucheAction, touche } from '../../player/entrees'
 import { conduite, FILTRE_VOITURE } from './conduite'
 import { evenementMission } from '../../missions/missions'
-import { GABARIT, geometriesParMateriau, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { GABARIT, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { CorpsVoiture } from './modelesRue'
 
 // Voiture que le joueur peut prendre (E) pour se promener : ZQSD/WASD ou
 // joystick, E pour descendre. Physique d'arcade : un contrôleur de personnage
@@ -30,8 +30,6 @@ const axeY = new THREE.Vector3(0, 1, 0)
 type Props = { id?: string; modele: ModeleVoiture; couleur: CouleurVoiture; x: number; z: number; y: number; cap: number }
 
 export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z, y, cap }: Props) {
-  const mats = useMateriaux()
-  const geos = useMemo(() => geometriesParMateriau(modele, couleur), [modele, couleur])
   const [l, h, w] = GABARIT[modele]
   const { world } = useRapier()
   const corps = useRef<RapierRigidBody>(null)
@@ -166,9 +164,7 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
   return (
     <>
       <group ref={groupe} position={[x, y, z]} rotation={[0, cap, 0]}>
-        {geos.map(([m, g]) => (
-          <mesh key={m} geometry={g} material={mats[m]} castShadow receiveShadow />
-        ))}
+        <CorpsVoiture modele={modele} couleur={couleur} />
       </group>
       <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={[x, y + DECOLLE + (h - DECOLLE) / 2, z]} rotation={[0, cap, 0]}>
         <CuboidCollider args={[l / 2, (h - DECOLLE) / 2, w / 2]} />

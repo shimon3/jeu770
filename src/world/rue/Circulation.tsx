@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CuboidCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
-import { useMateriaux } from '../materiaux'
 import { joueur } from '../../state/store'
-import { GABARIT, geometriesParMateriau, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { GABARIT, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { CorpsVoiture } from './modelesRue'
 
 // Circulation d'Eastern Parkway, à droite comme à New York : sens -x côté 770,
 // sens +x côté sud, sur les deux contre-allées et la chaussée centrale.
@@ -38,8 +38,6 @@ export function devant(e: Etat, sens: number) {
 }
 
 function VehiculeRoulant({ modele, couleur, z, vitesse, x0, y, collision }: Vehicule & { y: number }) {
-  const mats = useMateriaux()
-  const geos = useMemo(() => geometriesParMateriau(modele, couleur), [modele, couleur])
   const [l, h, w] = GABARIT[modele]
   const groupe = useRef<THREE.Group>(null)
   const corps = useRef<RapierRigidBody>(null)
@@ -63,9 +61,7 @@ function VehiculeRoulant({ modele, couleur, z, vitesse, x0, y, collision }: Vehi
   return (
     <>
       <group ref={groupe} position={[x0, y, z]} rotation={[0, sens > 0 ? 0 : Math.PI, 0]}>
-        {geos.map(([m, g]) => (
-          <mesh key={m} geometry={g} material={mats[m]} receiveShadow />
-        ))}
+        <CorpsVoiture modele={modele} couleur={couleur} ombre={false} />
       </group>
       {collision && (
         <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={[x0, y + h / 2, z]}>

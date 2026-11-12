@@ -13,6 +13,7 @@ import { GABARIT, voitureGaree, type CouleurVoiture, type ModeleVoiture } from '
 import { Circulation } from './Circulation'
 import { abriBus, kiosqueJournaux } from './mobilier'
 import { VoitureConduite } from './VoitureConduite'
+import { aUnModele, ArbresRue, CorpsVoiture } from './modelesRue'
 import { LigneBus } from './Bus'
 import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
@@ -52,16 +53,26 @@ function lampadaire(x: number, z: number): Piece[] {
 
 // Seconde essence d'arbre (houppier plus rond et plus sombre) pour varier
 // l'alignement
-function arbreRond(x: number, z: number, h = 7, y = 0): Piece[] {
-  const pc: Piece[] = [{ geo: new THREE.CylinderGeometry(0.15, 0.22, h * 0.5, 7), p: [x, y + h * 0.25, z], m: 'tronc' }]
-  pc.push({ geo: new THREE.IcosahedronGeometry(0.34 * h, 1), p: [x, y + 0.7 * h, z], m: 'feuillageFonce' })
-  pc.push({ geo: new THREE.IcosahedronGeometry(0.22 * h, 1), p: [x + 0.18 * h, y + 0.62 * h, z - 0.1 * h], m: 'feuillageFonce' })
-  return pc
-}
 
 // Véhicules garés le long de la contre-allée (chaussée à y = -0.15), sens de
 // stationnement varié. Aucun dans l'axe du point de départ (x 8 à 19).
 // Collisions dans Rue().
+// Arbres d'alignement (modèles Meshy : platane et févier). Choix de jeu
+// (photos 1 et 2 fournies par Samuel) : l'arbre qui, en réalité, masque la
+// façade du 770 est retiré ; aucun arbre dans l'axe de la façade (|x| < 9) ;
+// l'arbre de trottoir devant 784 est décalé (x 22 → 27) pour dégager la
+// descente du grand Zal. Mêmes positions que les arbres dessinés en code.
+const ARBRES = (() => {
+  const platanes: { x: number; z: number; h: number }[] = []
+  const feviers: { x: number; z: number; h: number }[] = []
+  for (const x of [-26, -16, 12, 27]) platanes.push({ x, z: Z_CONTRE - 0.9, h: 8 })
+  for (const x of [-36, -21, 21.5, 36]) feviers.push({ x, z: Z_CONTRE - 0.9, h: 7.5 })
+  for (let x = -50; x <= 50; x += 10) (x % 20 === 0 ? feviers : platanes).push({ x: x + 3, z: Z_FIN + 15, h: x % 20 === 0 ? 8 : 8.5 })
+  for (let x = -48; x <= 48; x += 9) if (Math.abs(x + 2) >= 9) platanes.push({ x: x + 2, z: (Z_TERRE + Z_CHAUSSEE) / 2, h: 9 })
+  for (let x = -48; x <= 48; x += 11) platanes.push({ x, z: Z_FIN + 3, h: 8 })
+  return { platanes, feviers }
+})()
+
 const Y_CONTRE = -0.15
 const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: CouleurVoiture }[] = [
   // Arrêt de bus nord (x -31) : zone du bus laissée libre de x -38 à -12
@@ -134,19 +145,14 @@ export function Rue() {
     // planté dans l'axe de la façade (|x| < 9). Les autres sont conservés.
     // L'arbre de trottoir devant 784 est décalé (x 22 → 27) pour dégager la
     // vue sur la descente frontale du grand Zal.
-    for (const x of [-26, -16, 12, 27]) pc.push(...arbre(x, Z_CONTRE - 0.9, 8))
-    // Arbres ajoutés au bord du trottoir (entre les allées des passants, z 10,4
-    // à 12, et loin des lampadaires) et une seconde rangée côté sud
-    for (const x of [-36, -21, 21.5, 36]) pc.push(...arbreRond(x, Z_CONTRE - 0.9, 7.5))
-    for (let x = -50; x <= 50; x += 10) pc.push(...(x % 20 === 0 ? arbreRond(x + 3, Z_FIN + 15, 8) : arbre(x + 3, Z_FIN + 15, 8.5)))
-    for (let x = -48; x <= 48; x += 9) if (Math.abs(x + 2) >= 9) pc.push(...arbre(x + 2, (Z_TERRE + Z_CHAUSSEE) / 2, 9))
-    for (let x = -48; x <= 48; x += 11) pc.push(...arbre(x, Z_FIN + 3, 8))
+    // (arbres : modèles Meshy en instances, voir ARBRES plus bas)
     // Lampadaires
     for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
     for (const x of [-20, 0, 20]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
-    for (const v of STATIONNEMENT) pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, v.couleur))
-    for (const v of STATIONNEMENT_SUD) pc.push(...voitureGaree(v.modele, v.x, -0.15, Z_FIN + 7.5, Math.PI, v.couleur))
+    // (les modèles Meshy sont dessinés à part, dans le rendu ci-dessous)
+    for (const v of STATIONNEMENT) if (!aUnModele(v.modele)) pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, v.couleur))
+    for (const v of STATIONNEMENT_SUD) if (!aUnModele(v.modele)) pc.push(...voitureGaree(v.modele, v.x, -0.15, Z_FIN + 7.5, Math.PI, v.couleur))
     // Arrêts de bus des deux côtés et kiosque à journaux (bord du trottoir,
     // hors des allées des passants z 8,0 à 10,4)
     pc.push(...abriBus(-31, 11.2, 0))
@@ -160,6 +166,18 @@ export function Rue() {
   return (
     <>
       <Pieces pieces={pieces} />
+      <ArbresRue platanes={ARBRES.platanes} feviers={ARBRES.feviers} />
+      {/* Voitures garées : modèles Meshy */}
+      {STATIONNEMENT.filter((v) => aUnModele(v.modele)).map((v) => (
+        <group key={`n${v.x}`} position={[v.x, Y_CONTRE, Z_CONTRE + 1.2]} rotation={[0, v.rotY, 0]}>
+          <CorpsVoiture modele={v.modele} couleur={v.couleur} />
+        </group>
+      ))}
+      {STATIONNEMENT_SUD.filter((v) => aUnModele(v.modele)).map((v) => (
+        <group key={`s${v.x}`} position={[v.x, -0.15, Z_FIN + 7.5]} rotation={[0, Math.PI, 0]}>
+          <CorpsVoiture modele={v.modele} couleur={v.couleur} ombre={false} />
+        </group>
+      ))}
       <Circulation zContreNord={Z_CONTRE + 4.3} zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} zContreSud={Z_FIN + 10.5} y={-A.bordure} />
       <SolLointain />
       {/* Limites de la zone jouable */}
