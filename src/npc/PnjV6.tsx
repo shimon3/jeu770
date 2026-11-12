@@ -18,7 +18,7 @@ import { adoucirAnimationsBras } from '../player/animationsV6'
 
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
-const DIST_OMBRE = 18
+const DIST_OMBRE = 8
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
 const POS = new THREE.Vector3()
