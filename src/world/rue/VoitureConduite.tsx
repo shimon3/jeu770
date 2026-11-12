@@ -36,6 +36,7 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
   const corps = useRef<RapierRigidBody>(null)
   const groupe = useRef<THREE.Group>(null)
   const [garee, setGaree] = useState({ x, z, y, cap })
+  const vue = useGame((s) => s.vue)
   const [active, setActive] = useState(false)
 
   const ctrlRef = useRef<ReturnType<typeof world.createCharacterController> | null>(null)
@@ -183,7 +184,7 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
   return (
     <>
       <group ref={groupe} position={[x, y, z]} rotation={[0, cap, 0]}>
-        <CorpsVoiture modele={modele} couleur={couleur} />
+        <CorpsVoiture modele={modele} couleur={couleur} interieur={active && vue === '1re'} />
       </group>
       <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={[x, y + DECOLLE + (h - DECOLLE) / 2, z]} rotation={[0, cap, 0]}>
         <CuboidCollider args={[l / 2, (h - DECOLLE) / 2, w / 2]} />

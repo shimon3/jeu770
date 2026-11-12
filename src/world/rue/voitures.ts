@@ -170,7 +170,7 @@ function mitzvahTank(): PieceLocale[] {
   const L = 4
   // Vitre latérale fine (forme en profil x, y), posée de chaque côté à ±z
   const vitreCote = (pts: [number, number][], z: number): PieceLocale[] =>
-    [-1, 1].map((s) => ({ geo: extrusion(pts, 0.03, 0.005).translate(0, 0, s * z), m: 'vitre' as MatLocal }))
+    [-1, 1].map((s) => ({ geo: extrusion(pts, 0.03, 0.005).translate(0, 0, s * z), m: 'vitreVehicule' as MatLocal }))
   const pc: PieceLocale[] = [
     // Cabine de fourgon (plus étroite) : capot, pare-brise incliné
     { geo: extrusion([[2.25, 0.45], [L + 0.05, 0.45], [L + 0.1, 1.28], [3.45, 1.42], [2.82, 2.28], [2.25, 2.28]], 2.1, 0.07), m: 'turquoiseTank' },
@@ -180,7 +180,7 @@ function mitzvahTank(): PieceLocale[] {
       m: 'turquoiseTank',
     },
     // Pare-brise (bande vitrée suivant la pente)
-    { geo: extrusion([[3.47, 1.44], [2.84, 2.27], [2.8, 2.22], [3.42, 1.4]], 1.9, 0.01), m: 'vitre' },
+    { geo: extrusion([[3.47, 1.44], [2.84, 2.27], [2.8, 2.22], [3.42, 1.4]], 1.9, 0.01), m: 'vitreVehicule' },
     // Calandre, phares et pare-chocs
     { geo: boite(0.05, 0.42, 1.2, L + 0.12, 0.98, 0), m: 'noir' },
     { geo: boite(0.16, 0.22, 2.12, L + 0.1, 0.55, 0), m: 'zinc' },
@@ -213,6 +213,10 @@ function mitzvahTank(): PieceLocale[] {
     // Galerie de toit
     pc.push({ geo: boite(5.5, 0.05, 0.05, -0.6, 3.6, s * 1.0), m: 'zinc' })
   }
+  // Tableau de bord et montants du pare-brise (vus depuis le siège)
+  pc.push({ geo: boite(0.35, 0.12, 1.9, 3.3, 1.5, 0), m: 'noir' })
+  for (const s of [-1, 1]) pc.push({ geo: new THREE.BoxGeometry(0.08, 1.05, 0.08).rotateZ(0.65).translate(3.15, 1.85, s * 0.97), m: 'turquoiseTank' })
+  pc.push({ geo: boite(0.1, 0.1, 1.95, 2.83, 2.24, 0), m: 'turquoiseTank' })
   // Échelle arrière
   for (const y of [1.0, 1.5, 2.0, 2.5, 3.0]) pc.push({ geo: boite(0.04, 0.04, 0.45, -L - 0.12, y, -0.7), m: 'zinc' })
   for (const z of [-0.92, -0.48]) pc.push({ geo: boite(0.04, 2.6, 0.04, -L - 0.12, 2.0, z), m: 'zinc' })

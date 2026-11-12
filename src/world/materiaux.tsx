@@ -100,6 +100,8 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     vitrail: new THREE.MeshStandardMaterial({ map: vitrail, color: '#9fb4c0', metalness: 0.4, roughness: 0.15 }),
     // Même verre au plomb, translucide : fenêtres des pièces modélisées (on voit dehors)
     vitrailClair: new THREE.MeshStandardMaterial({ map: vitrail, color: '#c9d6dc', metalness: 0.1, roughness: 0.1, transparent: true, opacity: 0.38, depthWrite: false }),
+    // Pare-brise des véhicules : transparent, pour la vue du conducteur (V)
+    vitreVehicule: new THREE.MeshStandardMaterial({ color: '#9fc4d6', metalness: 0.3, roughness: 0.05, transparent: true, opacity: 0.22, depthWrite: false }),
     vitre: new THREE.MeshStandardMaterial({ color: '#33424c', metalness: 0.6, roughness: 0.1 }),
     vitreEclairee: new THREE.MeshStandardMaterial({ color: '#e8d6a8', emissive: '#f0d090', emissiveIntensity: 0.5 }),
     tronc: new THREE.MeshStandardMaterial({ color: '#4a3b2e', roughness: 1 }),

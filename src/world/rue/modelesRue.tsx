@@ -26,13 +26,13 @@ export function aUnModele(modele: ModeleVoiture) {
   return !!VOITURES_GLB[modele]
 }
 
-function CorpsProcedural({ modele, couleur, ombre }: { modele: ModeleVoiture; couleur: CouleurVoiture; ombre: boolean }) {
+function CorpsProcedural({ modele, couleur, ombre, interieur = false }: { modele: ModeleVoiture; couleur: CouleurVoiture; ombre: boolean; interieur?: boolean }) {
   const mats = useMateriaux()
   const geos = useMemo(() => geometriesParMateriau(modele, couleur), [modele, couleur])
   return (
     <>
       {geos.map(([m, g]) => (
-        <mesh key={m} geometry={g} material={mats[m]} castShadow={ombre} receiveShadow />
+        <mesh key={m} geometry={g} material={interieur && m === 'vitre' ? mats.vitreVehicule : mats[m]} castShadow={ombre} receiveShadow />
       ))}
     </>
   )
@@ -56,7 +56,10 @@ function CorpsGlb({ url, ombre }: { url: string; ombre: boolean }) {
 }
 
 // Corps d'une voiture : modèle Meshy s'il existe, sinon voiture dessinée en code
-export function CorpsVoiture({ modele, couleur, ombre = true }: { modele: ModeleVoiture; couleur: CouleurVoiture; ombre?: boolean }) {
+// `interieur` : vue du conducteur (V) ; le modèle Meshy a des vitres opaques,
+// on montre alors la voiture dessinée en code, vitres transparentes
+export function CorpsVoiture({ modele, couleur, ombre = true, interieur = false }: { modele: ModeleVoiture; couleur: CouleurVoiture; ombre?: boolean; interieur?: boolean }) {
+  if (interieur) return <CorpsProcedural modele={modele} couleur={couleur} ombre={ombre} interieur />
   const url = VOITURES_GLB[modele]
   const repli = <CorpsProcedural modele={modele} couleur={couleur} ombre={ombre} />
   if (!url) return repli

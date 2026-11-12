@@ -263,7 +263,15 @@ export function Joueur() {
     const cp = Math.cos(s.pitch)
     f3.set(cfx * cp, Math.sin(s.pitch), cfz * cp)
     if (vue === '1re') {
-      camera.position.set(nouvelle.x, nouvelle.y - CENTRE + (conduite.active ? 0.85 : OEIL), nouvelle.z)
+      if (conduite.active) {
+        // Siège du conducteur (à gauche, à l'avant) : on voit à travers le pare-brise
+        const tank = conduite.vehicule === 'mitzvah-tank'
+        const av = tank ? 2.85 : 0.15
+        const g = -0.4
+        const sc = Math.sin(conduite.cap)
+        const cc = Math.cos(conduite.cap)
+        camera.position.set(conduite.x + cc * av + sc * g, conduite.y + (tank ? 2.0 : 1.15), conduite.z - sc * av + cc * g)
+      } else camera.position.set(nouvelle.x, nouvelle.y - CENTRE + OEIL, nouvelle.z)
       cible.copy(camera.position).add(f3)
       camera.lookAt(cible)
     } else {
