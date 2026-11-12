@@ -13,13 +13,13 @@ const CHOIX = pnjModeleChoisi()
 
 export type ModelePnj = 'adulte' | ModeleLeger
 
-type Props = { id: string; anim: MutableRefObject<Anim>; peau?: string; barbe?: string; modele?: ModelePnj; etude?: boolean }
+type Props = { id: string; anim: MutableRefObject<Anim>; peau?: string; barbe?: string; modele?: ModelePnj; etude?: boolean; poussette?: boolean }
 
-export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte', etude = false }: Props) {
+export function CorpsPnj({ id, anim, peau, barbe, modele = 'adulte', etude = false, poussette = false }: Props) {
   if (modele !== 'adulte')
     return (
       <Suspense fallback={null}>
-        <PnjEnfant id={id} anim={anim} modele={modele} />
+        <PnjEnfant id={id} anim={anim} modele={modele} poussette={poussette} />
       </Suspense>
     )
   const ancien = <Avatar anim={anim} peau={peau} barbe={barbe} />

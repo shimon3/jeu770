@@ -31,7 +31,7 @@ function FamillesRue() {
   return (
     <>
       <PnjZal id="enfant-rue-1" modele="enfant" parle={false} position={[-12, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[-12, 9.8], [-1, 9.8]]} />
-      <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
+      <PnjZal id="femme-rue-1" modele="femme" poussette parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
       <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 9.6]} rotationY={Math.PI / 2} chemin={[[-30, 9.6], [-19, 9.6]]} />
       {/* Rue animée : passants (allées z 8 et 10,4) et groupes qui discutent
           puis repartent (jamais plus de 3 min 20 arrêtés) */}
@@ -68,6 +68,8 @@ function FamillesRue() {
       />
       <PnjZal id="femme-rue-2" modele="femme" parle={false} position={[36, 0, 8.2]} rotationY={-Math.PI / 2} chemin={[[36, 8.2], [22, 8.2]]} />
       <PnjZal id="fille-rue-3" modele="fille" parle={false} position={[36, 0, 8.9]} rotationY={-Math.PI / 2} chemin={[[36, 8.9], [22, 8.9]]} />
+      {/* Vieux hassid : marche lente */}
+      <PnjZal id="vieux-rue-1" modele="vieux" parle={false} vitesse={0.7} position={[24, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[24, 9.8], [34, 9.8]]} />
       <PnjZal id="enfant-rue-3" modele="enfant" parle={false} position={[-36, 0, 8.0]} rotationY={Math.PI / 2} chemin={[[-36, 8.0], [-24, 8.0]]} />
     </>
   )
