@@ -1,3 +1,4 @@
+import { DOLLARS_DEPART } from './missions/boutique'
 import { useCallback, useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
@@ -80,6 +81,7 @@ export default function App() {
     st.set({
       missions: !nouvelle && s ? s.missions : {},
       inventaire: !nouvelle && s && Array.isArray(s.inventaire) ? s.inventaire : [],
+      dollars: !nouvelle && s && typeof s.dollars === 'number' ? s.dollars : DOLLARS_DEPART,
       depart: DEPART_PAR_DEFAUT,
     })
     st.set({ ecran: 'jeu', pause: false, panneau: null, siege: null, vue: '3e' })

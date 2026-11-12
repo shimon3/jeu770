@@ -1,6 +1,7 @@
 import donnees from '../config/missions.json'
 import { joueur, useGame } from '../state/store'
 import { t } from '../i18n'
+import { recompenserMission } from './boutique'
 import { ecrireSauvegarde } from './sauvegarde'
 
 export type Etape = { type: 'interagir' | 'zone'; cible: string; texte: string }
@@ -23,6 +24,7 @@ export function sauvegarder(): boolean {
   return ecrireSauvegarde({
     missions: s.missions,
     inventaire: s.inventaire,
+    dollars: s.dollars,
     langue: s.langue,
     son: s.son,
     position: [...joueur.position],
@@ -44,6 +46,7 @@ export function demarrerMission(id: string) {
 export function evenementMission(type: Etape['type'], cible: string) {
   const s = useGame.getState()
   let change = false
+  let gagnes = 0
   const suivant = { ...s.missions }
   for (const [id, etat] of Object.entries(s.missions)) {
     if (etat.etat !== 'active') continue
@@ -54,6 +57,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
     if (etat.etape + 1 >= m.etapes.length) {
       suivant[id] = { etat: 'terminee', etape: m.etapes.length }
       s.notifier('mission.terminee', { titre: t(m.titre) })
+      gagnes++
     } else {
       suivant[id] = { etat: 'active', etape: etat.etape + 1 }
       s.notifier('mission.etape')
@@ -61,6 +65,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
   }
   if (change) {
     s.set({ missions: suivant })
+    for (let i = 0; i < gagnes; i++) recompenserMission()
     sauvegarder()
   }
 }

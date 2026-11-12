@@ -535,3 +535,29 @@ html.mode-tactile .hud-fermer {
   color: #ffd23a;
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
 }
+
+/* Compteur de dollars (en haut à droite, au-dessus de la mission) : ouvre le magasin */
+.hud-dollars {
+  position: absolute;
+  top: 16px;
+  inset-inline-end: calc(16px + min(300px, calc(100% - 32px)) + 10px);
+  pointer-events: auto;
+  background: #1f5d2c;
+  color: #fff;
+  border: 2px solid #ffd23a;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+html.mode-tactile .hud-dollars {
+  top: calc(var(--sh) + 10px);
+  inset-inline-end: auto;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+.magasin-liste { list-style: none; padding: 0; }
+.magasin-liste li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; }
+.magasin-liste button:disabled { opacity: 0.45; }
+.magasin-solde { font-weight: 700; }

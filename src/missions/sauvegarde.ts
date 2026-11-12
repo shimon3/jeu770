@@ -6,6 +6,7 @@ const CLE = '770-brooklyn-sauvegarde-v1'
 export type Sauvegarde = {
   missions: Record<string, EtatMission>
   inventaire?: string[]
+  dollars?: number
   langue: Langue
   son: boolean
   position?: Vector3Tuple

@@ -19,6 +19,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const vue = useGame((s) => s.vue)
   const panneau = useGame((s) => s.panneau)
   const notifications = useGame((s) => s.notifications)
+  const dollars = useGame((s) => s.dollars)
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
@@ -39,6 +40,13 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
         {z?.artistique && <span className="badge">{t('hud.artistique')}</span>}
         {z?.calme && <span className="badge calme">{t('hud.calme')}</span>}
       </div>
+      <button
+        className="hud-dollars"
+        aria-label={t('boutique.titre')}
+        onClick={() => useGame.getState().set({ panneau: { type: 'magasin' } })}
+      >
+        💵 {dollars} $
+      </button>
       <div className="hud-mission">
         <div className="hud-mission-titre">{t('hud.mission')}</div>
         {active && etape ? (

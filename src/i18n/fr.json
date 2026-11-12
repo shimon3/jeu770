@@ -187,5 +187,17 @@
   "mivtsaim.tefilines": "Un passant a mis les tefilines !",
   "mivtsaim.echec": "Temps écoulé ! Retourne voir le responsable des mivtsaïm pour réessayer.",
   "mivtsaim.chrono": "Temps restant",
-  "mivtsaim.distance": "Prochain arrêt : {m} m"
+  "mivtsaim.distance": "Prochain arrêt : {m} m",
+  "boutique.titre": "Magasin",
+  "boutique.solde": "Tu as {n} $",
+  "boutique.acheter": "Acheter",
+  "boutique.inventaire": "Mon inventaire",
+  "boutique.siddour": "Siddour",
+  "boutique.tehilim": "Tehilim",
+  "boutique.tsedaka": "Pièce pour la tsedaka",
+  "boutique.dollar": "Dollar de mission",
+  "boutique.recompense": "Mission réussie : +{n} $ !",
+  "boutique.pasAssez": "Pas assez de dollars",
+  "boutique.achete": "Acheté : {objet}",
+  "action.magasin": "Acheter au kiosque"
 }

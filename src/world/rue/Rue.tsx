@@ -223,6 +223,7 @@ export function Rue() {
         return <Invisible key={v.x} taille={[l, h, w]} position={[v.x, Y_CONTRE + h / 2, Z_CONTRE + 1.2]} />
       })}
       <PanneauHistoire />
+      <KiosqueMagasin />
       <BancInteractif id="banc-gauche" x={-5.2} z={Z_TROTTOIR + 0.45} />
       <BancInteractif id="banc-droite" x={4.8} z={Z_TROTTOIR + 0.45} />
     </>
@@ -257,6 +258,14 @@ function SolLointain() {
     return new THREE.ShapeGeometry(f)
   }, [])
   return <mesh geometry={geo} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.4, 0]} material={m.herbe} receiveShadow />
+}
+
+// Kiosque à journaux (-10,5 ; 11,2) : c'est aussi le magasin
+function KiosqueMagasin() {
+  useInteractif('kiosque-magasin', [-10.5, 1, 12.4], 1.8, () => t('action.magasin'), () => {
+    useGame.getState().set({ panneau: { type: 'magasin' } })
+  })
+  return null
 }
 
 // Banc devant le muret (photo Clio) : on peut s'y asseoir

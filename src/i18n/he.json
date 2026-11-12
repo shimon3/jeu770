@@ -187,5 +187,17 @@
   "mivtsaim.tefilines": "עובר אורח הניח תפילין!",
   "mivtsaim.echec": "נגמר הזמן! חזור לאחראי המבצעים כדי לנסות שוב.",
   "mivtsaim.chrono": "זמן שנותר",
-  "mivtsaim.distance": "העצירה הבאה: {m} מ'"
+  "mivtsaim.distance": "העצירה הבאה: {m} מ'",
+  "boutique.titre": "חנות",
+  "boutique.solde": "יש לך {n} $",
+  "boutique.acheter": "לקנות",
+  "boutique.inventaire": "המלאי שלי",
+  "boutique.siddour": "סידור",
+  "boutique.tehilim": "תהילים",
+  "boutique.tsedaka": "מטבע לצדקה",
+  "boutique.dollar": "דולר משימה",
+  "boutique.recompense": "המשימה הצליחה: ‎+{n} $!",
+  "boutique.pasAssez": "אין מספיק דולרים",
+  "boutique.achete": "נקנה: {objet}",
+  "action.magasin": "לקנות בקיוסק"
 }
