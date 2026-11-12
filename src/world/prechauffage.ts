@@ -12,7 +12,7 @@ import * as THREE from 'three'
 // s'appuie sur KHR_parallel_shader_compile) et envoi des textures par
 // tranches de quelques millisecondes, avant d'afficher l'objet.
 
-const BUDGET_MS = 6
+const BUDGET_MS = 16
 
 function texturesDe(objet: THREE.Object3D) {
   const res = new Set<THREE.Texture>()
@@ -53,7 +53,7 @@ export async function prechauffer(gl: THREE.WebGLRenderer, objet: THREE.Object3D
 // scène derrière le menu en PASSES tranches (un objet sur PASSES par image, via
 // les calques), pendant le menu, au lieu d'un seul bloc de plusieurs
 // secondes au premier affichage du jeu.
-const PASSES = 8
+const PASSES = 4
 async function premiersDessins(gl: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, vivant: () => boolean) {
   const objets: THREE.Object3D[] = []
   const lumieres: THREE.Light[] = []
