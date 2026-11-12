@@ -13,6 +13,8 @@ export const conduite = {
   vehicule: null as string | null,
   // Où poser le joueur en descendant (lu une fois par Joueur.tsx)
   sortie: null as [number, number, number] | null,
+  // Descendre du véhicule conduit (bouton E tactile, actions.ts)
+  descendre: null as (() => void) | null,
 }
 
 // Murs qui retiennent le piéton hors de la chaussée centrale : la voiture les

@@ -1,3 +1,4 @@
+import { conduite } from '../world/rue/conduite'
 import { useGame } from '../state/store'
 import { fermerPorteProche } from '../world/Porte'
 
@@ -11,6 +12,7 @@ export function actionJeu(a: Action) {
   if (a === 'e') {
     if (st.panneau) st.set({ panneau: null })
     else if (st.siege) st.set({ siege: null })
+    else if (conduite.active && conduite.descendre) conduite.descendre()
     else if (st.cible) st.interactifs.get(st.cible)?.action()
   } else if (a === 'v') {
     st.set({ vue: st.vue === '3e' ? '1re' : '3e' })

@@ -109,7 +109,11 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
       if (toucheAction(e) === 'e') sortir()
     }
     window.addEventListener('keydown', surTouche)
-    return () => window.removeEventListener('keydown', surTouche)
+    conduite.descendre = sortir
+    return () => {
+      window.removeEventListener('keydown', surTouche)
+      if (conduite.descendre === sortir) conduite.descendre = null
+    }
   }, [active])
 
   useFrame((_, dtBrut) => {
