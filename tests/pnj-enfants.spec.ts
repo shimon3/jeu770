@@ -20,22 +20,29 @@ async function demarrer(page: Page, recherche = '') {
 test.describe('PNJ enfants, fille et femme', () => {
   test.skip(({ isMobile }) => isMobile, 'un contrôle PC suffit')
 
-  test('les 7 PNJ légers se chargent et s\'animent (repos et marche)', async ({ page }) => {
+  test('les 14 PNJ légers se chargent et s\'animent (repos et marche)', async ({ page }) => {
     await demarrer(page)
     await page.evaluate(() => {
       window.__770.teleporter(-8, 0.9, 9)
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
-    await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(7)
+    await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(14)
     const modeles = await page.evaluate(() => [...(window.__pnjLeger?.entries() ?? [])].map(([id, p]) => `${id}:${p.modele}`).sort())
     expect(modeles).toEqual([
       'enfant-rue-1:enfant',
       'enfant-rue-2:enfant',
+      'enfant-rue-3:enfant',
+      'enfant-rue-4:enfant',
+      'enfant-rue-5:enfant',
       'enfant-zal-1:enfant',
       'enfant-zal-2:enfant',
       'femme-rue-1:femme',
+      'femme-rue-2:femme',
+      'femme-rue-3:femme',
       'fille-rue-1:fille',
       'fille-rue-2:fille',
+      'fille-rue-3:fille',
+      'fille-rue-4:fille',
     ])
     await expect.poll(() => page.evaluate(() => window.__pnjLeger?.get('enfant-rue-2')?.clip)).toBe('Idle_11')
     await expect

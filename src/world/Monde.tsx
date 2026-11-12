@@ -33,6 +33,18 @@ function FamillesRue() {
       <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
       <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 10.0]} rotationY={Math.PI / 2} chemin={[[-30, 10.0], [-19, 10.0]]} />
       <PnjZal id="fille-rue-2" modele="fille" parle={false} position={[3.0, 0, 7.6]} rotationY={-0.4} />
+      {/* Rue animée : passants (allées z 8 et 10,4) et petits groupes arrêtés */}
+      <PnjZal id="adulte-rue-1" parle={false} position={[-36, 0, 10.4]} rotationY={Math.PI / 2} chemin={[[-36, 10.4], [-20, 10.4]]} />
+      <PnjZal id="adulte-rue-2" parle={false} position={[36, 0, 10.4]} rotationY={-Math.PI / 2} chemin={[[36, 10.4], [20, 10.4]]} peau="#d2a07f" barbe="#2b1d14" />
+      <PnjZal id="adulte-rue-3" parle={false} position={[-8.5, 0, 7.4]} rotationY={0.84} peau="#c58f6c" barbe="#6b6b6b" />
+      <PnjZal id="adulte-rue-4" parle={false} position={[-7.6, 0, 8.2]} rotationY={0.84 + Math.PI} barbe="#3a2a1e" />
+      <PnjZal id="femme-rue-2" modele="femme" parle={false} position={[36, 0, 8.2]} rotationY={-Math.PI / 2} chemin={[[36, 8.2], [22, 8.2]]} />
+      <PnjZal id="fille-rue-3" modele="fille" parle={false} position={[36, 0, 8.9]} rotationY={-Math.PI / 2} chemin={[[36, 8.9], [22, 8.9]]} />
+      <PnjZal id="enfant-rue-3" modele="enfant" parle={false} position={[-36, 0, 8.0]} rotationY={Math.PI / 2} chemin={[[-36, 8.0], [-24, 8.0]]} />
+      <PnjZal id="femme-rue-3" modele="femme" parle={false} position={[14.5, 0, 9.0]} rotationY={0.3} />
+      <PnjZal id="fille-rue-4" modele="fille" parle={false} position={[15.2, 0, 9.4]} rotationY={-0.2} />
+      <PnjZal id="enfant-rue-4" modele="enfant" parle={false} position={[-18, 0, 8.0]} rotationY={0.93} />
+      <PnjZal id="enfant-rue-5" modele="enfant" parle={false} position={[-17.2, 0, 8.6]} rotationY={0.93 + Math.PI} />
     </>
   )
 }
