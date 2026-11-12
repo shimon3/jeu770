@@ -30,14 +30,14 @@ const ARRETS: { x: number; z: number; passant: [number, number]; regard: number 
 ]
 const RETOUR = { x: 5, z: 13.2 }
 
-export const useChronoMission = create<{ fin: number | null; distance: number | null }>(() => ({ fin: null, distance: null }))
+export const useChronoMission = create<{ fin: number | null; distance: number | null; angle: number | null }>(() => ({ fin: null, distance: null, angle: null }))
 
 function etatMission() {
   return useGame.getState().missions[ID_MISSION_TANK]
 }
 
 // Colonne lumineuse jaune (repère de GTA) : cylindre translucide et anneau au sol
-function Colonne({ x, z }: { x: number; z: number }) {
+function Colonne({ x, z, petite = false }: { x: number; z: number; petite?: boolean }) {
   const mat = useMemo(
     () => new THREE.MeshBasicMaterial({ color: '#ffd23a', transparent: true, opacity: 0.45, depthWrite: false, side: THREE.DoubleSide }),
     [],
@@ -48,7 +48,7 @@ function Colonne({ x, z }: { x: number; z: number }) {
     if (ref.current) mat.opacity = 0.4 + Math.sin(clock.elapsedTime * 3) * 0.1
   })
   return (
-    <group ref={ref} position={[x, 0, z]}>
+    <group ref={ref} position={[x, 0, z]} scale={petite ? [0.25, 1, 0.25] : 1}>
       <mesh position={[0, 4, 0]} material={mat} renderOrder={2}>
         <cylinderGeometry args={[RAYON * 0.55, RAYON * 0.55, 8, 24, 1, true]} />
       </mesh>
@@ -63,11 +63,20 @@ export function MissionTank() {
   const etat = useGame((s) => s.missions[ID_MISSION_TANK])
   const immobile = useRef(0)
 
-  useFrame((_, dt) => {
+  useFrame(({ camera }, dt) => {
     const e = etatMission()
     const chrono = useChronoMission.getState()
     if (!e || e.etat !== 'active') {
-      if (chrono.fin !== null) useChronoMission.setState({ fin: null, distance: null })
+      if (chrono.fin !== null || chrono.angle !== null) useChronoMission.setState({ fin: null, distance: null, angle: null })
+      return
+    }
+    // Étape 0 : pas encore de chrono, mais la flèche guide vers le tank
+    if (e.etape === 0) {
+      const vx = RETOUR.x - camera.position.x
+      const vz = RETOUR.z - camera.position.z
+      const dir = new THREE.Vector3()
+      camera.getWorldDirection(dir)
+      useChronoMission.setState({ distance: Math.round(Math.hypot(vx, vz)), angle: Math.atan2(vx, vz) - Math.atan2(dir.x, dir.z) })
       return
     }
     // Chrono : démarre en montant dans le tank (étape 1)
@@ -89,7 +98,14 @@ export function MissionTank() {
     const px = dans ? conduite.x : cible.x
     const pz = dans ? conduite.z : cible.z
     const d = Math.hypot(px - cible.x, pz - cible.z)
-    useChronoMission.setState({ distance: dans ? Math.round(d) : null })
+    // Flèche à l'écran : direction de la cible par rapport à la caméra
+    const vx = cible.x - camera.position.x
+    const vz = cible.z - camera.position.z
+    const dir = new THREE.Vector3()
+    camera.getWorldDirection(dir)
+    const angle = Math.atan2(vx, vz) - Math.atan2(dir.x, dir.z)
+    useChronoMission.setState({ distance: Math.round(Math.hypot(vx, vz)), angle })
+    void d
     if (dans && d < RAYON && Math.abs(conduite.vitesse) < 1) immobile.current += dt
     else immobile.current = 0
     if (immobile.current >= ARRET_S) {
@@ -125,6 +141,9 @@ export function MissionTank() {
         </>
       )}
       {actif && etape > ARRETS.length && <Colonne x={RETOUR.x} z={RETOUR.z} />}
+      {/* Où commencer : colonne sur le responsable, puis sur le tank */}
+      {!etat && <Colonne x={2.6} z={11.0} petite />}
+      {actif && etape === 0 && <Colonne x={RETOUR.x} z={RETOUR.z} />}
     </>
   )
 }
@@ -132,16 +151,17 @@ export function MissionTank() {
 // Chrono et distance affichés en haut de l'écran pendant la mission
 export function ChronoMission() {
   const t = useT()
-  const { fin, distance } = useChronoMission()
+  const { fin, distance, angle } = useChronoMission()
   const ecran = useGame((s) => s.ecran)
-  if (fin === null || ecran !== 'jeu') return null
-  return <ChronoAffiche t={t} fin={fin} distance={distance} />
+  if ((fin === null && angle === null) || ecran !== 'jeu') return null
+  return <ChronoAffiche t={t} fin={fin} distance={distance} angle={angle} />
 }
 
-function ChronoAffiche({ t, fin, distance }: { t: ReturnType<typeof useT>; fin: number; distance: number | null }) {
+function ChronoAffiche({ t, fin, distance, angle }: { t: ReturnType<typeof useT>; fin: number | null; distance: number | null; angle: number | null }) {
   const ref = useRef<HTMLSpanElement>(null)
   // Mise à jour du texte sans re-rendu React à chaque image
   useEffect(() => {
+    if (fin === null) return
     const id = window.setInterval(() => {
       const ms = Math.max(0, fin - performance.now())
       const mn = Math.floor(ms / 60000)
@@ -152,8 +172,13 @@ function ChronoAffiche({ t, fin, distance }: { t: ReturnType<typeof useT>; fin: 
   }, [fin])
   return (
     <div className="chrono-mission" role="timer" aria-live="off">
-      <div className="chrono-titre">{t('mivtsaim.chrono')}</div>
-      <span ref={ref} className="chrono-temps">5:00</span>
+      {fin !== null && <div className="chrono-titre">{t('mivtsaim.chrono')}</div>}
+      {fin !== null && <span ref={ref} className="chrono-temps">5:00</span>}
+      {angle !== null && (
+        <div className="chrono-fleche" style={{ transform: `rotate(${-angle}rad)` }} aria-hidden="true">
+          ▲
+        </div>
+      )}
       {distance !== null && <div className="chrono-distance">{t('mivtsaim.distance', { m: String(distance) })}</div>}
     </div>
   )

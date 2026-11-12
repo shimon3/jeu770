@@ -528,3 +528,10 @@ html.mode-tactile .hud-fermer {
   font-size: 13px;
   opacity: 0.9;
 }
+
+.chrono-fleche {
+  font-size: 34px;
+  line-height: 1;
+  color: #ffd23a;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}

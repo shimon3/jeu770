@@ -242,7 +242,10 @@ export function Joueur() {
     // revient derrière le personnage quand il avance et l'inclinaison revient
     // à la normale. À l'intérieur, elle se rapproche pour ne pas buter sur
     // les murs.
-    if (vue === '3e' && performance.now() - s.tSouris > 1200 && !st.siege) {
+    // En voiture : la caméra reste toujours derrière le véhicule (sinon on ne
+    // voit pas où l'on va et gauche / droite deviennent incompréhensibles)
+    if (conduite.active) s.yaw = amortirAngle(s.yaw, s.cap + Math.PI, 1 - Math.exp(-dt * 6))
+    else if (vue === '3e' && performance.now() - s.tSouris > 1200 && !st.siege) {
       if (s.avance) s.yaw = amortirAngle(s.yaw, s.cap + Math.PI, 1 - Math.exp(-dt * 1.8))
       s.pitch = THREE.MathUtils.damp(s.pitch, zone.interieur ? -0.08 : -0.15, 1.5, dt)
     }

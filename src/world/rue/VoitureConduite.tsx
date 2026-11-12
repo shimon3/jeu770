@@ -18,9 +18,10 @@ import { CorpsVoiture } from './modelesRue'
 // frotte jamais le sol ni les bordures. Zone : contre-allée nord, terre-plein
 // et chaussée centrale.
 
-const VMAX = 13
-const VMAX_ARRIERE = 5
-const ACCEL = 6
+// Conduite d'arcade facile : vitesse modérée (36 km/h), braquage vif
+const VMAX = 10
+const VMAX_ARRIERE = 4
+const ACCEL = 5
 const FREIN = 12
 const DECOLLE = 0.2 // hauteur du bas de la caisse de collision au-dessus du sol
 const LIMITES = { x: 56, z0: 12.4, z1: 44.6 }
@@ -134,8 +135,8 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
     // Braquage proportionnel à la vitesse (inversé en marche arrière)
     // (braquage minimal à basse vitesse, pour se dégager d'une place)
     const sensRoule = v !== 0 ? Math.sign(v) : Math.sign(av)
-    const braquage = sensRoule * Math.max(0.45, Math.min(1, Math.abs(v) / 5))
-    if (sensRoule !== 0) conduite.cap -= lat * dt * 1.5 * braquage
+    const braquage = sensRoule * Math.max(0.6, Math.min(1, Math.abs(v) / 3))
+    if (sensRoule !== 0) conduite.cap -= lat * dt * 2.2 * braquage
     const fx = Math.cos(conduite.cap)
     const fz = -Math.sin(conduite.cap)
     const col = rb.collider(0)
