@@ -30,11 +30,13 @@ type Props = {
   barbe?: string
   modele?: ModelePnj // corps : adulte (défaut), enfant, fille ou femme
   etude?: boolean // assis : léger balancement d'étude (havrouta)
+  poussette?: boolean // femme : pousse une poussette avec un bébé
+  vitesse?: number // marche (m/s), 1,1 par défaut ; plus lente pour le vieux hassid
 }
 
 const v = new THREE.Vector3()
 
-export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false }: Props) {
+export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false, poussette = false, vitesse = 1.1 }: Props) {
   const g = gabaritPnj(modele)
   const anim = useRef<Anim>({ etat, vitesse: 0 })
   const groupe = useRef<THREE.Group>(null)
@@ -95,7 +97,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
       e.pause = 1 + Math.random() * 2.5
       return
     }
-    v.multiplyScalar(Math.min(1.1 * dt, d) / d)
+    v.multiplyScalar(Math.min(vitesse * dt, d) / d)
     const nx = e.x + v.x
     const nz = e.z + v.z
     if (!pointAutorise(nx, nz)) return // sécurité supplémentaire
@@ -105,7 +107,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
     while (dc > Math.PI) dc -= Math.PI * 2
     while (dc < -Math.PI) dc += Math.PI * 2
     e.cap += dc * Math.min(1, dt * 8)
-    anim.current = { etat: 'marche', vitesse: 1.1 }
+    anim.current = { etat: 'marche', vitesse }
     groupe.current?.position.set(e.x, position[1], e.z)
     if (groupe.current) groupe.current.rotation.y = e.cap
     corps.current?.setNextKinematicTranslation({ x: e.x, y: position[1] + g.centreY, z: e.z })
@@ -124,7 +126,7 @@ export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle 
         </RigidBody>
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
-        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} etude={etude} />
+        <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} etude={etude} poussette={poussette} />
         <OmbreSol rayon={g.rayon * 1.5} />
       </group>
     </>

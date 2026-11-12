@@ -15,18 +15,22 @@ import { VITESSE_NATURELLE } from '../config/avatar'
 // Clips : Idle_11 (repos) et Walking (marche), mêmes noms que les adultes.
 // Les états « assis » et « balancement » retombent sur Idle_11.
 
-export type ModeleLeger = 'enfant' | 'fille' | 'femme'
+export type ModeleLeger = 'enfant' | 'fille' | 'femme' | 'vieux'
 
 const URLS: Record<ModeleLeger, string> = {
   enfant: '/models/enfant_habad_v1.glb',
   fille: '/models/fille_habad_v1.glb',
   femme: '/models/femme_habad_v1.glb',
+  vieux: '/models/vieux_habad_v1.glb',
 }
 
 // Décodeur Draco servi par le jeu (pas de CDN)
 const DECODEUR_DRACO = '/draco/'
 const FONDU = 0.3
-const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0 }
+const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0, vieux: 1.0 }
+// Poussette (objet fixe, landau devant la femme, poignée à l'origine)
+const URL_POUSSETTE = '/models/poussette_v1.glb'
+const AVANCE_POUSSETTE = 0.4
 const DIST_OMBRE = DIST_OMBRE_REELLE
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
@@ -46,7 +50,73 @@ function diagnostics(): Map<string, DiagnosticLeger> | null {
   return (w.__pnjLeger ??= new Map())
 }
 
-export function PnjEnfant({ id, anim, modele }: { id: string; anim: MutableRefObject<Anim>; modele: ModeleLeger }) {
+// Mains sur la poignée : IK à deux os (bras, avant-bras) recalculée à chaque
+// image après l'animation (marche ou repos), indépendante des axes des os.
+const PRISE = { x: 0.17, y: 0.88, z: 0.36 } // poignet, repère du personnage
+const _S = new THREE.Vector3()
+const _E = new THREE.Vector3()
+const _W = new THREE.Vector3()
+const _T = new THREE.Vector3()
+const _P = new THREE.Vector3()
+const _Q = new THREE.Quaternion()
+const _Q2 = new THREE.Quaternion()
+type Bras = { bras: THREE.Bone; avantBras: THREE.Bone; main: THREE.Bone; cote: 1 | -1 }
+
+function trouverBras(racine: THREE.Object3D): Bras[] {
+  const os = new Map<string, THREE.Bone>()
+  racine.traverse((o) => {
+    if ((o as THREE.Bone).isBone) os.set(o.name.replace(/mixamorig:?/, ''), o as THREE.Bone)
+  })
+  const res: Bras[] = []
+  for (const [c, cote] of [['Left', 1], ['Right', -1]] as const) {
+    const bras = os.get(`${c}Arm`)
+    const avantBras = os.get(`${c}ForeArm`)
+    const main = os.get(`${c}Hand`)
+    if (bras && avantBras && main) res.push({ bras, avantBras, main, cote })
+  }
+  return res
+}
+
+// Tourne l'os pour que la direction monde « de » devienne « vers »
+function viser(os: THREE.Bone, de: THREE.Vector3, vers: THREE.Vector3) {
+  _Q.setFromUnitVectors(de.normalize(), vers.normalize())
+  os.getWorldQuaternion(_Q2)
+  _Q2.premultiply(_Q)
+  os.parent!.getWorldQuaternion(_Q).invert()
+  os.quaternion.copy(_Q.multiply(_Q2))
+  os.updateMatrixWorld(true)
+}
+
+function mainsSurPoignee(racine: THREE.Object3D, bras: Bras[]) {
+  racine.updateMatrixWorld(true)
+  for (const b of bras) {
+    b.bras.getWorldPosition(_S)
+    b.avantBras.getWorldPosition(_E)
+    b.main.getWorldPosition(_W)
+    const la = _S.distanceTo(_E)
+    const lb = _E.distanceTo(_W)
+    racine.localToWorld(_T.set(PRISE.x * b.cote, PRISE.y, PRISE.z))
+    const d = Math.min(_S.distanceTo(_T), (la + lb) * 0.999)
+    const cosA = THREE.MathUtils.clamp((la * la + d * d - lb * lb) / (2 * la * d), -1, 1)
+    const dir = _T.clone().sub(_S).normalize()
+    // Coude vers l'arrière, le bas et l'extérieur
+    racine.localToWorld(_P.set(0.6 * b.cote, -0.4, -1)).sub(racine.getWorldPosition(new THREE.Vector3()))
+    const pole = _P.sub(dir.clone().multiplyScalar(_P.dot(dir))).normalize()
+    const coude = _S.clone().addScaledVector(dir, cosA * la).addScaledVector(pole, Math.sqrt(1 - cosA * cosA) * la)
+    viser(b.bras, _E.clone().sub(_S), coude.clone().sub(_S))
+    b.main.getWorldPosition(_W)
+    viser(b.avantBras, _W.clone().sub(coude), _T.clone().sub(coude))
+  }
+}
+
+function Poussette() {
+  const { scene } = useGLTF(URL_POUSSETTE, DECODEUR_DRACO)
+  // Clone léger : géométrie et matériaux partagés entre toutes les poussettes
+  const objet = useMemo(() => scene.clone(), [scene])
+  return <primitive object={objet} position={[0, 0, AVANCE_POUSSETTE]} />
+}
+
+export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string; anim: MutableRefObject<Anim>; modele: ModeleLeger; poussette?: boolean }) {
   const gltf = useGLTF(URLS[modele], DECODEUR_DRACO)
   const racine = useMemo(() => {
     const r = clonerAvecSquelette(gltf.scene)
@@ -61,6 +131,7 @@ export function PnjEnfant({ id, anim, modele }: { id: string; anim: MutableRefOb
   }, [gltf.scene])
 
   const mixer = useMemo(() => new THREE.AnimationMixer(racine), [racine])
+  const bras = useMemo(() => (poussette ? trouverBras(racine) : []), [poussette, racine])
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
   const courant = useRef<string | null>(null)
   const ombreReglee = useRef(false)
@@ -116,10 +187,16 @@ export function PnjEnfant({ id, anim, modele }: { id: string; anim: MutableRefOb
     // Pas plus courts que ceux d'un adulte : cadence plus rapide à vitesse égale
     if (suivante) suivante.timeScale = clip === 'Walking' ? THREE.MathUtils.clamp((vitesse / VITESSE_NATURELLE.Walking) * CADENCE[modele], 0.35, 2.2) : 1
     mixer.update(dt)
+    if (poussette) mainsSurPoignee(racine, bras)
     diagnostics()?.set(id, { modele, etat, clip: courant.current })
   })
 
-  return <primitive object={racine} />
+  return (
+    <>
+      <primitive object={racine} />
+      {poussette && <Poussette />}
+    </>
+  )
 }
 
 // ?enfants=0 : sans les nouveaux PNJ (mesure des images par seconde)

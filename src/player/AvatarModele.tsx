@@ -171,4 +171,4 @@ export function AvatarModele({ anim, visible = true }: { anim: MutableRefObject<
   )
 }
 
-useGLTF.preload(URL_HASSID)
+// Pas de préchargement : ce modèle ne sert qu'avec ?avatar=ancien ou ?pnj=ancien

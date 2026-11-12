@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Environment } from '@react-three/drei'
 import { Physics } from '@react-three/rapier'
 import { FournisseurMateriaux } from './materiaux'
@@ -15,14 +15,17 @@ import { estTactile } from '../player/entrees'
 const TACTILE = estTactile()
 import { Complexe784 } from './complexe/Complexe784'
 import { PanneauxDirection } from './rue/PanneauxDirection'
-import { GrandZal } from './grand-zal/GrandZal'
-import { MaisonRabbi } from './maison/MaisonRabbi'
 import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
+import { useQualite } from '../config/qualite'
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
 import * as THREE from 'three'
 
 const PNJ_LEGERS = pnjLegersActifs()
+// Allègement : grand Zal et maison du Rabbi dans des fichiers à part, chargés
+// juste après le menu (le départ se fait dans la rue)
+const GrandZal = lazy(() => import('./grand-zal/GrandZal').then((m) => ({ default: m.GrandZal })))
+const MaisonRabbi = lazy(() => import('./maison/MaisonRabbi').then((m) => ({ default: m.MaisonRabbi })))
 
 // Trottoir d'Eastern Parkway (z 6,4 à 12) : enfants, fille et femme.
 // Bordure z ≥ 10,4 réservée aux abris de bus et au kiosque (branche voitures).
@@ -31,7 +34,7 @@ function FamillesRue() {
   return (
     <>
       <PnjZal id="enfant-rue-1" modele="enfant" parle={false} position={[-12, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[-12, 9.8], [-1, 9.8]]} />
-      <PnjZal id="femme-rue-1" modele="femme" parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
+      <PnjZal id="femme-rue-1" modele="femme" poussette parle={false} position={[-30, 0, 9.2]} rotationY={Math.PI / 2} chemin={[[-30, 9.2], [-19, 9.2]]} />
       <PnjZal id="fille-rue-1" modele="fille" parle={false} position={[-30, 0, 9.6]} rotationY={Math.PI / 2} chemin={[[-30, 9.6], [-19, 9.6]]} />
       {/* Rue animée : passants (allées z 8 et 10,4) et groupes qui discutent
           puis repartent (jamais plus de 3 min 20 arrêtés) */}
@@ -68,6 +71,8 @@ function FamillesRue() {
       />
       <PnjZal id="femme-rue-2" modele="femme" parle={false} position={[36, 0, 8.2]} rotationY={-Math.PI / 2} chemin={[[36, 8.2], [22, 8.2]]} />
       <PnjZal id="fille-rue-3" modele="fille" parle={false} position={[36, 0, 8.9]} rotationY={-Math.PI / 2} chemin={[[36, 8.9], [22, 8.9]]} />
+      {/* Vieux hassid : marche lente */}
+      <PnjZal id="vieux-rue-1" modele="vieux" parle={false} vitesse={0.7} position={[24, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[24, 9.8], [34, 9.8]]} />
       <PnjZal id="enfant-rue-3" modele="enfant" parle={false} position={[-36, 0, 8.0]} rotationY={Math.PI / 2} chemin={[[-36, 8.0], [-24, 8.0]]} />
     </>
   )
@@ -87,14 +92,25 @@ CIBLE_SOLEIL.position.set(10, 0, -8)
 
 function Soleil() {
   // Soleil d'après-midi venant du sud-ouest (la façade regarde vers le sud)
+  // Qualité automatique : carte d'ombres en 1024 quand l'appareil peine
+  const basses = useQualite((s) => s.ombresBasses)
+  const taille = TACTILE || basses ? 1024 : 2048
+  const lumiere = useRef<THREE.DirectionalLight>(null)
+  useEffect(() => {
+    const l = lumiere.current
+    if (!l) return
+    l.shadow.mapSize.set(taille, taille)
+    l.shadow.map?.dispose()
+    ;(l.shadow as unknown as { map: THREE.WebGLRenderTarget | null }).map = null
+  }, [taille])
   return (
     <directionalLight
+      ref={lumiere}
       position={[10 - 18, 30, -8 + 26]}
       target={CIBLE_SOLEIL}
       intensity={2.6}
       color="#fff3e0"
       castShadow
-      shadow-mapSize={TACTILE ? [1024, 1024] : [2048, 2048]}
       shadow-camera-left={-46}
       shadow-camera-right={46}
       shadow-camera-top={46}
@@ -111,7 +127,7 @@ export function Monde({ cle }: { cle: number }) {
   const debug = useGame((s) => s.debugPhysique)
   return (
     <>
-      <Environment files="/assets/hdri/kloofendal_1k.hdr" background backgroundBlurriness={0.02} environmentIntensity={1} />
+      <Environment files="/assets/hdri/kloofendal_512.hdr" background backgroundBlurriness={0.02} environmentIntensity={1} />
       <primitive object={CIBLE_SOLEIL} />
       <Soleil />
       <hemisphereLight args={['#dfe8f5', '#5a4a3a', 0.25]} />
@@ -123,10 +139,14 @@ export function Monde({ cle }: { cle: number }) {
             <Voisins />
             <Facade />
             <Hall />
-            <MaisonRabbi />
+            <Suspense fallback={null}>
+              <MaisonRabbi />
+            </Suspense>
             <Complexe784 />
             <PanneauxDirection />
-            <GrandZal />
+            <Suspense fallback={null}>
+              <GrandZal />
+            </Suspense>
             <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             {PNJ_LEGERS && <FamillesRue />}

@@ -20,13 +20,14 @@ async function demarrer(page: Page, recherche = '') {
 test.describe('PNJ enfants, fille et femme', () => {
   test.skip(({ isMobile }) => isMobile, 'un contrôle PC suffit')
 
-  test('les 14 PNJ légers se chargent et s\'animent (repos et marche)', async ({ page }) => {
+  test('les 15 PNJ légers se chargent et s\'animent (repos et marche)', async ({ page }) => {
     await demarrer(page)
     await page.evaluate(() => {
-      window.__770.teleporter(-8, 0.9, 9)
+      // Dans le Zal : ses PNJ n'existent que là ; ceux de la rue restent actifs
+      window.__770.teleporter(22.1, -2.5, -6)
       window.__770.store.getState().set({ pause: false, panneau: null, siege: null })
     })
-    await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(14)
+    await expect.poll(() => page.evaluate(() => window.__pnjLeger?.size ?? 0), { timeout: 60_000 }).toBe(15)
     const modeles = await page.evaluate(() => [...(window.__pnjLeger?.entries() ?? [])].map(([id, p]) => `${id}:${p.modele}`).sort())
     expect(modeles).toEqual([
       'enfant-rue-1:enfant',
@@ -43,6 +44,7 @@ test.describe('PNJ enfants, fille et femme', () => {
       'fille-rue-2:fille',
       'fille-rue-3:fille',
       'fille-rue-4:fille',
+      'vieux-rue-1:vieux',
     ])
     await expect.poll(() => page.evaluate(() => window.__pnjLeger?.get('enfant-rue-2')?.clip)).toBe('Idle_11')
     await expect
