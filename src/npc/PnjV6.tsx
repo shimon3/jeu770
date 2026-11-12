@@ -18,6 +18,10 @@ import { adoucirAnimationsBras } from '../player/animationsV6'
 
 const URL = URL_AVATAR.v6sym
 const FONDU = 0.3
+const DIST_OMBRE = 18
+const DIST_MOYEN = 15
+const DIST_LOIN = 30
+const POS = new THREE.Vector3()
 
 type DiagnosticPnj = {
   etat: Anim['etat']
@@ -57,6 +61,9 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   const courant = useRef<string | null>(null)
   const t = useRef(Math.random() * 10)
   const ombreReglee = useRef(false)
+  const sousTerre = useRef(false)
+  const ombreActive = useRef(true)
+  const attente = useRef(0)
 
   const poses = useMemo(() => creerPosesV6(sk), [sk])
   const bras = useMemo(() => preparerBras(racine, fermetureBrasChoisie('v6sym')), [racine])
@@ -89,15 +96,27 @@ export function PnjV6({ id, anim }: { id: string; anim: MutableRefObject<Anim> }
   useEffect(() => () => poses.retablir(), [poses])
   useEffect(() => () => rouvrirBras(bras), [bras])
 
-  useFrame((_, dtBrut) => {
-    const dt = Math.min(dtBrut, 0.05)
-    t.current += dt
+  useFrame(({ camera }, dtBrut) => {
+    racine.getWorldPosition(POS)
     if (!ombreReglee.current) {
       // Sous terre (Grand Zal), l'ombre solaire est inutile (comme l'avatar d'origine)
-      const p = racine.getWorldPosition(new THREE.Vector3())
-      if (p.y < -1) racine.traverse((o) => void (o.castShadow = false))
+      sousTerre.current = POS.y < -1
       ombreReglee.current = true
     }
+    // Niveau de détail : loin de la caméra, pas d'ombre et animation moins
+    // fréquente (20 i/s au-delà de 15 m, 10 i/s au-delà de 30 m)
+    const distance = POS.distanceTo(camera.position)
+    const ombre = !sousTerre.current && distance < DIST_OMBRE
+    if (ombre !== ombreActive.current) {
+      racine.traverse((o) => void (o.castShadow = ombre))
+      ombreActive.current = ombre
+    }
+    attente.current += dtBrut
+    const pas = distance > DIST_LOIN ? 1 / 10 : distance > DIST_MOYEN ? 1 / 20 : 0
+    if (attente.current < pas) return
+    const dt = Math.min(attente.current, 0.12)
+    attente.current = 0
+    t.current += dt
     const { etat, vitesse } = anim.current
     const clip = etat === 'marche' ? 'Walking' : 'Idle_11'
     const suivante = actions.current[clip]
