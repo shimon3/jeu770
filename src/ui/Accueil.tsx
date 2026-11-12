@@ -1,4 +1,5 @@
 import { useProgress } from '@react-three/drei'
+import { useChargement } from '../state/chargement'
 import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { Commandes } from './Commandes'
@@ -15,7 +16,9 @@ type Props = {
 export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   const t = useT()
   const { active, progress } = useProgress()
-  const pret = !active || progress >= 100
+  // Prêt dès que la rue et le joueur sont affichés ; sinon, fin de tous les chargements
+  const essentiel = useChargement((c) => c.monde && c.joueur)
+  const pret = essentiel || !active || progress >= 100
   const ecran = useGame((s) => s.ecran)
   if (ecran !== 'accueil') return null
   return (

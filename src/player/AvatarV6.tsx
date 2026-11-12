@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { AvatarProcedural, type Anim } from './Avatar'
+import { useChargement } from '../state/chargement'
 import { creerPosesV6 } from './posesV6'
 import { adoucirAnimationsBras, AMPLITUDE_BALANCEMENT_BRAS } from './animationsV6'
 import {
@@ -230,6 +231,8 @@ function Modele({
   usePlafondMipmaps(gltf.scene, plafond)
   const bras = useMemo(() => preparerBras(gltf.scene, fermetureBrasChoisie(choix)), [gltf.scene, choix])
   const genoux = useMemo(() => preparerGenoux(gltf.scene), [gltf.scene])
+  // Personnage du joueur chargé : le bouton Jouer peut s'activer
+  useEffect(() => useChargement.setState({ joueur: true }), [])
   // La scène du GLB est mise en cache : la rendre telle qu'on l'a trouvée
   useEffect(() => () => rouvrirBras(bras), [bras])
   const poses = useMemo(() => {
