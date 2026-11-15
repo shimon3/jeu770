@@ -41,14 +41,14 @@ function texturesRue() {
 // en mètres : `repeat = 1 / taille du motif`.
 const T = '/assets/textures/'
 const FICHIERS = {
-  brique770: ['red_brick_03_diff_1k.jpg', 'red_brick_03_nor_1k.jpg', 'red_brick_03_rough_1k.jpg'],
-  briqueVoisin: ['brick_wall_02_diff_1k.jpg', 'brick_wall_02_nor_1k.jpg', 'brick_wall_02_rough_1k.jpg'],
-  ardoise: ['roof_slates_02_diff_1k.jpg', 'roof_slates_02_nor_1k.jpg', 'roof_slates_02_rough_1k.jpg'],
-  chevrons: ['herringbone_brick_diff_1k.jpg', 'herringbone_brick_nor_1k.jpg', 'herringbone_brick_rough_1k.jpg'],
-  chene: ['oak_veneer_01_diff_1k.jpg', 'oak_veneer_01_nor_1k.jpg', 'oak_veneer_01_rough_1k.jpg'],
-  asphalte: ['asphalt_02_diff_1k.jpg', 'asphalt_02_nor_1k.jpg', 'asphalt_02_rough_1k.jpg'],
-  dalles: ['concrete_pavement_diff_1k.jpg', 'concrete_pavement_nor_1k.jpg', 'concrete_pavement_rough_1k.jpg'],
-  platre: ['plastered_wall_04_diff_1k.jpg', 'plastered_wall_04_nor_1k.jpg', 'plastered_wall_04_rough_1k.jpg'],
+  brique770: ['red_brick_03_diff_1k.webp', 'red_brick_03_nor_1k.webp', 'red_brick_03_rough_1k.webp'],
+  briqueVoisin: ['brick_wall_02_diff_1k.webp', 'brick_wall_02_nor_1k.webp', 'brick_wall_02_rough_1k.webp'],
+  ardoise: ['roof_slates_02_diff_1k.webp', 'roof_slates_02_nor_1k.webp', 'roof_slates_02_rough_1k.webp'],
+  chevrons: ['herringbone_brick_diff_1k.webp', 'herringbone_brick_nor_1k.webp', 'herringbone_brick_rough_1k.webp'],
+  chene: ['oak_veneer_01_diff_1k.webp', 'oak_veneer_01_nor_1k.webp', 'oak_veneer_01_rough_1k.webp'],
+  asphalte: ['asphalt_02_diff_1k.webp', 'asphalt_02_nor_1k.webp', 'asphalt_02_rough_1k.webp'],
+  dalles: ['concrete_pavement_diff_1k.webp', 'concrete_pavement_nor_1k.webp', 'concrete_pavement_rough_1k.webp'],
+  platre: ['plastered_wall_04_diff_1k.webp', 'plastered_wall_04_nor_1k.webp', 'plastered_wall_04_rough_1k.webp'],
 } as const
 
 type CleTex = keyof typeof FICHIERS

@@ -107,7 +107,7 @@ export function Joueur() {
 
   // Outil de test en développement : téléportation et état
   useEffect(() => {
-    if (!import.meta.env.DEV) return
+    if (!import.meta.env.DEV && !location.search.includes('outils=1')) return
     ;(window as unknown as Record<string, unknown>).__770 = {
       store: useGame,
       joueur,

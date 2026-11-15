@@ -4,6 +4,32 @@
 
 
 
+## Graphismes, guide de mission, 3 missions, plan, chargement allégé — 16 novembre 2026 (branche `ameliorations/graphismes-missions-perf`)
+
+### Fait
+- **Chargement** : textures du monde en WebP (rugosité en 512), textures des modèles en WebP et plafonnées à 2048 (le manteau du hassid était en 4096), fichiers inutilisés retirés (`*_2k.jpg`, `kloofendal_1k.hdr`). Écran d'attente affiché avant le code du jeu, préchargement du joueur, du ciel et du décodeur dès la première ligne de la page, cache navigateur (`public/_headers`), icône d'onglet.
+- **Graphismes** : effets d'image chargés à part (`src/world/Effets.tsx`) : occlusion ambiante, halo, vignette, courbe ACES. Réglage « Graphismes » dans le menu : automatique, haute qualité, équilibrée, rapide (`src/config/qualite.ts`). En automatique : effets sur ordinateur seulement, coupés en premier si l'appareil peine.
+- **Guide de mission** (`src/missions/guide.ts`, `MissionsRue.tsx`) : colonne dorée et losange sur la prochaine étape, losange au-dessus des PNJ qui ont une mission, distance et numéro d'étape dans le HUD.
+- **Étape « collecte »** dans `missions.json` (ramasser N objets, compteur sauvegardé). Toute interaction E peut valider une étape « interagir ».
+- **3 missions** confiées par un jeune chalia'h (trottoir, entre le 770 et la descente du Zal) : pièces de tsedaka (8 pièces puis pouchké), affiches du farbrenguen (3 panneaux d'affichage), plaques du 770 (4 plaques). 15 $ au total.
+- **Plan (M)** : vue de dessus du monde 3D avec la position du joueur et la prochaine étape (`src/ui/Plan.tsx`, image produite par `tools/captures/plan.mjs`).
+- **Journal** : rang (Visiteur → Chalia'h) et jauge de progression.
+- Outils : `tools/captures/` (captures, mesure du démarrage, plan, parcours des missions) ; `?outils=1` active l'outil de test sur le site publié.
+
+### Vérifié (Chrome réel, carte graphique de l'ordinateur de Samuel, serveur local)
+- `npm run build` sans erreur.
+- Démarrage du build de production : 11,8 Mo → 8,1 Mo téléchargés avant « Jouer » ; bouton prêt en 5,8 s au lieu de 6,8 s.
+- `node tools/captures/verifier-missions.mjs` : 23 contrôles réussis (les 2 premières missions en entier, 1re plaque de la 3e, sauvegarde), aucune erreur de page.
+- Compression des modèles : vue de dessus identique avant/après.
+- Images par seconde dans la rue (fenêtre 1280×720) : 58 sans effets, 48 avec.
+
+### Non vérifié / reste
+- Téléphone réel, connexion lente réelle, site publié (rien n'est déployé).
+- Mission des plaques : plaques 2 à 4 non parcourues automatiquement.
+- Plan : pas de vue des intérieurs ni du grand Zal ; l'image est à régénérer si la rue change.
+- Les tâches longues du démarrage (≈ 3,6 s de calcul : compilation des shaders, envoi des textures) ne sont pas réduites.
+- Texte hébreu des nouvelles missions : à relire par Samuel.
+
 ## Plus d'argent : récompenses des missions et livraisons de pizza — 15 novembre 2026 (branche `plus-argent-livraisons`)
 
 ### Fait

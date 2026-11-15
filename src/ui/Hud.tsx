@@ -9,6 +9,7 @@ import { reciterTehilim, terminerPriere } from '../missions/objets'
 import { tefilaDuMoment, tehilimDuJour } from '../world/zmanim'
 import { conduite } from '../world/rue/conduite'
 import { abandonnerLivraison, DESTINATIONS } from '../missions/livraisons'
+import { distanceRepere, repereMission } from '../missions/guide'
 
 // Livraison en cours : lieu et distance restante, mis à jour 4 fois par seconde
 function SuiviLivraison({ dest }: { dest: number }) {
@@ -46,6 +47,20 @@ function Compteur({ tank }: { tank: boolean }) {
 
 const TACTILE = estTactile()
 
+// Distance jusqu'à la prochaine étape (ou jusqu'au PNJ qui a une mission), 4 fois par seconde
+function useRepere() {
+  const [r, setR] = useState<{ m: number; genre: 'etape' | 'donneur' } | null>(null)
+  useEffect(() => {
+    const id = setInterval(() => {
+      const p = repereMission()
+      const suivant = p ? { m: distanceRepere(p), genre: p.genre } : null
+      setR((avant) => (avant?.m === suivant?.m && avant?.genre === suivant?.genre ? avant : suivant))
+    }, 250)
+    return () => clearInterval(id)
+  }, [])
+  return r
+}
+
 export function Hud({ verrouille }: { verrouille: boolean }) {
   const t = useT()
   const ecran = useGame((s) => s.ecran)
@@ -63,6 +78,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const priere = useGame((s) => s.priere)
   const livraison = useGame((s) => s.livraison)
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
+  const repere = useRepere()
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
     const id = setInterval(() => setPorteProche(porteOuverteProche()), 200)
@@ -98,11 +114,25 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
         <div className="hud-mission-titre">{t('hud.mission')}</div>
         {active && etape ? (
           <>
-            <div className="hud-mission-nom">{t(active.titre)}</div>
-            <div>{t(etape.texte)}</div>
+            <div className="hud-mission-nom">
+              {t(active.titre)}{' '}
+              <span className="hud-mission-pas">
+                {missions[active.id].etape + 1}/{active.etapes.length}
+              </span>
+            </div>
+            <div>
+              {t(etape.texte)}
+              {etape.type === 'collecte' && ` (${missions[active.id].compte ?? 0}/${etape.nombre ?? 1})`}
+            </div>
+            {repere?.genre === 'etape' && <div className="hud-mission-distance">◆ {t('hud.distance', { m: String(repere.m) })}</div>}
+          </>
+        ) : repere?.genre === 'donneur' ? (
+          <>
+            <div>{t(Object.keys(missions).length === 0 ? 'hud.aucuneMission' : 'hud.missionDispo')}</div>
+            <div className="hud-mission-distance">◆ {t('hud.distance', { m: String(repere.m) })}</div>
           </>
         ) : (
-          <div>{Object.keys(missions).length === 0 ? t('hud.aucuneMission') : '—'}</div>
+          <div>{Object.keys(missions).length === 0 ? t('hud.aucuneMission') : MISSIONS.every((m) => missions[m.id]?.etat === 'terminee') ? t('hud.toutesTerminees') : t('hud.missionDispo')}</div>
         )}
       </div>
       <div className="hud-notifs">

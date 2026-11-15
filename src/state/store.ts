@@ -10,6 +10,7 @@ export type Panneau =
   | { type: 'histoire' }
   | { type: 'tableau' }
   | { type: 'journal' }
+  | { type: 'plan' }
   | { type: 'message'; cle: string }
   | { type: 'dialogue'; nomCle: string; cle: string }
   | { type: 'bibliotheque' }
@@ -30,7 +31,8 @@ export type Interactif = {
 // `sortie` (optionnelle) : où se relever ; sinon un pas devant le siège
 export type Siege = { position: Vector3Tuple; rotationY: number; sortie?: Vector3Tuple }
 
-export type EtatMission = { etat: 'active' | 'terminee'; etape: number }
+// `compte` : objets déjà ramassés pour une étape de type 'collecte'
+export type EtatMission = { etat: 'active' | 'terminee'; etape: number; compte?: number }
 
 type Notification = { id: number; texte: string; params?: Record<string, string> }
 

@@ -656,3 +656,104 @@ html.mode-tactile .hud-dollars {
 .magasin-liste li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; }
 .magasin-liste button:disabled { opacity: 0.45; }
 .magasin-solde { font-weight: 700; }
+
+/* Guide de mission, rang et plan (15/11/2026) --------------------------- */
+.hud-mission-pas {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+}
+.hud-mission-distance {
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: #ffd23a;
+  font-variant-numeric: tabular-nums;
+}
+.journal-rang {
+  margin-bottom: 14px;
+}
+.jauge {
+  margin-top: 6px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.jauge > div {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.4s ease-out;
+}
+.plan {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  line-height: 0;
+}
+.plan img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.plan-joueur,
+.plan-cible {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.plan-joueur > span {
+  position: absolute;
+  left: -8px;
+  top: -10px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 20px solid #2f8cff;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff);
+  transform-origin: 8px 10px;
+}
+.plan-cible::after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  background: #ffd23a;
+  border: 2px solid #3a2a00;
+  transform: rotate(45deg);
+  animation: plan-pouls 1.2s ease-in-out infinite alternate;
+}
+@keyframes plan-pouls {
+  to {
+    transform: rotate(45deg) scale(1.35);
+  }
+}
+.plan-legende {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.plan-pastille {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-inline-start: 8px;
+}
+.plan-pastille.joueur {
+  border-radius: 50%;
+  background: #2f8cff;
+}
+.plan-pastille.cible {
+  background: #ffd23a;
+  transform: rotate(45deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .plan-cible::after {
+    animation: none;
+  }
+}

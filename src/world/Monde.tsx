@@ -62,12 +62,15 @@ function PrechauffeScene() {
 }
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
 import { MissionTank } from '../missions/MissionTank'
+import { MissionsRue } from '../missions/MissionsRue'
 import * as THREE from 'three'
 
 const PNJ_LEGERS = pnjLegersActifs()
 // Allègement : grand Zal et maison du Rabbi dans des fichiers à part, chargés
 // juste après le menu (le départ se fait dans la rue)
 const GrandZal = lazy(() => import('./grand-zal/GrandZal').then((m) => ({ default: m.GrandZal })))
+// Effets d'image : fichier à part, téléchargé seulement si la qualité les active
+const Effets = lazy(() => import('./Effets'))
 const MaisonRabbi = lazy(() => import('./maison/MaisonRabbi').then((m) => ({ default: m.MaisonRabbi })))
 
 // Trottoir d'Eastern Parkway (z 6,4 à 12) : enfants, fille et femme.
@@ -168,9 +171,15 @@ function Soleil() {
 
 export function Monde({ cle }: { cle: number }) {
   const debug = useGame((s) => s.debugPhysique)
+  const effets = useQualite((s) => s.effets)
   return (
     <>
       <Environment files="/assets/hdri/kloofendal_512.hdr" background backgroundBlurriness={0.02} environmentIntensity={1} />
+      {effets && (
+        <Suspense fallback={null}>
+          <Effets />
+        </Suspense>
+      )}
       <primitive object={CIBLE_SOLEIL} />
       <Soleil />
       <hemisphereLight args={['#dfe8f5', '#5a4a3a', 0.25]} />
@@ -194,6 +203,7 @@ export function Monde({ cle }: { cle: number }) {
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             {PNJ_LEGERS && <FamillesRue />}
             <MissionTank />
+            <MissionsRue />
             <Joueur key={cle} />
             <SignalMondePret />
             <PrechauffeScene />

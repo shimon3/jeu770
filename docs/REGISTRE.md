@@ -206,3 +206,9 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - **Non fidèle** : en réalité ces commerces sont sur Kingston Avenue, au coin ; aucun magasin n'occupe cet emplacement d'Eastern Parkway (x 40,2 → 59,6, après le 784-788).
 - Enseignes génériques (catégorie en anglais + hébreu), aucun nom de commerce réel. Volumes, vitrines et couleurs inventés.
 - Signalé en jeu dans chaque panneau de magasin (« Choix de jeu : en vrai, ces magasins sont sur Kingston Avenue »).
+
+## Missions de la rue, panneaux d'affichage, plan — 16/11/2026 (CHOIX DE JEU, non authentique)
+- Jeune chalia'h (PNJ générique, modèle `hasidic_man_v6_brasSym.glb`) sur le trottoir entre le 770 et la descente du Zal : personnage inventé.
+- Trois panneaux d'affichage verts le long des immeubles (x −31, −15 et 31 ; z 3,4) : mobilier inventé pour la mission des affiches. Affiche : texte seul (« פארברענגען — הערב ב־770 »), aucun portrait.
+- Pièces de tsedaka, colonne dorée et losanges : repères de jeu.
+- Plan (M) : vue de dessus du monde du jeu, pas un plan officiel ; mention affichée sous le plan.

@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { useT } from '../i18n'
 import { useGame } from '../state/store'
+import { Plan } from './Plan'
+import { rang } from '../missions/guide'
 import { MISSIONS } from '../missions/missions'
 import tefilot from '../config/tefilot.json'
 import bibliotheque from '../config/bibliotheque.json'
@@ -101,8 +103,18 @@ export function Panneaux() {
     case 'journal': {
       titre = t('journal.titre')
       const connues = MISSIONS.filter((m) => missions[m.id])
-      corps =
-        connues.length === 0 ? (
+      const r = rang()
+      corps = (
+        <>
+          <div className="journal-rang">
+            <div>
+              <strong>{t(r.cle)}</strong> · {t('journal.progression', { n: String(r.n), total: String(r.total) })}
+            </div>
+            <div className="jauge">
+              <div style={{ width: `${(r.n / r.total) * 100}%` }} />
+            </div>
+          </div>
+          {connues.length === 0 ? (
           <p>{t('journal.vide')}</p>
         ) : (
           connues.map((m) => {
@@ -117,15 +129,22 @@ export function Panneaux() {
                   {m.etapes.map((et, i) => (
                     <li key={i} className={i < e.etape ? 'fait' : i === e.etape ? 'courant' : ''}>
                       {t(et.texte)}
+                      {et.type === 'collecte' && i === e.etape && ` (${e.compte ?? 0}/${et.nombre ?? 1})`}
                     </li>
                   ))}
                 </ul>
               </div>
             )
           })
-        )
+        )}
+        </>
+      )
       break
     }
+    case 'plan':
+      titre = t('plan.titre')
+      corps = <Plan />
+      break
     case 'bibliotheque':
       titre = t('bibliotheque.titre')
       corps = (

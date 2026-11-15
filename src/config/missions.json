@@ -1,5 +1,5 @@
 {
-  "_doc": "Missions définies en données. Les textes passent par i18n (clés). Types d'étape : 'interagir' (cible = id d'un objet interactif) ou 'zone' (cible = id de zone).",
+  "_doc": "Missions définies en données. Les textes passent par i18n (clés). Types d'étape : 'interagir' (cible = id d'un objet interactif), 'zone' (cible = id de zone) ou 'collecte' (cible = groupe d'objets de src/missions/collectes.ts, nombre = quantité à ramasser).",
   "missions": [
     {
       "id": "decouvrir-770",
@@ -163,6 +163,85 @@
         }
       ],
       "recompense": 5
+    },
+    {
+      "id": "pieces-tsedaka",
+      "titre": "mission.pieces-tsedaka.titre",
+      "description": "mission.pieces-tsedaka.description",
+      "donneur": "pnj-chaliah",
+      "etapes": [
+        {
+          "type": "collecte",
+          "cible": "piece",
+          "texte": "mission.pieces-tsedaka.e1",
+          "nombre": 8
+        },
+        {
+          "type": "interagir",
+          "cible": "pouchke",
+          "texte": "mission.pieces-tsedaka.e2"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-chaliah",
+          "texte": "mission.pieces-tsedaka.e3"
+        }
+      ],
+      "recompense": 5
+    },
+    {
+      "id": "affiches-farbrenguen",
+      "titre": "mission.affiches-farbrenguen.titre",
+      "description": "mission.affiches-farbrenguen.description",
+      "donneur": "pnj-chaliah",
+      "etapes": [
+        {
+          "type": "collecte",
+          "cible": "affiche",
+          "texte": "mission.affiches-farbrenguen.e1",
+          "nombre": 3
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-chaliah",
+          "texte": "mission.affiches-farbrenguen.e2"
+        }
+      ],
+      "recompense": 4
+    },
+    {
+      "id": "plaques-770",
+      "titre": "mission.plaques-770.titre",
+      "description": "mission.plaques-770.description",
+      "donneur": "pnj-chaliah",
+      "etapes": [
+        {
+          "type": "interagir",
+          "cible": "plaque-bureau",
+          "texte": "mission.plaques-770.e1"
+        },
+        {
+          "type": "interagir",
+          "cible": "plaque-appartement",
+          "texte": "mission.plaques-770.e2"
+        },
+        {
+          "type": "interagir",
+          "cible": "aron-plaque",
+          "texte": "mission.plaques-770.e3"
+        },
+        {
+          "type": "interagir",
+          "cible": "plaque-chaise",
+          "texte": "mission.plaques-770.e4"
+        },
+        {
+          "type": "interagir",
+          "cible": "pnj-chaliah",
+          "texte": "mission.plaques-770.e5"
+        }
+      ],
+      "recompense": 6
     }
   ]
 }

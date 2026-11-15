@@ -4,7 +4,8 @@ import { t } from '../i18n'
 import { RECOMPENSE_MISSION, recompenserMission } from './boutique'
 import { ecrireSauvegarde } from './sauvegarde'
 
-export type Etape = { type: 'interagir' | 'zone'; cible: string; texte: string }
+// 'collecte' : ramasser `nombre` objets du groupe `cible` (missions/collectes.ts)
+export type Etape = { type: 'interagir' | 'zone' | 'collecte'; cible: string; texte: string; nombre?: number }
 export type Mission = {
   id: string
   titre: string
@@ -56,6 +57,16 @@ export function evenementMission(type: Etape['type'], cible: string) {
     const etape = m?.etapes[etat.etape]
     if (!m || !etape || etape.type !== type || etape.cible !== cible) continue
     change = true
+    // Collecte : l'étape ne se termine qu'au dernier objet ramassé
+    if (etape.type === 'collecte') {
+      const compte = (etat.compte ?? 0) + 1
+      const total = etape.nombre ?? 1
+      if (compte < total) {
+        suivant[id] = { etat: 'active', etape: etat.etape, compte }
+        s.notifier('mission.collecte', { n: String(compte), total: String(total) })
+        continue
+      }
+    }
     if (etat.etape + 1 >= m.etapes.length) {
       suivant[id] = { etat: 'terminee', etape: m.etapes.length }
       s.notifier('mission.terminee', { titre: t(m.titre) })
