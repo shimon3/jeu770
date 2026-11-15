@@ -63,6 +63,8 @@ export function Joueur() {
     tSouris: 0, // dernier mouvement de souris (recentrage automatique)
     avance: false, // le joueur avance (touche avant)
     cadreAssis: false,
+    // Position du joueur intégrée ici, image par image (voir useFrame)
+    pos: null as { x: number; y: number; z: number } | null,
   })
 
   // Créé dans un effet (et non un useMemo) : compatible avec le double
@@ -113,7 +115,10 @@ export function Joueur() {
       gl,
       camera,
       scene,
-      teleporter: (x: number, y: number, z: number) => corps.current?.setTranslation({ x, y, z }, true),
+      teleporter: (x: number, y: number, z: number) => {
+        corps.current?.setTranslation({ x, y, z }, true)
+        etat.current.pos = { x, y, z }
+      },
     }
   }, [gl, scene, camera])
 
@@ -125,7 +130,16 @@ export function Joueur() {
     const s = etat.current
     const st = useGame.getState()
     const col = rb.collider(0)
-    const p = rb.translation()
+    // Saccades à la marche (15/11/2026) : la position n'est plus relue dans le
+    // moteur physique, qui avance à pas fixe de 1/60 s. Sur un écran à 90 ou
+    // 120 Hz (téléphones) ou quand le rythme varie, rb.translation() rendait la
+    // même valeur deux images de suite : un déplacement était perdu, puis
+    // doublé (pas saccadés). Même correction que pour la voiture.
+    if (!s.pos) {
+      const t0 = rb.translation()
+      s.pos = { x: t0.x, y: t0.y, z: t0.z }
+    }
+    const p = s.pos
 
     const zone = zoneEn(p.x, p.y - CENTRE + 0.1, p.z)
     if (zone.id !== s.zone) {
@@ -214,7 +228,9 @@ export function Joueur() {
       nouvelle = { x: nouvelle.x + m.x, y: nouvelle.y + m.y, z: nouvelle.z + m.z }
       // Filet de sécurité : chute hors du monde
       if (nouvelle.y < -6) nouvelle = { x: depart.position[0], y: depart.position[1], z: depart.position[2] }
-      rb.setNextKinematicTranslation(nouvelle)
+      // Placement immédiat : la capsule est à jour pour le calcul de collision
+      // de l'image suivante, même si le moteur physique n'a pas encore avancé
+      rb.setTranslation(nouvelle, true)
 
       if (bouge) s.cap = amortirAngle(s.cap, Math.atan2(v.x, v.z), 1 - Math.exp(-dt * 12))
       const montee = m.y / dt
@@ -224,6 +240,7 @@ export function Joueur() {
       }
     }
     s.siegeAvant = st.siege
+    s.pos = nouvelle
 
     joueur.position = [nouvelle.x, nouvelle.y, nouvelle.z]
     joueur.yaw = s.yaw

@@ -51,3 +51,9 @@ Utilisées uniquement comme références de modélisation ; aucune n'est publié
 ## Bibliothèques
 
 React, Three.js, React Three Fiber, @react-three/drei, @react-three/rapier (Rapier), Zustand, Vite.
+
+## Audio
+
+| Fichier | Origine | Usage |
+|---|---|---|
+| `public/audio/haneshama-yoredet.mp3` | « Haneshama Yoredet », interprété et enregistré par Shmouel Bentouza (auteur du jeu), fourni le 15/11/2026. Réencodé en mono 96 kb/s, silences de début et fin retirés. | Haut-parleur du Mitzvah Tank |

@@ -10,7 +10,7 @@ import { conduite, FILTRE_VOITURE } from './conduite'
 import { evenementMission } from '../../missions/missions'
 import { GABARIT, type CouleurVoiture, type ModeleVoiture } from './voitures'
 import { CorpsVoiture } from './modelesRue'
-import { arreterHautParleur, hautParleurActif, reglerHautParleur, reglerMoteur } from '../../audio/vehicule'
+import { arreterHautParleur, hautParleurActif, prechargerNiggoun, reglerHautParleur, reglerMoteur } from '../../audio/vehicule'
 
 const ID_TANK = 'mitzvah-tank'
 
@@ -116,6 +116,7 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
       conduite.vitesse = 0
       setActive(true)
       useGame.getState().set({ auVolant: id })
+      if (id === ID_TANK) prechargerNiggoun()
       useGame.getState().notifier(id === ID_TANK ? 'conduite.aideTank' : 'conduite.aide')
       // Monter dans ce véhicule peut faire avancer une mission (Mitzvah Tank)
       evenementMission('interagir', id)

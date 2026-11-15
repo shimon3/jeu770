@@ -16,6 +16,10 @@
 - `npm run build` ; `tests/voiture-son.spec.ts` réussi (2 tests).
 - `mission-tank.spec.ts` « monter » échoue ici AUSSI sur `master` (8fa4b73) : la touche E n'est pas prise en compte dans cet environnement à ~2 images/s, défaut antérieur à cette branche.
 
+### Ajouts du soir (même branche)
+- **Haut-parleur** : joue « Haneshama Yoredet » de Shmouel Bentouza (`public/audio/haneshama-yoredet.mp3`, 1,4 Mo, préchargé en montant dans le tank), filtre mégaphone adouci ; la mélodie de synthèse ne sert plus qu'en secours si le fichier ne se charge pas.
+- **Saccades du joueur à pied** (`Joueur.tsx`) : la position était relue dans Rapier (pas fixe 1/60 s) ; sur écran 90/120 Hz ou à rythme variable, un pas était perdu puis doublé. Position désormais intégrée image par image et capsule placée immédiatement (`setTranslation`). Tests mobiles « joystick dans les 4 directions » et « caméra au doigt » réussis.
+
 ### Reste
 - Ressenti à valider sur téléphone réel (réglages : `LISSAGE_VOLANT`, `ACCEL`, `RALENTI`, taux de braquage).
 
