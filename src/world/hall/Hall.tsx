@@ -8,6 +8,7 @@ import { textureTexte } from '../texturesProcedurales'
 import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 import { evenementMission } from '../../missions/missions'
+import { donnerTsedaka, possede } from '../../missions/objets'
 
 // RECONSTITUTION ARTISTIQUE : la disposition du hall (position de l'escalier,
 // des portes) n'est documentée par aucun plan trouvé. Les matériaux suivent
@@ -17,6 +18,7 @@ import { evenementMission } from '../../missions/missions'
 
 const { xMin, xMax, zMin, zMax } = HALL
 const Y0 = NIVEAUX.rdc
+const Z_POUCHKE = -1.3
 const Y1 = NIVEAUX.etage1
 const Y2 = NIVEAUX.etage2 - NIVEAUX.dalle
 const EPI = 0.15
@@ -246,6 +248,12 @@ export function Hall() {
     ]
     for (const [z, y, w, h] of feuilles) pc.push({ t: [0.01, h, w], p: [xMin + 0.065, Y0 + y, z], m: 'papier', ombre: false })
 
+    // Pouchké (boîte de tsedaka) sur le mur ouest, entre la porte d'entrée et
+    // l'antichambre — emplacement ESTIMÉ, reconstitution artistique
+    pc.push({ t: [0.16, 0.24, 0.2], p: [xMin + 0.1, Y0 + 1.15, Z_POUCHKE], m: 'panneauBleu' })
+    pc.push({ t: [0.02, 0.025, 0.11], p: [xMin + 0.185, Y0 + 1.24, Z_POUCHKE], m: 'laiton', ombre: false })
+    pc.push({ t: [0.18, 0.02, 0.22], p: [xMin + 0.1, Y0 + 1.02, Z_POUCHKE], m: 'laiton', ombre: false })
+
     return { pieces: pc, rampe: e.rampe }
   }, [])
 
@@ -253,6 +261,10 @@ export function Hall() {
     () => new THREE.MeshStandardMaterial({ map: textureTexte('לוח מודעות', 512, 96, '#6e3d1a', '#f2e9d0', 'bold 56px Heebo, sans-serif'), roughness: 0.7 }),
     [],
   )
+
+  useInteractif('pouchke', [xMin + 0.4, Y0 + 1.2, Z_POUCHKE], 1.3, () => t(possede('tsedaka') ? 'action.donnerTsedaka' : 'action.pouchke'), () => {
+    donnerTsedaka()
+  })
 
   useInteractif('tableau-annonces', [xMin + 0.5, Y0 + 1.5, -5.1], 1.6, () => t('action.lireTableau'), () => {
     useGame.getState().set({ panneau: { type: 'tableau' } })

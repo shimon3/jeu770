@@ -1,5 +1,23 @@
 # Progression
 
+
+## Objets utiles, zmanim et 'Hitat — 15 novembre 2026 (branche `objets-utiles-zmanim`)
+
+### Fait
+- **Siddour** : à la bimah du grand Zal, E propose « Prier à la bimah » ; panneau avec la prière du moment (heure de New York) et le premier verset du Chema. Sans siddour, le texte de la bimah invite à en acheter un.
+- **Tehilim** : dans un lieu de calme, un bouton « Réciter les Tehilim du jour » apparaît ; chapitres du jour selon le cycle mensuel (date hébraïque à New York).
+- **Pouchké** : boîte de tsedaka sur le mur ouest du hall (emplacement ESTIMÉ) ; E y glisse une pièce achetée au kiosque.
+- Compteurs prières / Tehilim / tsedaka dans le magasin (entrées d'inventaire `priere`, `tehilim-lu`, `don`, sauvegardées).
+- **Zmanim** calculés dans le navigateur (`src/world/zmanim.ts`) : nets, fin du Chema (GRA), 'hatsot, chkia, affichés sous le tableau d'annonces.
+- `hitatUrl` = https://yom-beyomo.pages.dev, lien dans le tableau d'annonces et la bibliothèque.
+
+### Vérifié
+- `npm run build` réussi ; zmanim contrôlés pour le 15/11/2026 (nets 06:42, chkia 16:38) et le 21/06/2026 (chkia 20:30).
+
+### Reste
+- Horaires des minyanim de `tefilot.json` toujours d'exemple ; liste `videosCinema` vide.
+- Tests Playwright non relancés en entier (trop lents sans GPU ici) ; vérifier sur téléphone.
+
 ## Personnages hassidiques v6sym — intégration finalisée (29 octobre 2026)
 
 ### Fait

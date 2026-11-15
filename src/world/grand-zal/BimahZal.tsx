@@ -8,6 +8,7 @@ import { useInteractif } from '../interaction'
 import { t } from '../../i18n'
 import { evenementMission } from '../../missions/missions'
 import { useGame } from '../../state/store'
+import { possede, prierBimah } from '../../missions/objets'
 
 // Bimah : enceinte carrée en bois à balustres tournés, plancher surélevé sur
 // roulettes, table couverte d'un tissu bordeaux (Commons 8, 2020 ; COLlive
@@ -68,8 +69,9 @@ export function BimahZal({ m }: { m: MateriauxZal }) {
     return pc
   }, [m, x, z, cote, hp, hg, S])
 
-  useInteractif('bimah', [x + 0.4, S + hp + 1.0, z], 2.6, () => t('action.examinerBimah'), () => {
-    useGame.getState().set({ panneau: { type: 'message', cle: 'zal.bimahTexte' } })
+  useInteractif('bimah', [x + 0.4, S + hp + 1.0, z], 2.6, () => t(possede('siddour') ? 'action.prierBimah' : 'action.examinerBimah'), () => {
+    // Avec un siddour acheté au kiosque, on prie à la bimah ; sinon on l'examine
+    if (!prierBimah()) useGame.getState().set({ panneau: { type: 'message', cle: 'zal.bimahTexte' } })
     evenementMission('interagir', 'bimah')
   })
 

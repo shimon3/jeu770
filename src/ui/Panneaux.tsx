@@ -5,6 +5,23 @@ import { MISSIONS } from '../missions/missions'
 import tefilot from '../config/tefilot.json'
 import bibliotheque from '../config/bibliotheque.json'
 import { ARTICLES, acheter } from '../missions/boutique'
+import zones from '../config/zones.json'
+import { compter } from '../missions/objets'
+import { heureNY, tefilaDuMoment, tehilimDuJour, zmanimDuJour } from '../world/zmanim'
+
+const HITAT_URL = zones.contenus.hitatUrl
+
+// Lien vers le 'Hitat du jour (site Yom Beyomo de Samuel), ouvert dans un nouvel onglet
+function LienHitat({ t }: { t: (c: string) => string }) {
+  if (!HITAT_URL) return null
+  return (
+    <p>
+      <a className="lien-hitat" href={HITAT_URL} target="_blank" rel="noopener noreferrer">
+        📜 {t('hitat.lien')}
+      </a>
+    </p>
+  )
+}
 
 export function Panneaux() {
   const t = useT()
@@ -47,6 +64,34 @@ export function Panneaux() {
             </tbody>
           </table>
           {tefilot.exemple && <p className="source">{t('tableau.exemple')}</p>}
+          {(() => {
+            const z = zmanimDuJour()
+            if (!z) return null
+            return (
+              <>
+                <h3>{t('zmanim.titre')}</h3>
+                <table className="horaires">
+                  <tbody>
+                    {(
+                      [
+                        ['netz', z.netz],
+                        ['sofChema', z.sofChema],
+                        ['hatsot', z.hatsot],
+                        ['chkia', z.chkia],
+                      ] as const
+                    ).map(([cle, d]) => (
+                      <tr key={cle}>
+                        <td>{t(`zmanim.${cle}`)}</td>
+                        <td className="heure">{heureNY(d)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="source">{t('zmanim.source')}</p>
+              </>
+            )
+          })()}
+          <LienHitat t={t} />
         </>
       )
       break
@@ -88,12 +133,13 @@ export function Panneaux() {
             ))}
           </ul>
           {bibliotheque.exemple && <p className="source">{t('bibliotheque.exemple')}</p>}
+          <LienHitat t={t} />
         </>
       )
       break
     case 'magasin': {
       titre = t('boutique.titre')
-      const compte = (id: string) => inventaire.filter((i) => i === id).length
+      const compte = (id: string) => compter(inventaire, id)
       corps = (
         <>
           <p className="magasin-solde">{t('boutique.solde', { n: String(dollars) })}</p>
@@ -116,6 +162,39 @@ export function Panneaux() {
               .map((id) => `${t(`boutique.${id}`)} × ${compte(id)}`)
               .join(' · ') || '—'}
           </p>
+          <ul className="magasin-usages">
+            {ARTICLES.map((a) => (
+              <li key={a.id}>
+                {a.icone} {t(`usage.${a.id}`)}
+              </li>
+            ))}
+          </ul>
+          <p className="source">
+            {t('usage.compteurs', { prieres: String(compte('priere')), tehilim: String(compte('tehilim-lu')), dons: String(compte('don')) })}
+          </p>
+        </>
+      )
+      break
+    }
+    case 'priere':
+      titre = t('priere.titre')
+      corps = (
+        <>
+          <p>{t('priere.corps', { tefila: t(`tefila.${tefilaDuMoment()}`) })}</p>
+          <p className="dialogue" dir="rtl" lang="he">
+            {t('priere.chema')}
+          </p>
+          <p className="source">{t('priere.note')}</p>
+        </>
+      )
+      break
+    case 'tehilim': {
+      const d = tehilimDuJour()
+      titre = t('tehilim.titre')
+      corps = (
+        <>
+          <p>{t('tehilim.corps', { jour: String(d.jour), chapitres: d.chapitres })}</p>
+          <p className="source">{t('tehilim.note')}</p>
         </>
       )
       break

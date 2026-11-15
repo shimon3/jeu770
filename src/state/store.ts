@@ -14,6 +14,8 @@ export type Panneau =
   | { type: 'dialogue'; nomCle: string; cle: string }
   | { type: 'bibliotheque' }
   | { type: 'magasin' }
+  | { type: 'priere' }
+  | { type: 'tehilim' }
   | null
 
 export type Interactif = {

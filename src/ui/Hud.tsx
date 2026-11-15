@@ -5,6 +5,7 @@ import { MISSIONS } from '../missions/missions'
 import { useEffect, useState } from 'react'
 import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
 import { estTactile } from '../player/entrees'
+import { reciterTehilim } from '../missions/objets'
 
 const TACTILE = estTactile()
 
@@ -20,6 +21,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const panneau = useGame((s) => s.panneau)
   const notifications = useGame((s) => s.notifications)
   const dollars = useGame((s) => s.dollars)
+  const aTehilim = useGame((s) => s.inventaire.includes('tehilim'))
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
@@ -73,6 +75,12 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
       {porteProche && !panneau && !pause && (
         <button className="hud-fermer" onClick={() => fermerPorteProche()}>
           {t('hud.fermerPorte')} <kbd>F</kbd>
+        </button>
+      )}
+      {/* Tehilim acheté + lieu de calme : bouton pour réciter les chapitres du jour */}
+      {aTehilim && z?.calme && !panneau && !pause && (
+        <button className="hud-tehilim" onClick={() => reciterTehilim()}>
+          📗 {t('action.reciterTehilim')}
         </button>
       )}
       {vue === '1re' && <div className="viseur" />}
