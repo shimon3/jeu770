@@ -200,3 +200,9 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - Mouvements procéduraux (le modèle n'a pas de squelette) : jambes en ciseaux pour la marche, pose assise calculée (cuisses à l'horizontale, pieds au sol), balancement d'étude, respiration. Le manteau se déforme de façon approximative dans ces poses.
 - L'avatar procédural low-poly reste dans le code, affiché seulement pendant le chargement du modèle.
 
+
+## Magasins juifs d'Eastern Parkway — 15/11/2026 (CHOIX DE JEU, non authentique)
+- Demande de Samuel : pizzeria, glacier, vêtements, chemises, chapeaux sur Eastern Parkway.
+- **Non fidèle** : en réalité ces commerces sont sur Kingston Avenue, au coin ; aucun magasin n'occupe cet emplacement d'Eastern Parkway (x 40,2 → 59,6, après le 784-788).
+- Enseignes génériques (catégorie en anglais + hébreu), aucun nom de commerce réel. Volumes, vitrines et couleurs inventés.
+- Signalé en jeu dans chaque panneau de magasin (« Choix de jeu : en vrai, ces magasins sont sur Kingston Avenue »).

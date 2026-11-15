@@ -2,6 +2,20 @@
 
 
 
+
+## Magasins juifs sur Eastern Parkway — 15 novembre 2026 (branche `magasins-eastern-parkway`, basée sur `voiture-son-compteur-tank`)
+
+### Fait
+- Rangée de 5 magasins après le 784-788 (x 40,2 → 59,6) : pizzeria cachère, glacier, vêtements, chemises, chapeaux (`src/world/rue/Magasins.tsx`, données dans `src/missions/magasins.ts`). Enseignes bilingues EN/HE génériques, store coloré, vitrine, porte, vendeur devant chaque porte. Choix de jeu signalé (REGISTRE.md).
+- E devant la porte : panneau du magasin, achat avec les dollars. Nourriture mangée tout de suite avec la berakha (glace : Chehakol ; knish : Mezonot ; pizza : Mezonot, Hamotsi si repas) ; vêtements dans l'inventaire (gartel, talit katan, sirtouk, chemise, cravate, chapeau, kippa).
+- Limite piétonne est déplacée de x 40 à x 59,6 ; immeuble d'angle en décor au-delà.
+
+### Vérifié
+- `npm run build` ; `tests/magasins.spec.ts` (portrait 360×780) : invite « Entrer : Glacier », panneau, achat d'un cornet (5 $ → 4 $).
+
+### Reste
+- Les vêtements achetés ne changent pas encore l'avatar. Intérieurs non visitables.
+
 ## Conduite fluide, son, compteur, haut-parleur du tank — 15 novembre 2026 (branche `voiture-son-compteur-tank`, basée sur `objets-utiles-zmanim`)
 
 ### Fait

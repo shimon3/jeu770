@@ -18,6 +18,7 @@ import { aUnModele, ArbresRue, CorpsVoiture } from './modelesRue'
 import { LigneBus } from './Bus'
 import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
+import { Magasins, MAGASINS_X1 } from './Magasins'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -185,7 +186,8 @@ export function Rue() {
       {/* Piéton seulement : la voiture conduite les traverse (conduite.ts) */}
       <CuboidCollider args={[L / 2, 3, 0.15]} position={[0, 3, Z_CHAUSSEE - 0.2]} collisionGroups={GROUPE_MUR_PIETON} />
       <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
-      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      {/* À l'est, la limite recule jusqu'au bout de la rangée de magasins */}
+      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[MAGASINS_X1, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
       {/* Bus de ville : un de chaque côté, arrêt et montée des voyageurs */}
       <LigneBus
         id="bus-nord"
@@ -225,6 +227,7 @@ export function Rue() {
       })}
       <PanneauHistoire />
       <KiosqueMagasin />
+      <Magasins />
       <BancInteractif id="banc-gauche" x={-5.2} z={Z_TROTTOIR + 0.45} />
       <BancInteractif id="banc-droite" x={4.8} z={Z_TROTTOIR + 0.45} />
     </>

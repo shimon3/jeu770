@@ -1,0 +1,34 @@
+import { test, expect, type Page } from '@playwright/test'
+
+// Magasins juifs d'Eastern Parkway (15/11/2026)
+async function demarrer(page: Page) {
+  await page.addInitScript(() => localStorage.clear())
+  await page.goto('/?tactile=1')
+  await page.waitForFunction(() => !!(window as any).__770, null, { timeout: 60_000 })
+  const jouer = page.getByRole('button', { name: /^(Jouer|Nouvelle partie)$/ })
+  await expect(jouer.first()).toBeEnabled({ timeout: 90_000 })
+  await jouer.first().click()
+  await page.waitForFunction(() => (window as any).__770.store.getState().ecran === 'jeu')
+}
+
+test('pizzeria et glacier : entrer, acheter, manger', async ({ page }, info) => {
+  test.skip(!info.project.name.startsWith('portrait-360x780'), 'un seul format suffit')
+  test.setTimeout(400_000)
+  await demarrer(page)
+  const etat = () => page.evaluate(() => { const s = (window as any).__770.store.getState(); return { cible: s.cible, panneau: s.panneau, dollars: s.dollars, inv: s.inventaire } })
+  // Devant la porte du glacier (2e magasin)
+  await page.evaluate(() => {
+    const w = window as any
+    w.__770.store.getState().set({ pause: false, panneau: null, siege: null, dollars: 5 })
+    w.__770.teleporter(46.5, 0.9, 1.8)
+  })
+  await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('magasin-glacier')
+  await page.screenshot({ path: 'test-results/magasins-devanture.png' })
+  await page.locator('.tbtn-e').click()
+  await expect.poll(async () => (await etat()).panneau).toEqual({ type: 'boutique', id: 'glacier' })
+  await expect(page.locator('.panneau')).toContainText('Glacier')
+  await page.locator('[data-article="glace"]').click()
+  await expect.poll(async () => (await etat()).dollars).toBe(4)
+  expect((await etat()).inv).toContain('mange:glace')
+  await page.screenshot({ path: 'test-results/magasins-panneau.png' })
+})

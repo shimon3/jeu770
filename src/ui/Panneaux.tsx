@@ -5,6 +5,7 @@ import { MISSIONS } from '../missions/missions'
 import tefilot from '../config/tefilot.json'
 import bibliotheque from '../config/bibliotheque.json'
 import { ARTICLES, acheter } from '../missions/boutique'
+import { acheterDans, magasin as trouverMagasin } from '../missions/magasins'
 import zones from '../config/zones.json'
 import { compter } from '../missions/objets'
 import { heureNY, tefilaDuMoment, tehilimDuJour, zmanimDuJour } from '../world/zmanim'
@@ -174,6 +175,32 @@ export function Panneaux() {
           </p>
         </>
       )
+      break
+    }
+    case 'boutique': {
+      const mg = trouverMagasin(panneau.id)
+      titre = t(`magasins.nom.${panneau.id}`)
+      corps = mg ? (
+        <>
+          <p className="magasin-solde">{t('boutique.solde', { n: String(dollars) })}</p>
+          <ul className="magasin-liste">
+            {mg.articles.map((a) => {
+              const n = compter(inventaire, a.type === 'manger' ? `mange:${a.id}` : a.id)
+              return (
+                <li key={a.id}>
+                  <span>
+                    {a.icone} {t(`magasins.article.${a.id}`)} — {a.prix} ${n > 0 ? ` (× ${n})` : ''}
+                  </span>
+                  <button data-article={a.id} disabled={dollars < a.prix} onClick={() => acheterDans(mg.id, a.id)}>
+                    {t(a.type === 'manger' ? 'magasins.manger' : 'boutique.acheter')}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          <p className="source">{t('magasins.note')}</p>
+        </>
+      ) : null
       break
     }
     case 'priere':
