@@ -19,6 +19,7 @@ import { LigneBus } from './Bus'
 import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
 import { Magasins, MAGASINS_X1 } from './Magasins'
+import { Livraison } from './Livraison'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -228,6 +229,7 @@ export function Rue() {
       <PanneauHistoire />
       <KiosqueMagasin />
       <Magasins />
+      <Livraison />
       <BancInteractif id="banc-gauche" x={-5.2} z={Z_TROTTOIR + 0.45} />
       <BancInteractif id="banc-droite" x={4.8} z={Z_TROTTOIR + 0.45} />
     </>

@@ -55,6 +55,8 @@ type GameState = {
   // Le joueur prie (siddour à la bimah) ou récite les Tehilim : il se balance
   // sur place ; se déplacer ou « Terminer » arrête
   priere: 'priere' | 'tehilim' | null
+  // Livraison de pizza en cours (index de destination, heure de départ en ms)
+  livraison: { dest: number; debut: number } | null
   notifications: Notification[]
   debugPhysique: boolean
   // Position de départ (nouvelle partie ou sauvegarde)
@@ -83,6 +85,7 @@ export const useGame = create<GameState>((set, get) => ({
   zone: 'rue',
   auVolant: null,
   priere: null,
+  livraison: null,
   panneau: null,
   interactifs: new Map(),
   cible: null,

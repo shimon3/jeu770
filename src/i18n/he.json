@@ -261,5 +261,20 @@
   "magasins.note": "בחירה של המשחק: במציאות החנויות האלה נמצאות בקינגסטון אווניו, ממש מעבר לפינה.",
   "berakha.chehakol": "שהכל",
   "berakha.mezonot": "מזונות",
-  "berakha.pizza": "מזונות (המוציא אם אוכלים ממנה סעודה)"
+  "berakha.pizza": "מזונות (המוציא אם אוכלים ממנה סעודה)",
+  "livraison.offre": "בעל הפיצרייה מחפש שליח: הבא פיצה ללקוח, ‎+{n} $ (‎+1 $ טיפ בפחות מדקה). קח את האוטו!",
+  "livraison.accepter": "לצאת למשלוח",
+  "livraison.enCours": "משלוח בדרך",
+  "livraison.depart": "משלוח: עקוב אחרי עמוד האור הזהוב עד הלקוח",
+  "livraison.suivi": "{lieu} — {m} מ׳",
+  "livraison.abandonner": "לבטל את המשלוח",
+  "livraison.donner": "למסור את הפיצה",
+  "livraison.payee": "הפיצה נמסרה: ‎+{n} $!",
+  "livraison.payeePourboire": "הפיצה נמסרה, עם טיפ: ‎+{n} $!",
+  "livraison.lieu.770": "מול 770",
+  "livraison.lieu.kiosque": "ליד הקיוסק",
+  "livraison.lieu.bibliotheque": "מול הספרייה",
+  "livraison.lieu.bus": "בתחנת האוטובוס",
+  "livraison.lieu.bout": "בסוף הרחוב",
+  "livraison.lieu.784": "מול 784"
 }

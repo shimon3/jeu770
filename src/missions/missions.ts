@@ -1,7 +1,7 @@
 import donnees from '../config/missions.json'
 import { joueur, useGame } from '../state/store'
 import { t } from '../i18n'
-import { recompenserMission } from './boutique'
+import { RECOMPENSE_MISSION, recompenserMission } from './boutique'
 import { ecrireSauvegarde } from './sauvegarde'
 
 export type Etape = { type: 'interagir' | 'zone'; cible: string; texte: string }
@@ -11,6 +11,8 @@ export type Mission = {
   description: string
   donneur: string
   etapes: Etape[]
+  // Dollars gagnés à la fin (15/11/2026 : selon la longueur de la mission)
+  recompense?: number
 }
 
 export const MISSIONS = donnees.missions as Mission[]
@@ -46,7 +48,7 @@ export function demarrerMission(id: string) {
 export function evenementMission(type: Etape['type'], cible: string) {
   const s = useGame.getState()
   let change = false
-  let gagnes = 0
+  let gagnes = 0 // dollars
   const suivant = { ...s.missions }
   for (const [id, etat] of Object.entries(s.missions)) {
     if (etat.etat !== 'active') continue
@@ -57,7 +59,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
     if (etat.etape + 1 >= m.etapes.length) {
       suivant[id] = { etat: 'terminee', etape: m.etapes.length }
       s.notifier('mission.terminee', { titre: t(m.titre) })
-      gagnes++
+      gagnes += m.recompense ?? RECOMPENSE_MISSION
     } else {
       suivant[id] = { etat: 'active', etape: etat.etape + 1 }
       s.notifier('mission.etape')
@@ -65,7 +67,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
   }
   if (change) {
     s.set({ missions: suivant })
-    for (let i = 0; i < gagnes; i++) recompenserMission()
+    if (gagnes > 0) recompenserMission(gagnes)
     sauvegarder()
   }
 }

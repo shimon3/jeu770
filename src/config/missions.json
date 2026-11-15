@@ -27,7 +27,8 @@
           "cible": "etage",
           "texte": "mission.decouvrir770.e4"
         }
-      ]
+      ],
+      "recompense": 3
     },
     {
       "id": "descendre-zal",
@@ -45,7 +46,8 @@
           "cible": "pnj-zal",
           "texte": "mission.descendre-zal.e2"
         }
-      ]
+      ],
+      "recompense": 2
     },
     {
       "id": "siddour-zal",
@@ -63,7 +65,8 @@
           "cible": "pnj-zal",
           "texte": "mission.siddour-zal.e2"
         }
-      ]
+      ],
+      "recompense": 3
     },
     {
       "id": "rejoindre-bimah",
@@ -76,7 +79,8 @@
           "cible": "bimah",
           "texte": "mission.rejoindre-bimah.e1"
         }
-      ]
+      ],
+      "recompense": 2
     },
     {
       "id": "preparer-farbrenguen",
@@ -104,7 +108,8 @@
           "cible": "pnj-zal",
           "texte": "mission.preparer-farbrenguen.e4"
         }
-      ]
+      ],
+      "recompense": 4
     },
     {
       "id": "retrouver-livre",
@@ -122,7 +127,8 @@
           "cible": "pnj-etudiant",
           "texte": "mission.retrouver-livre.e2"
         }
-      ]
+      ],
+      "recompense": 3
     },
     {
       "id": "mitzvah-tank",
@@ -155,7 +161,8 @@
           "cible": "retour-770",
           "texte": "mission.mitzvah-tank.e5"
         }
-      ]
+      ],
+      "recompense": 5
     }
   ]
 }

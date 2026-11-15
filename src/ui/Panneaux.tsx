@@ -6,6 +6,7 @@ import tefilot from '../config/tefilot.json'
 import bibliotheque from '../config/bibliotheque.json'
 import { ARTICLES, acheter } from '../missions/boutique'
 import { acheterDans, magasin as trouverMagasin } from '../missions/magasins'
+import { commencerLivraison, GAIN_LIVRAISON } from '../missions/livraisons'
 import zones from '../config/zones.json'
 import { compter } from '../missions/objets'
 import { heureNY, tefilaDuMoment, tehilimDuJour, zmanimDuJour } from '../world/zmanim'
@@ -31,6 +32,7 @@ export function Panneaux() {
   const langue = useGame((s) => s.langue)
   const dollars = useGame((s) => s.dollars)
   const inventaire = useGame((s) => s.inventaire)
+  const livraison = useGame((s) => s.livraison)
   if (!panneau) return null
   const fermer = () => useGame.getState().set({ panneau: null })
 
@@ -108,7 +110,7 @@ export function Panneaux() {
             return (
               <div key={m.id} className="journal-mission">
                 <h3>
-                  {t(m.titre)} <span className="badge">{t(e.etat === 'terminee' ? 'journal.terminee' : 'journal.enCours')}</span>
+                  {t(m.titre)} <span className="badge">+{m.recompense ?? 1} $</span> <span className="badge">{t(e.etat === 'terminee' ? 'journal.terminee' : 'journal.enCours')}</span>
                 </h3>
                 <p>{t(m.description)}</p>
                 <ul>
@@ -198,6 +200,14 @@ export function Panneaux() {
               )
             })}
           </ul>
+          {mg.id === 'pizzeria' && (
+            <div className="livraison-offre">
+              <p>{t('livraison.offre', { n: String(GAIN_LIVRAISON) })}</p>
+              <button className="principal" disabled={!!livraison} onClick={() => commencerLivraison()}>
+                🛵 {t(livraison ? 'livraison.enCours' : 'livraison.accepter')}
+              </button>
+            </div>
+          )}
           <p className="source">{t('magasins.note')}</p>
         </>
       ) : null

@@ -14,10 +14,10 @@ export const ARTICLES = [
   { id: 'tsedaka', prix: 1, icone: '🪙' },
 ] as const
 
-export function recompenserMission() {
+export function recompenserMission(n: number = RECOMPENSE_MISSION, cle = 'boutique.recompense') {
   const s = useGame.getState()
-  s.set({ dollars: s.dollars + RECOMPENSE_MISSION, inventaire: [...s.inventaire, 'dollar'] })
-  s.notifier('boutique.recompense', { n: String(RECOMPENSE_MISSION) })
+  s.set({ dollars: s.dollars + n, inventaire: [...s.inventaire, 'dollar'] })
+  s.notifier(cle, { n: String(n) })
 }
 
 export function acheter(id: string) {

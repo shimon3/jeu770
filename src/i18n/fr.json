@@ -261,5 +261,20 @@
   "magasins.note": "Choix de jeu : en vrai, ces magasins sont sur Kingston Avenue, juste au coin.",
   "berakha.chehakol": "Chehakol",
   "berakha.mezonot": "Mezonot",
-  "berakha.pizza": "Mezonot (Hamotsi si tu en fais un repas)"
+  "berakha.pizza": "Mezonot (Hamotsi si tu en fais un repas)",
+  "livraison.offre": "Le patron cherche un livreur : apporte une pizza à un client, +{n} $ (+1 $ de pourboire en moins d'une minute). Prends la voiture !",
+  "livraison.accepter": "Faire une livraison",
+  "livraison.enCours": "Livraison en cours",
+  "livraison.depart": "Livraison : suis la colonne dorée jusqu'au client",
+  "livraison.suivi": "{lieu} — {m} m",
+  "livraison.abandonner": "Abandonner la livraison",
+  "livraison.donner": "Donner la pizza",
+  "livraison.payee": "Pizza livrée : +{n} $ !",
+  "livraison.payeePourboire": "Pizza livrée, avec pourboire : +{n} $ !",
+  "livraison.lieu.770": "Devant le 770",
+  "livraison.lieu.kiosque": "Près du kiosque",
+  "livraison.lieu.bibliotheque": "Devant la bibliothèque",
+  "livraison.lieu.bus": "À l'arrêt de bus",
+  "livraison.lieu.bout": "Au bout de la rue",
+  "livraison.lieu.784": "Devant le 784"
 }

@@ -3,6 +3,19 @@
 
 
 
+
+## Plus d'argent : récompenses des missions et livraisons de pizza — 15 novembre 2026 (branche `plus-argent-livraisons`)
+
+### Fait
+- Récompense propre à chaque mission (`recompense` dans missions.json) : 2 à 5 $ selon la longueur (22 $ au total au lieu de 7). Affichée dans le journal.
+- Livraisons de pizza, répétables : à la pizzeria, « Faire une livraison » ; un client apparaît sous une colonne dorée à l'un de 6 endroits du trottoir ; HUD avec le lieu et la distance (✕ pour abandonner) ; E au client : +3 $, +1 $ de pourboire en moins de 60 s.
+
+### Vérifié
+- `npm run build` ; `tests/magasins.spec.ts` « livraison » réussi (portrait 360×780).
+
+### Reste
+- Livrer depuis la voiture sans en descendre.
+
 ## Magasins juifs sur Eastern Parkway — 15 novembre 2026 (branche `magasins-eastern-parkway`, basée sur `voiture-son-compteur-tank`)
 
 ### Fait

@@ -1,5 +1,5 @@
 import { useT } from '../i18n'
-import { useGame } from '../state/store'
+import { joueur, useGame } from '../state/store'
 import { zoneParId } from '../world/zones'
 import { MISSIONS } from '../missions/missions'
 import { useEffect, useState } from 'react'
@@ -8,6 +8,26 @@ import { estTactile } from '../player/entrees'
 import { reciterTehilim, terminerPriere } from '../missions/objets'
 import { tefilaDuMoment, tehilimDuJour } from '../world/zmanim'
 import { conduite } from '../world/rue/conduite'
+import { abandonnerLivraison, DESTINATIONS } from '../missions/livraisons'
+
+// Livraison en cours : lieu et distance restante, mis à jour 4 fois par seconde
+function SuiviLivraison({ dest }: { dest: number }) {
+  const t = useT()
+  const [m, setM] = useState(0)
+  const d = DESTINATIONS[dest]
+  useEffect(() => {
+    const id = setInterval(() => setM(Math.round(Math.hypot(joueur.position[0] - d.x, joueur.position[2] - d.z))), 250)
+    return () => clearInterval(id)
+  }, [d])
+  return (
+    <div className="hud-livraison">
+      🍕 {t('livraison.suivi', { lieu: t(d.cle), m: String(m) })}
+      <button onClick={() => abandonnerLivraison()} aria-label={t('livraison.abandonner')}>
+        ✕
+      </button>
+    </div>
+  )
+}
 
 // Compteur de vitesse, relu 10 fois par seconde (la vitesse vit hors React)
 function Compteur({ tank }: { tank: boolean }) {
@@ -41,6 +61,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const aTehilim = useGame((s) => s.inventaire.includes('tehilim'))
   const auVolant = useGame((s) => s.auVolant)
   const priere = useGame((s) => s.priere)
+  const livraison = useGame((s) => s.livraison)
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
@@ -70,6 +91,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
         >
           💵 {dollars} $
         </button>
+        {livraison && !pause && <SuiviLivraison dest={livraison.dest} />}
         {auVolant && !pause && <Compteur tank={auVolant === 'mitzvah-tank'} />}
       </div>
       <div className="hud-mission">
