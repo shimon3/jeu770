@@ -4,6 +4,21 @@
 
 
 
+
+## Devantures des magasins refaites — 15 novembre 2026 (branche `devantures-magasins`)
+
+### Fait
+- Cinq petits immeubles de brique distincts (3 ou 4 étages, corniche à consoles, fenêtres), échelle de secours en fer sur celui du milieu.
+- Rez-de-chaussée vitré : allège en granit, châssis d'aluminium, imposte, porte vitrée ; on voit l'intérieur (comptoir, four et pizzas, bacs de glace, mannequins et manteaux, étagères de chemises, étagères de chapeaux, tableau-menu) et le vendeur derrière son comptoir.
+- Boîte-enseigne lumineuse, store en toile avec joues et nom sur le lambrequin, enseigne drapeau lisible des deux côtés, « OPEN / פתוח » lumineux, pastille « כשר » sur les commerces de bouche.
+- Inspiration : vocabulaire général des rues commerçantes de Brooklyn (stores à lambrequin, boîtes-enseignes, échelles de secours) ; rien n'est copié d'un commerce réel.
+
+### Vérifié
+- `npm run build` ; captures PC (vue large, de face, de biais) ; `tests/magasins.spec.ts` (2 tests) réussi.
+
+### Reste
+- Coût de rendu à surveiller sur téléphone (environ 60 objets par boutique).
+
 ## Plus d'argent : récompenses des missions et livraisons de pizza — 15 novembre 2026 (branche `plus-argent-livraisons`)
 
 ### Fait
