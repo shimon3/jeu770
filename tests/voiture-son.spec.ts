@@ -39,9 +39,13 @@ test.describe('Voiture : compteur, klaxon, haut-parleur', () => {
     await page.keyboard.press('KeyH')
     await page.keyboard.press('KeyN')
     await expect.poll(hp).toBe(false)
+    // Rallumé puis descente du tank : le niggoun s'arrête
+    await page.keyboard.press('KeyN')
+    await expect.poll(hp).toBe(true)
     await page.keyboard.press('KeyE')
     await expect.poll(() => page.evaluate(() => (window as any).__770.store.getState().auVolant)).toBeNull()
     await expect(page.locator('.hud-compteur')).toBeHidden()
+    await expect.poll(hp).toBe(false)
     expect(erreurs).toEqual([])
   })
   test('joystick : on pousse là où l\'on veut aller, vers le bas = marche arrière', async ({ page }) => {

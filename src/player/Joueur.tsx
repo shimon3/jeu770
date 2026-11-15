@@ -213,6 +213,8 @@ export function Joueur() {
       const vitesse = court ? COURSE : MARCHE
       v.set(fx * av + rx * lat, 0, fz * av + rz * lat)
       const bouge = v.lengthSq() > 0.0004
+      // Prière / Tehilim : se déplacer y met fin
+      if (bouge && st.priere) st.set({ priere: null })
       s.avance = bouge && av > 0
       // Au clavier : vitesse pleine ; au joystick : proportionnelle à l'inclinaison
       if (bouge) v.normalize().multiplyScalar(joystick.actif ? vitesse * Math.min(1, Math.max(0.35, Math.hypot(av, lat))) : vitesse)
@@ -235,7 +237,7 @@ export function Joueur() {
       if (bouge) s.cap = amortirAngle(s.cap, Math.atan2(v.x, v.z), 1 - Math.exp(-dt * 12))
       const montee = m.y / dt
       anim.current = {
-        etat: !s.sol ? 'saut' : bouge ? (montee > 0.35 ? 'escalier' : court ? 'course' : 'marche') : 'repos',
+        etat: !s.sol ? 'saut' : bouge ? (montee > 0.35 ? 'escalier' : court ? 'course' : 'marche') : st.priere ? 'balancement' : 'repos',
         vitesse: bouge ? vitesse : 0,
       }
     }

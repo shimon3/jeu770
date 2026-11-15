@@ -213,8 +213,8 @@
   "tehilim.titre": "Tehilim du jour",
   "tehilim.corps": "Jour {jour} du mois : on récite les chapitres {chapitres}.",
   "tehilim.note": "Cycle mensuel traditionnel, selon la date hébraïque à New York.",
-  "usage.siddour": "Siddour : prie à la bimah du grand Zal.",
-  "usage.tehilim": "Tehilim : récite-les dans un lieu de calme (bouton à l'écran).",
+  "usage.siddour": "Siddour : prie à la bimah du grand Zal (+1 $ par prière et par jour).",
+  "usage.tehilim": "Tehilim : récite-les dans un lieu de calme (+1 $ par jour).",
   "usage.tsedaka": "Pièce : glisse-la dans la pouchké du hall d'entrée.",
   "usage.compteurs": "Prières : {prieres} · Tehilim : {tehilim} · Tsedaka : {dons}",
   "zmanim.titre": "Zmanim du jour à Brooklyn",
@@ -234,5 +234,9 @@
   "tactile.h": "Klaxon",
   "tactile.n": "Niggoun",
   "hud.artistiqueCourt": "🎨 Reconstitution",
-  "hud.calmeCourt": "🤫 Calme"
+  "hud.calmeCourt": "🤫 Calme",
+  "priere.recompense": "Prière comptée : +{n} $",
+  "priere.dejaCompte": "Cette prière est déjà comptée aujourd'hui",
+  "tehilim.recompense": "Tehilim du jour récités : +{n} $",
+  "priere.terminer": "Terminer"
 }

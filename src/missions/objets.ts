@@ -1,6 +1,8 @@
 import { useGame } from '../state/store'
 import { sauvegarder } from './missions'
 import { zoneParId } from '../world/zones'
+import { dateNewYork, tefilaDuMoment } from '../world/zmanim'
+import { RECOMPENSE_MISSION } from './boutique'
 
 // Usage des objets achetés au kiosque (demande de Samuel, 15/11/2026) :
 // - siddour : prier à la bimah du grand Zal (BimahZal.tsx) ;
@@ -18,10 +20,30 @@ function ajouter(id: string) {
   sauvegarder()
 }
 
+// Une récompense par prière (Cha'harit, Min'ha, Arvit) et par jour à New
+// York, et une par jour pour les Tehilim : entrée 'fait:<clé>' dans l'inventaire
+function recompenserUneFois(cle: string, texte: string) {
+  const s = useGame.getState()
+  const marque = `fait:${cle}`
+  if (s.inventaire.includes(marque)) return false
+  s.set({ dollars: s.dollars + RECOMPENSE_MISSION, inventaire: [...s.inventaire, marque] })
+  s.notifier(texte, { n: String(RECOMPENSE_MISSION) })
+  return true
+}
+
+function jourNY() {
+  const { a, m, j } = dateNewYork()
+  return `${a}-${m}-${j}`
+}
+
 export function prierBimah() {
   if (!possede('siddour')) return false
+  const s = useGame.getState()
+  if (s.priere) return true
+  s.set({ priere: 'priere' })
   ajouter('priere')
-  useGame.getState().set({ panneau: { type: 'priere' } })
+  if (!recompenserUneFois(`priere:${jourNY()}:${tefilaDuMoment()}`, 'priere.recompense')) s.notifier('priere.dejaCompte')
+  sauvegarder()
   return true
 }
 
@@ -32,9 +54,17 @@ export function peutReciterTehilim() {
 
 export function reciterTehilim() {
   if (!peutReciterTehilim()) return false
+  const s = useGame.getState()
+  if (s.priere) return true
+  s.set({ priere: 'tehilim' })
   ajouter('tehilim-lu')
-  useGame.getState().set({ panneau: { type: 'tehilim' } })
+  recompenserUneFois(`tehilim:${jourNY()}`, 'tehilim.recompense')
+  sauvegarder()
   return true
+}
+
+export function terminerPriere() {
+  useGame.getState().set({ priere: null })
 }
 
 export function donnerTsedaka() {

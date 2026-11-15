@@ -98,6 +98,8 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
     setActive(false)
     useGame.getState().set({ auVolant: null })
     reglerMoteur(false, 0, modele === 'mitzvahTank')
+    // Le niggoun s'arrête quand on descend du tank (demande de Samuel, 15/11/2026)
+    if (id === ID_TANK) arreterHautParleur()
   }
 
   useInteractif(

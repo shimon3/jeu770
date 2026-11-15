@@ -20,6 +20,13 @@
 - **Haut-parleur** : joue « Haneshama Yoredet » de Shmouel Bentouza (`public/audio/haneshama-yoredet.mp3`, 1,4 Mo, préchargé en montant dans le tank), filtre mégaphone adouci ; la mélodie de synthèse ne sert plus qu'en secours si le fichier ne se charge pas.
 - **Saccades du joueur à pied** (`Joueur.tsx`) : la position était relue dans Rapier (pas fixe 1/60 s) ; sur écran 90/120 Hz ou à rythme variable, un pas était perdu puis doublé. Position désormais intégrée image par image et capsule placée immédiatement (`setTranslation`). Tests mobiles « joystick dans les 4 directions » et « caméra au doigt » réussis.
 
+### Retours de Samuel sur téléphone (soir du 15/11)
+- Le niggoun s'arrête en descendant du tank.
+- Prière à la bimah : plus de panneau qui cache tout ; le personnage se balance sur place, un bandeau montre la prière du moment et le Chema, « Terminer » ou se déplacer y met fin. +1 $ par prière (Cha'harit, Min'ha, Arvit) et par jour à New York ; Tehilim du jour pareil, +1 $ par jour.
+- **Boutons du HUD non cliquables sur téléphone** : la zone caméra tactile passait par-dessus. `.hud` en z-index 2, panneaux et menu en z-index 10.
+- HUD mobile : zone, dollars, compteur empilés ; pastille dollars dorée.
+- Test `tests/objets.spec.ts` (portrait 360×780) réussi.
+
 ### Reste
 - Ressenti à valider sur téléphone réel (réglages : `LISSAGE_VOLANT`, `ACCEL`, `RALENTI`, taux de braquage).
 

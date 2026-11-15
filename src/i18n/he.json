@@ -234,5 +234,9 @@
   "tactile.h": "צופר",
   "tactile.n": "ניגון",
   "hud.artistiqueCourt": "🎨 שחזור",
-  "hud.calmeCourt": "🤫 שקט"
+  "hud.calmeCourt": "🤫 שקט",
+  "priere.recompense": "התפילה נספרה: ‎+{n} $",
+  "priere.dejaCompte": "התפילה הזאת כבר נספרה היום",
+  "tehilim.recompense": "תהילים יומי נאמר: ‎+{n} $",
+  "priere.terminer": "לסיים"
 }

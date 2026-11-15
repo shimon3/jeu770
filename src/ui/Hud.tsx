@@ -5,7 +5,8 @@ import { MISSIONS } from '../missions/missions'
 import { useEffect, useState } from 'react'
 import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
 import { estTactile } from '../player/entrees'
-import { reciterTehilim } from '../missions/objets'
+import { reciterTehilim, terminerPriere } from '../missions/objets'
+import { tefilaDuMoment, tehilimDuJour } from '../world/zmanim'
 import { conduite } from '../world/rue/conduite'
 
 // Compteur de vitesse, relu 10 fois par seconde (la vitesse vit hors React)
@@ -39,6 +40,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const dollars = useGame((s) => s.dollars)
   const aTehilim = useGame((s) => s.inventaire.includes('tehilim'))
   const auVolant = useGame((s) => s.auVolant)
+  const priere = useGame((s) => s.priere)
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
@@ -88,7 +90,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
           </div>
         ))}
       </div>
-      {it && !panneau && !pause && (
+      {it && !panneau && !pause && !priere && (
         <div className="hud-action">
           <kbd>E</kbd> {it.labelCle()}
         </div>
@@ -98,8 +100,25 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
           {t('hud.fermerPorte')} <kbd>F</kbd>
         </button>
       )}
+      {/* En prière : bandeau en bas (le personnage se balance), Terminer ou se déplacer pour finir */}
+      {priere && !panneau && !pause && (
+        <div className="hud-priere">
+          <div className="hud-priere-titre">{t(priere === 'priere' ? 'priere.titre' : 'tehilim.titre')}</div>
+          {priere === 'priere' ? (
+            <>
+              <div>{t('priere.corps', { tefila: t(`tefila.${tefilaDuMoment()}`) })}</div>
+              <div className="hud-priere-texte" dir="rtl" lang="he">
+                {t('priere.chema')}
+              </div>
+            </>
+          ) : (
+            <div>{t('tehilim.corps', { jour: String(tehilimDuJour().jour), chapitres: tehilimDuJour().chapitres })}</div>
+          )}
+          <button onClick={() => terminerPriere()}>{t('priere.terminer')}</button>
+        </div>
+      )}
       {/* Tehilim acheté + lieu de calme : bouton pour réciter les chapitres du jour */}
-      {aTehilim && z?.calme && !panneau && !pause && (
+      {aTehilim && z?.calme && !priere && !panneau && !pause && (
         <button className="hud-tehilim" onClick={() => reciterTehilim()}>
           📗 {t('action.reciterTehilim')}
         </button>

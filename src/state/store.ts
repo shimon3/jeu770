@@ -51,6 +51,9 @@ type GameState = {
   dollars: number
   // Véhicule conduit par le joueur (id), pour l'interface ; null à pied
   auVolant: string | null
+  // Le joueur prie (siddour à la bimah) ou récite les Tehilim : il se balance
+  // sur place ; se déplacer ou « Terminer » arrête
+  priere: 'priere' | 'tehilim' | null
   notifications: Notification[]
   debugPhysique: boolean
   // Position de départ (nouvelle partie ou sauvegarde)
@@ -78,6 +81,7 @@ export const useGame = create<GameState>((set, get) => ({
   vue: '3e',
   zone: 'rue',
   auVolant: null,
+  priere: null,
   panneau: null,
   interactifs: new Map(),
   cible: null,

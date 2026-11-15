@@ -120,6 +120,9 @@ kbd {
   position: fixed;
   inset: 0;
   pointer-events: none;
+  /* Au-dessus des commandes tactiles : sinon la zone caméra captait les
+     touchers et les boutons du HUD (dollars, Tehilim, prière) ne répondaient pas */
+  z-index: 2;
   font-size: 0.92rem;
 }
 .hud-gauche {
@@ -214,6 +217,33 @@ kbd {
   pointer-events: auto;
   background: var(--fond);
 }
+.hud-priere {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 440px);
+  background: var(--fond);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+.hud-priere-titre {
+  color: var(--accent);
+  font-weight: 700;
+}
+.hud-priere-texte {
+  font-size: 1.25em;
+}
+html.mode-tactile .hud-priere {
+  bottom: calc(var(--sb) + min(var(--joy) + 46px, 40dvh));
+}
 .hud-tehilim {
   position: absolute;
   bottom: calc(18% + 96px);
@@ -282,6 +312,7 @@ kbd {
 .panneau-fond {
   position: fixed;
   inset: 0;
+  z-index: 10;
   display: grid;
   place-items: center;
   background: rgba(0, 0, 0, 0.35);
