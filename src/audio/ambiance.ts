@@ -40,3 +40,8 @@ export function reglerAmbiance(actif: boolean, interieur: boolean, calme: boolea
   const cible = !actif ? 0 : calme ? 0.03 : interieur ? 0.06 : 0.22
   gain.gain.setTargetAtTime(cible, ctx.currentTime, 0.4)
 }
+
+// Contexte audio partagé (moteur, klaxon, haut-parleur du Mitzvah Tank)
+export function contexteAudio(): AudioContext | null {
+  return ctx
+}

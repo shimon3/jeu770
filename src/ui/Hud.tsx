@@ -6,6 +6,22 @@ import { useEffect, useState } from 'react'
 import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
 import { estTactile } from '../player/entrees'
 import { reciterTehilim } from '../missions/objets'
+import { conduite } from '../world/rue/conduite'
+
+// Compteur de vitesse, relu 10 fois par seconde (la vitesse vit hors React)
+function Compteur({ tank }: { tank: boolean }) {
+  const [kmh, setKmh] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setKmh(Math.round(Math.abs(conduite.vitesse) * 3.6)), 100)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <div className={`hud-compteur${tank ? ' tank' : ''}`} aria-label="km/h">
+      <span className="hud-compteur-valeur">{kmh}</span>
+      <span className="hud-compteur-unite">km/h</span>
+    </div>
+  )
+}
 
 const TACTILE = estTactile()
 
@@ -22,6 +38,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const notifications = useGame((s) => s.notifications)
   const dollars = useGame((s) => s.dollars)
   const aTehilim = useGame((s) => s.inventaire.includes('tehilim'))
+  const auVolant = useGame((s) => s.auVolant)
   // Bouton « Fermer la porte » quand une porte ouverte est à moins de 3 m
   const [porteProche, setPorteProche] = useState(false)
   useEffect(() => {
@@ -83,6 +100,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
           📗 {t('action.reciterTehilim')}
         </button>
       )}
+      {auVolant && !pause && <Compteur tank={auVolant === 'mitzvah-tank'} />}
       {vue === '1re' && <div className="viseur" />}
       {!TACTILE && (
         <div className="hud-aide">

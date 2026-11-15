@@ -1,10 +1,13 @@
 import { conduite } from '../world/rue/conduite'
 import { useGame } from '../state/store'
 import { fermerPorteProche } from '../world/Porte'
+import { basculerHautParleur, klaxonner } from '../audio/vehicule'
+
+export const ID_TANK = 'mitzvah-tank'
 
 // Actions de jeu partagées par le clavier (App.tsx) et les boutons tactiles
 // (ControlesTactiles.tsx).
-export type Action = 'e' | 'v' | 'j' | 'm' | 'p' | 'f'
+export type Action = 'e' | 'v' | 'j' | 'm' | 'p' | 'f' | 'h' | 'n'
 
 export function actionJeu(a: Action) {
   const st = useGame.getState()
@@ -24,5 +27,14 @@ export function actionJeu(a: Action) {
     st.set({ panneau: { type: 'message', cle: 'bientot.programme' } })
   } else if (a === 'f') {
     fermerPorteProche()
+  } else if (a === 'h') {
+    // Klaxon, seulement au volant
+    if (conduite.active && st.son) klaxonner(conduite.vehicule === ID_TANK)
+  } else if (a === 'n') {
+    // Haut-parleur du Mitzvah Tank : se commande depuis le tank
+    if (conduite.active && conduite.vehicule === ID_TANK) {
+      const allume = basculerHautParleur()
+      st.notifier(allume ? 'tank.hpOn' : 'tank.hpOff')
+    }
   }
 }

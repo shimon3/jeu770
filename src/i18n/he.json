@@ -68,7 +68,7 @@
   "action.asseoir": "לשבת",
   "action.parler": "לדבר",
   "action.conduire": "לנהוג ברכב",
-  "conduite.aide": "W A S D לנהיגה, E לרדת",
+  "conduite.aide": "W A S D לנהיגה, H צופר, E לרדת",
   "message.porteAntichambre": "דלת זו מובילה למסדרון ולחדר ההמתנה. מקומות אלה ייפתחו בשלב הבא.",
   "message.porteFermee": "הדלת סגורה.",
   "message.leverDebout": "לחצו E או מקש תנועה כדי לקום.",
@@ -223,5 +223,14 @@
   "zmanim.hatsot": "חצות",
   "zmanim.chkia": "שקיעה",
   "zmanim.source": "חישוב משוער בתוך המשחק, שעון ניו יורק. להלכה יש לבדוק בלוח חב\"ד.",
-  "hitat.lien": "ללמוד את החת\"ת היומי"
+  "hitat.lien": "ללמוד את החת\"ת היומי",
+  "commandes.klaxon": "צופר (בנהיגה)",
+  "commandes.klaxonTouches": "H",
+  "commandes.hautParleur": "רמקול של טנק המצוות",
+  "commandes.hautParleurTouches": "N",
+  "conduite.aideTank": "W A S D לנהיגה, H צופר, N רמקול, E לרדת",
+  "tank.hpOn": "הרמקול דולק: ניגון!",
+  "tank.hpOff": "הרמקול כבוי",
+  "tactile.h": "צופר",
+  "tactile.n": "ניגון"
 }

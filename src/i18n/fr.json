@@ -68,7 +68,7 @@
   "action.asseoir": "S'asseoir",
   "action.parler": "Parler",
   "action.conduire": "Conduire la voiture",
-  "conduite.aide": "Z Q S D pour conduire, E pour descendre",
+  "conduite.aide": "Z Q S D pour conduire, H klaxon, E pour descendre",
   "message.porteAntichambre": "Cette porte mène vers le couloir et l'antichambre. Ces lieux seront ouverts dans une prochaine phase.",
   "message.porteFermee": "Cette porte est fermée.",
   "message.leverDebout": "Appuyez sur E ou une touche de déplacement pour vous lever.",
@@ -223,5 +223,14 @@
   "zmanim.hatsot": "'Hatsot",
   "zmanim.chkia": "Coucher du soleil (Chkia)",
   "zmanim.source": "Calcul approximatif fait dans le jeu, heure de New York. Pour la halakha, se fier à un calendrier Habad.",
-  "hitat.lien": "Étudier le 'Hitat du jour"
+  "hitat.lien": "Étudier le 'Hitat du jour",
+  "commandes.klaxon": "Klaxonner (au volant)",
+  "commandes.klaxonTouches": "H",
+  "commandes.hautParleur": "Haut-parleur du Mitzvah Tank",
+  "commandes.hautParleurTouches": "N",
+  "conduite.aideTank": "Z Q S D pour conduire, H klaxon, N haut-parleur, E pour descendre",
+  "tank.hpOn": "Haut-parleur allumé : niggoun !",
+  "tank.hpOff": "Haut-parleur éteint",
+  "tactile.h": "Klaxon",
+  "tactile.n": "Niggoun"
 }

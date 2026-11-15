@@ -1,6 +1,24 @@
 # Progression
 
 
+
+## Conduite fluide, son, compteur, haut-parleur du tank — 15 novembre 2026 (branche `voiture-son-compteur-tank`, basée sur `objets-utiles-zmanim`)
+
+### Fait
+- **Fluidité** (`VoitureConduite.tsx`) : volant et accélérateur lissés ; braquage adouci à haute vitesse (tank plus lourd) ; décélération régulière au relâchement ; contre un obstacle, la vitesse devient celle réellement parcourue (glissement sans à-coups au lieu de la division par deux à chaque image) ; la voiture est mise à jour AVANT la caméra (`useFrame` priorité −1), ce qui supprime le tremblement d'une image de retard.
+- **Téléphone** : conduite par direction — on pousse le joystick là où l'on veut aller (haut = tout droit, côtés = tourner, bas = marche arrière, l'inclinaison règle la vitesse).
+- **Son** (`src/audio/vehicule.ts`, procédural) : moteur dont la hauteur suit la vitesse, klaxon (H, bouton 📯).
+- **Compteur** km/h en haut au centre pendant la conduite.
+- **Haut-parleur du Mitzvah Tank** (N, bouton 🎶) : niggoun original composé pour le jeu (ré freygish), filtre mégaphone ; continue garé, volume selon la distance.
+- Test `tests/voiture-son.spec.ts` (PC) : compteur, haut-parleur, joystick avant/gauche/arrière.
+
+### Vérifié
+- `npm run build` ; `tests/voiture-son.spec.ts` réussi (2 tests).
+- `mission-tank.spec.ts` « monter » échoue ici AUSSI sur `master` (8fa4b73) : la touche E n'est pas prise en compte dans cet environnement à ~2 images/s, défaut antérieur à cette branche.
+
+### Reste
+- Ressenti à valider sur téléphone réel (réglages : `LISSAGE_VOLANT`, `ACCEL`, `RALENTI`, taux de braquage).
+
 ## Objets utiles, zmanim et 'Hitat — 15 novembre 2026 (branche `objets-utiles-zmanim`)
 
 ### Fait

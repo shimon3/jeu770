@@ -49,6 +49,8 @@ type GameState = {
   inventaire: string[]
   // Dollars gagnés (missions) et dépensés au magasin
   dollars: number
+  // Véhicule conduit par le joueur (id), pour l'interface ; null à pied
+  auVolant: string | null
   notifications: Notification[]
   debugPhysique: boolean
   // Position de départ (nouvelle partie ou sauvegarde)
@@ -75,6 +77,7 @@ export const useGame = create<GameState>((set, get) => ({
   son: true,
   vue: '3e',
   zone: 'rue',
+  auVolant: null,
   panneau: null,
   interactifs: new Map(),
   cible: null,

@@ -35,6 +35,7 @@ export function ControlesTactiles() {
   const ecran = useGame((s) => s.ecran)
   const pause = useGame((s) => s.pause)
   const zone = useGame((s) => s.zone)
+  const auVolant = useGame((s) => s.auVolant)
   const baseRef = useRef<HTMLDivElement>(null)
   const doigtJoystick = useRef<number | null>(null)
   const doigtCamera = useRef<{ id: number; x: number; y: number } | null>(null)
@@ -177,9 +178,12 @@ export function ControlesTactiles() {
             <span className="tbtn-label">{t('tactile.saut')}</span>
           </button>
         )}
-        {bouton2('j', 'J', t('tactile.j'))}
+        {/* Au volant : klaxon, et haut-parleur dans le Mitzvah Tank */}
+        {auVolant && bouton2('h', '📯', t('tactile.h'))}
+        {auVolant === 'mitzvah-tank' && bouton2('n', '🎶', t('tactile.n'))}
+        {!auVolant && bouton2('j', 'J', t('tactile.j'))}
         {bouton2('v', 'V', t('tactile.v'))}
-        {bouton2('f', 'F', t('tactile.f'))}
+        {!auVolant && bouton2('f', 'F', t('tactile.f'))}
         {bouton2('e', 'E', t('tactile.e'), 'tbtn-e')}
       </div>
       <button
