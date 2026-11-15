@@ -54,18 +54,22 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
 
   return (
     <div className="hud">
-      <div className="hud-zone">
-        <span>{t(`zone.${zone}`)}</span>
-        {z?.artistique && <span className="badge">{t('hud.artistique')}</span>}
-        {z?.calme && <span className="badge calme">{t('hud.calme')}</span>}
+      {/* Colonne de gauche : zone, dollars, compteur (empilés, sans chevauchement) */}
+      <div className="hud-gauche">
+        <div className="hud-zone">
+          <span>{t(`zone.${zone}`)}</span>
+          {z?.artistique && <span className="badge">{t(TACTILE ? 'hud.artistiqueCourt' : 'hud.artistique')}</span>}
+          {z?.calme && <span className="badge calme">{t(TACTILE ? 'hud.calmeCourt' : 'hud.calme')}</span>}
+        </div>
+        <button
+          className="hud-dollars"
+          aria-label={t('boutique.titre')}
+          onClick={() => useGame.getState().set({ panneau: { type: 'magasin' } })}
+        >
+          💵 {dollars} $
+        </button>
+        {auVolant && !pause && <Compteur tank={auVolant === 'mitzvah-tank'} />}
       </div>
-      <button
-        className="hud-dollars"
-        aria-label={t('boutique.titre')}
-        onClick={() => useGame.getState().set({ panneau: { type: 'magasin' } })}
-      >
-        💵 {dollars} $
-      </button>
       <div className="hud-mission">
         <div className="hud-mission-titre">{t('hud.mission')}</div>
         {active && etape ? (
@@ -100,7 +104,6 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
           📗 {t('action.reciterTehilim')}
         </button>
       )}
-      {auVolant && !pause && <Compteur tank={auVolant === 'mitzvah-tank'} />}
       {vue === '1re' && <div className="viseur" />}
       {!TACTILE && (
         <div className="hud-aide">

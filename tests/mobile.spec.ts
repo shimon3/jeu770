@@ -62,7 +62,10 @@ async function verifierDisposition(page: Page) {
   const joy = await rect(page, '.joystick-base')
   const btns = await rect(page, '.tbtn')
   const menu = await rect(page, '.tactile-menu')
-  const hud = [...(await rect(page, '.hud-zone')), ...(await rect(page, '.hud-mission'))]
+  const dollars = await rect(page, '.hud-dollars')
+  const hud = [...(await rect(page, '.hud-zone')), ...(await rect(page, '.hud-mission')), ...dollars]
+  // Le compteur de dollars ne recouvre ni la zone ni la mission (bug du 15/11/2026)
+  for (const d of dollars) for (const h of [...(await rect(page, '.hud-zone')), ...(await rect(page, '.hud-mission'))]) expect(chevauche(d, h), `${d.nom} / ${h.nom}`).toBe(false)
   expect(joy.length).toBe(1)
   expect(btns.length).toBeGreaterThanOrEqual(4)
   expect(menu.length).toBe(1)

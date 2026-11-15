@@ -232,5 +232,7 @@
   "tank.hpOn": "הרמקול דולק: ניגון!",
   "tank.hpOff": "הרמקול כבוי",
   "tactile.h": "צופר",
-  "tactile.n": "ניגון"
+  "tactile.n": "ניגון",
+  "hud.artistiqueCourt": "🎨 שחזור",
+  "hud.calmeCourt": "🤫 שקט"
 }

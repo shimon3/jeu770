@@ -232,5 +232,7 @@
   "tank.hpOn": "Haut-parleur allumé : niggoun !",
   "tank.hpOff": "Haut-parleur éteint",
   "tactile.h": "Klaxon",
-  "tactile.n": "Niggoun"
+  "tactile.n": "Niggoun",
+  "hud.artistiqueCourt": "🎨 Reconstitution",
+  "hud.calmeCourt": "🤫 Calme"
 }
