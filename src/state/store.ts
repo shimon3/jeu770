@@ -48,6 +48,9 @@ type GameState = {
   cible: string | null
   siege: Siege | null
   missions: Record<string, EtatMission>
+  // Mission affichée au HUD et suivie par la balise : la dernière commencée
+  // ou avancée (sinon la première active). Non sauvegardée.
+  missionSuivie: string | null
   // Objets portés par le joueur (ex. 'cle-etage')
   inventaire: string[]
   // Dollars gagnés (missions) et dépensés au magasin
@@ -93,6 +96,7 @@ export const useGame = create<GameState>((set, get) => ({
   cible: null,
   siege: null,
   missions: {},
+  missionSuivie: null,
   inventaire: [],
   dollars: 5,
   notifications: [],

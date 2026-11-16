@@ -361,3 +361,29 @@ Comparer en vrai navigateur : entrée 784-788, reflet des vitres, calage de la p
 - Performance sur téléphone réel avec ~12 personnages de 13 000 triangles.
 - Les couleurs de peau et de barbe propres à chaque PNJ ne s'appliquent plus (tous identiques).
 
+
+## Devantures des magasins (16/11/2026, branche `ameliorations/graphismes-missions-perf`, NON commité)
+
+Choix de jeu, pas une reconstitution (aucune enseigne réelle). Code : `src/world/rue/Vitrines.tsx`, structure dans `Magasins.tsx`.
+
+### Fait et vérifié (captures Chrome, `node tools/captures/devantures.mjs`)
+- Vitrines en retrait de 0,8 m derrière une vitre, garnies d'objets 3D : four et pizzas ; bacs de glace et cornets ; bustes en sirtouk et en talit katan ; rayonnages de chemises et cravates ; chapeaux sur socles et kippot.
+- Portes à cadre de la couleur du magasin, plaque « OPEN / פתוח », paillasson ; enseignes agrandies avec icône ; enseignes rondes en drapeau ; stores rayés (pizzeria, glacier) ou courts ; ardoises de prix lues dans `magasins.ts`.
+- `npm run build` OK ; `tests/magasins.spec.ts` : 2 réussis (portrait-360x780).
+
+### À savoir
+- Le vendeur est déplacé de 0,4 m vers la porte pour ne plus cacher l'étalage. Conséquence : celui du glacier passe à 2,07 m de la pièce de la chaise (limite 2,0 m, contrôle inchangé dans `routines.ts`) et s'affiche maintenant ; celui de la pizzeria reste refusé par ce contrôle.
+- Non testé : collision des ardoises en jeu, rendu sur un vrai téléphone, coût de rendu mesuré.
+- Échecs antérieurs à ce chantier : `mobile.spec.ts` « escalier du hall au joystick » (montée 0,25 à 0,30 m au lieu de > 0,4) ; `personnages-v6.spec.ts` attend 40 PNJ adultes (44 avant ce chantier, 45 après).
+
+## Magasins où l'on entre, flèche de suivi, mission suivie (16/11/2026, NON commité)
+
+### Fait et vérifié
+- On entre dans les cinq magasins : entrée en retrait, porte vitrée (E, rayon 2,6 m, modèle `vitree` de `Porte.tsx`), salle de 3,7 × 7,6 m, comptoir, rayons, tables ; achat au comptoir (`magasin-<id>`). Zone `magasins` (intérieur). `tests/magasins.spec.ts` : 3 réussis, dont l'entrée à pied dans le glacier ; captures des cinq salles regardées.
+- Flèche de suivi : flèche 3D dorée à la place du losange (balise et PNJ donneurs), flèche de direction dans l'encart Mission. Vue en capture devant le chalia'h.
+- Encart Mission et balise : suivent la dernière mission commencée ou avancée (`missionSuivie`), sinon une collecte entamée, sinon la première active. `npm run build` OK.
+
+### À savoir
+- Pizzeria : comptoir sans vendeur. Le contrôle des PNJ (`routines.ts`, inchangé) refuse toute position dans cette salle, située au-dessus de la place vide et de la pièce de la chaise.
+- Non testé : le compte des pièces à l'écran avec deux missions en cours ; l'entrée à pied dans les quatre autres magasins ; les collisions des meubles ; un vrai téléphone ; la suite de tests complète après ces changements.
+- Corrigé après les captures, non revu à l'écran : murs d'extrémité (pizzeria à gauche, chapeaux à droite) qui montraient la brique au lieu de l'habillage.

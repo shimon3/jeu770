@@ -16,11 +16,11 @@ test('pizzeria et glacier : entrer, acheter, manger', async ({ page }, info) => 
   test.setTimeout(400_000)
   await demarrer(page)
   const etat = () => page.evaluate(() => { const s = (window as any).__770.store.getState(); return { cible: s.cible, panneau: s.panneau, dollars: s.dollars, inv: s.inventaire } })
-  // Devant la porte du glacier (2e magasin)
+  // Devant le comptoir du glacier (2e magasin), à l'intérieur
   await page.evaluate(() => {
     const w = window as any
     w.__770.store.getState().set({ pause: false, panneau: null, siege: null, dollars: 5 })
-    w.__770.teleporter(46.5, 0.9, 1.8)
+    w.__770.teleporter(46.02, 0.9, -6.6, 0)
   })
   await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('magasin-glacier')
   await page.screenshot({ path: 'test-results/magasins-devanture.png' })
@@ -41,7 +41,7 @@ test('pizzeria : livraison, client, +3 $ ou +4 $ avec pourboire', async ({ page 
   await page.evaluate(() => {
     const w = window as any
     w.__770.store.getState().set({ pause: false, panneau: null, siege: null, dollars: 0 })
-    w.__770.teleporter(42.6, 0.9, 1.8)
+    w.__770.teleporter(42.14, 0.9, -6.6, 0)
   })
   await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('magasin-pizzeria')
   await page.locator('.tbtn-e').click()
@@ -63,4 +63,24 @@ test('pizzeria : livraison, client, +3 $ ou +4 $ avec pourboire', async ({ page 
   const d = (await etat()).dollars
   expect([3, 4]).toContain(d)
   await expect(page.locator('.hud-livraison')).toHaveCount(0)
+})
+
+test('on entre dans le glacier par sa porte, à pied', async ({ page }, info) => {
+  test.skip(!info.project.name.startsWith('portrait-360x780'), 'un seul format suffit')
+  test.setTimeout(400_000)
+  await demarrer(page)
+  const etat = () => page.evaluate(() => { const w = window as any; const s = w.__770.store.getState(); return { cible: s.cible, zone: s.zone, z: w.__770.joueur?.position?.[2] ?? null } })
+  // Sur le trottoir, face à la porte du glacier
+  await page.evaluate(() => {
+    const w = window as any
+    w.__770.store.getState().set({ pause: false, panneau: null, siege: null })
+    w.__770.teleporter(47.1, 0.9, 0.4, 0)
+  })
+  await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('porte-magasin-glacier')
+  await page.locator('.tbtn-e').click()
+  await page.waitForTimeout(1500)
+  await page.keyboard.down('KeyW')
+  await expect.poll(async () => (await etat()).zone, { timeout: 60_000 }).toBe('magasins')
+  await page.keyboard.up('KeyW')
+  await page.screenshot({ path: 'test-results/magasins-interieur.png' })
 })

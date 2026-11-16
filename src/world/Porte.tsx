@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CuboidCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
@@ -9,7 +9,7 @@ import { t } from '../i18n'
 import { evenementMission } from '../missions/missions'
 import type { V3 } from './primitives'
 
-type Modele = 'principale' | 'interieure' | 'zal'
+type Modele = 'principale' | 'interieure' | 'zal' | 'vitree'
 
 type Props = {
   id: string
@@ -28,6 +28,8 @@ type Props = {
   cle?: string // objet d'inventaire nécessaire pour ouvrir ou fermer
   messageSansCle?: string
   rotationY?: number // orientation de la porte fermée
+  couleur?: string // cadre de la porte vitrée (modèle 'vitree')
+  rayon?: number // distance d'interaction (1,7 m par défaut)
 }
 
 // Portes actuellement ouvertes (hors porte fixe) : utilisé par la touche F
@@ -62,13 +64,14 @@ const CHROME = new THREE.MeshStandardMaterial({ color: '#c9cdd2', metalness: 0.9
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
 
-export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, rotationY = 0, ouverteInitiale = false, fixe = false, fermetureAuto = true, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
+export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, couleur = '#1b1b1b', rayon = 1.7, rotationY = 0, ouverteInitiale = false, fixe = false, fermetureAuto = true, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
   const corps = useRef<RapierRigidBody>(null)
   const [ouverte, setOuverte] = useState(ouverteInitiale)
   const angle = useRef(ouverteInitiale ? angleOuverture : 0)
   const minuterie = useRef(0)
   const aLaCle = useGame((s) => (cle ? s.inventaire.includes(cle) : true))
   const m = useMateriaux()
+  const cadre = useMemo(() => new THREE.MeshStandardMaterial({ color: couleur, roughness: 0.6 }), [couleur])
 
   // Point d'interaction : milieu de la porte fermée
   const c = Math.cos(rotationY)
@@ -86,7 +89,7 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
   useInteractif(
     id,
     centre,
-    fixe ? 0 : 1.7,
+    fixe ? 0 : rayon,
     () =>
       verrouillee || !aLaCle
         ? t('action.porteVerrouillee')
@@ -205,6 +208,16 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
       panneau(0.05, 0.09, 0.85, 1.3, m.laiton, 'h1', 0.07),
       panneau(0.05, 0.09, 1.38, 1.42, m.laiton, 'h2', 0.06),
     )
+  } else if (modele === 'vitree') {
+    // Porte de magasin : vitre, cadre de couleur, barre de poussée en laiton
+    details.push(
+      panneau(0, 0.08, 0, hauteur, cadre, 'c1'),
+      panneau(0.92, 1, 0, hauteur, cadre, 'c2'),
+      panneau(0, 1, hauteur - 0.1, hauteur, cadre, 'c3'),
+      panneau(0, 1, 0, 0.3, cadre, 'c4'),
+      panneau(0.08, 0.92, 1.0, 1.05, cadre, 'c5'),
+      panneau(0.1, 0.14, 0.85, 1.45, m.laiton, 'h1', 0.09),
+    )
   } else {
     details.push(
       panneau(0.15, 0.85, 1.15, 1.95, m.cheneFonce, 'p1'),
@@ -215,7 +228,7 @@ export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens,
 
   return (
     <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={charniere} rotation={[0, rotationY + (ouverteInitiale ? angleOuverture : 0), 0]}>
-      <mesh position={[(sens * largeur) / 2, hauteur / 2, 0]} material={modele === 'principale' ? m.chene : m.cheneFonce} castShadow receiveShadow>
+      <mesh position={[(sens * largeur) / 2, hauteur / 2, 0]} material={modele === 'vitree' ? m.vitre : modele === 'principale' ? m.chene : m.cheneFonce} castShadow receiveShadow>
         <boxGeometry args={[largeur, hauteur, epaisseur]} />
       </mesh>
       {details}

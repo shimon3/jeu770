@@ -18,6 +18,24 @@ import { donneursDisponibles, repereMission } from './guide'
 
 const OR = '#ffd23a'
 
+// Flèche de suivi en volume (16/11/2026) : pointe vers le bas, biseautée,
+// dorée et légèrement lumineuse. Remplace le losange plat.
+const FLECHE = (() => {
+  const f = new THREE.Shape()
+  f.moveTo(0, -0.5)
+  f.lineTo(0.36, -0.04)
+  f.lineTo(0.15, -0.04)
+  f.lineTo(0.15, 0.5)
+  f.lineTo(-0.15, 0.5)
+  f.lineTo(-0.15, -0.04)
+  f.lineTo(-0.36, -0.04)
+  f.closePath()
+  const g = new THREE.ExtrudeGeometry(f, { depth: 0.14, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelSegments: 2 })
+  g.translate(0, 0, -0.07)
+  return g
+})()
+const MAT_FLECHE = new THREE.MeshStandardMaterial({ color: OR, emissive: '#c98a00', emissiveIntensity: 0.9, metalness: 0.55, roughness: 0.28 })
+
 // Étape de collecte en cours pour ce groupe d'objets ?
 function useCollecteActive(groupe: string) {
   return useGame((s) =>
@@ -135,7 +153,6 @@ function Balise() {
   const groupe = useRef<THREE.Group>(null)
   const losange = useRef<THREE.Mesh>(null)
   const colonne = useMemo(() => new THREE.MeshBasicMaterial({ color: OR, transparent: true, opacity: 0.28, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }), [])
-  const plein = useMemo(() => new THREE.MeshBasicMaterial({ color: OR, toneMapped: false }), [])
   const horloge = useRef(0)
   useFrame(({ clock }, dt) => {
     const g = groupe.current
@@ -155,7 +172,7 @@ function Balise() {
     colonne.opacity = 0.22 + Math.sin(tps * 3) * 0.08
     if (losange.current) {
       losange.current.rotation.y = tps * 1.6
-      losange.current.position.y = 1.15 + Math.sin(tps * 2.2) * 0.12
+      losange.current.position.y = 1.35 + Math.sin(tps * 2.2) * 0.14
     }
   })
   return (
@@ -163,9 +180,7 @@ function Balise() {
       <mesh position={[0, 1.2, 0]} material={colonne} renderOrder={3}>
         <cylinderGeometry args={[0.32, 0.32, 4.8, 20, 1, true]} />
       </mesh>
-      <mesh ref={losange} position={[0, 1.15, 0]} material={plein} scale={[0.6, 1, 0.6]}>
-        <octahedronGeometry args={[0.3, 0]} />
-      </mesh>
+      <mesh ref={losange} position={[0, 1.15, 0]} material={MAT_FLECHE} geometry={FLECHE} scale={0.95} />
     </group>
   )
 }
@@ -176,7 +191,6 @@ function ReperesDonneurs() {
   const interactifs = useGame((s) => s.interactifs)
   const [ids, setIds] = useState<string[]>([])
   useEffect(() => setIds(donneursDisponibles()), [missions])
-  const mat = useMemo(() => new THREE.MeshBasicMaterial({ color: OR, toneMapped: false }), [])
   const groupe = useRef<THREE.Group>(null)
   useFrame(({ clock }) => {
     if (!groupe.current) return
@@ -193,9 +207,7 @@ function ReperesDonneurs() {
         if (!it) return null
         const y = it.position[1] + 0.95
         return (
-          <mesh key={id} position={[it.position[0], y, it.position[2]]} userData={{ y }} material={mat} scale={[0.5, 1, 0.5]}>
-            <octahedronGeometry args={[0.2, 0]} />
-          </mesh>
+          <mesh key={id} position={[it.position[0], y + 0.1, it.position[2]]} userData={{ y: y + 0.1 }} material={MAT_FLECHE} geometry={FLECHE} scale={0.42} />
         )
       })}
     </group>

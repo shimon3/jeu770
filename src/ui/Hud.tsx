@@ -9,7 +9,7 @@ import { reciterTehilim, terminerPriere } from '../missions/objets'
 import { tefilaDuMoment, tehilimDuJour } from '../world/zmanim'
 import { conduite } from '../world/rue/conduite'
 import { abandonnerLivraison, DESTINATIONS } from '../missions/livraisons'
-import { distanceRepere, repereMission } from '../missions/guide'
+import { choisirMission, distanceRepere, repereMission } from '../missions/guide'
 
 // Livraison en cours : lieu et distance restante, mis à jour 4 fois par seconde
 function SuiviLivraison({ dest }: { dest: number }) {
@@ -49,12 +49,22 @@ const TACTILE = estTactile()
 
 // Distance jusqu'à la prochaine étape (ou jusqu'au PNJ qui a une mission), 4 fois par seconde
 function useRepere() {
-  const [r, setR] = useState<{ m: number; genre: 'etape' | 'donneur' } | null>(null)
+  // `cap` : direction de la cible par rapport au regard, en degrés (0 = droit devant, sens horaire)
+  const [r, setR] = useState<{ m: number; genre: 'etape' | 'donneur'; cap: number } | null>(null)
   useEffect(() => {
     const id = setInterval(() => {
       const p = repereMission()
-      const suivant = p ? { m: distanceRepere(p), genre: p.genre } : null
-      setR((avant) => (avant?.m === suivant?.m && avant?.genre === suivant?.genre ? avant : suivant))
+      let suivant: { m: number; genre: 'etape' | 'donneur'; cap: number } | null = null
+      if (p) {
+        const dx = p.x - joueur.position[0]
+        const dz = p.z - joueur.position[2]
+        const s = Math.sin(joueur.yaw)
+        const c = Math.cos(joueur.yaw)
+        // Devant = (-sin, -cos), droite = (cos, -sin) : voir Joueur.tsx
+        const cap = Math.round((Math.atan2(dx * c - dz * s, -dx * s - dz * c) * 180) / Math.PI / 10) * 10
+        suivant = { m: distanceRepere(p), genre: p.genre, cap }
+      }
+      setR((avant) => (avant?.m === suivant?.m && avant?.genre === suivant?.genre && avant?.cap === suivant?.cap ? avant : suivant))
     }, 250)
     return () => clearInterval(id)
   }, [])
@@ -69,6 +79,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
   const cible = useGame((s) => s.cible)
   const interactifs = useGame((s) => s.interactifs)
   const missions = useGame((s) => s.missions)
+  const suivie = useGame((s) => s.missionSuivie)
   const vue = useGame((s) => s.vue)
   const panneau = useGame((s) => s.panneau)
   const notifications = useGame((s) => s.notifications)
@@ -88,7 +99,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
 
   const z = zoneParId(zone)
   const it = cible ? interactifs.get(cible) : undefined
-  const active = MISSIONS.find((m) => missions[m.id]?.etat === 'active')
+  const active = choisirMission(missions, suivie)
   const etape = active ? active.etapes[missions[active.id].etape] : undefined
 
   return (
@@ -124,12 +135,20 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
               {t(etape.texte)}
               {etape.type === 'collecte' && ` (${missions[active.id].compte ?? 0}/${etape.nombre ?? 1})`}
             </div>
-            {repere?.genre === 'etape' && <div className="hud-mission-distance">◆ {t('hud.distance', { m: String(repere.m) })}</div>}
+            {repere?.genre === 'etape' && (
+              <div className="hud-mission-distance">
+                <span className="hud-fleche" style={{ transform: `rotate(${repere.cap}deg)` }} aria-hidden="true" />
+                {t('hud.distance', { m: String(repere.m) })}
+              </div>
+            )}
           </>
         ) : repere?.genre === 'donneur' ? (
           <>
             <div>{t(Object.keys(missions).length === 0 ? 'hud.aucuneMission' : 'hud.missionDispo')}</div>
-            <div className="hud-mission-distance">◆ {t('hud.distance', { m: String(repere.m) })}</div>
+            <div className="hud-mission-distance">
+              <span className="hud-fleche" style={{ transform: `rotate(${repere.cap}deg)` }} aria-hidden="true" />
+              {t('hud.distance', { m: String(repere.m) })}
+            </div>
           </>
         ) : (
           <div>{Object.keys(missions).length === 0 ? t('hud.aucuneMission') : MISSIONS.every((m) => missions[m.id]?.etat === 'terminee') ? t('hud.toutesTerminees') : t('hud.missionDispo')}</div>

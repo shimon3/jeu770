@@ -1,4 +1,4 @@
-import { joueur, useGame } from '../state/store'
+import { joueur, useGame, type EtatMission } from '../state/store'
 import { ZONES } from '../world/zones'
 import { MISSIONS, type Mission } from './missions'
 import { COLLECTES, marque } from './collectes'
@@ -10,10 +10,23 @@ const SANS_BALISE = new Set(['mitzvah-tank'])
 
 export type Repere = { x: number; y: number; z: number; genre: 'etape' | 'donneur' }
 
-// Première mission active, dans l'ordre du fichier (celle qu'affiche le HUD)
+// Mission affichée au HUD et guidée par la balise : la dernière commencée ou
+// avancée si elle est encore en cours, sinon la première active du fichier.
+// (16/11/2026 : avec deux missions en cours, le HUD restait sur la première
+// et le compte des pièces ramassées ne s'affichait pas.)
+export function choisirMission(missions: Record<string, EtatMission>, suivie: string | null): Mission | undefined {
+  if (suivie && missions[suivie]?.etat === 'active') {
+    const m = MISSIONS.find((x) => x.id === suivie)
+    if (m) return m
+  }
+  const actives = MISSIONS.filter((m) => missions[m.id]?.etat === 'active')
+  // Après un rechargement : une collecte déjà entamée passe d'abord
+  return actives.find((m) => (missions[m.id].compte ?? 0) > 0) ?? actives[0]
+}
+
 export function missionSuivie(): Mission | undefined {
-  const { missions } = useGame.getState()
-  return MISSIONS.find((m) => missions[m.id]?.etat === 'active')
+  const s = useGame.getState()
+  return choisirMission(s.missions, s.missionSuivie)
 }
 
 // PNJ qui ont une mission à confier : aucune des leurs en cours, et il en

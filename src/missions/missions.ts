@@ -39,7 +39,7 @@ export function demarrerMission(id: string) {
   const s = useGame.getState()
   const m = mission(id)
   if (!m || s.missions[id]) return
-  s.set({ missions: { ...s.missions, [id]: { etat: 'active', etape: 0 } } })
+  s.set({ missions: { ...s.missions, [id]: { etat: 'active', etape: 0 } }, missionSuivie: id })
   s.notifier('mission.nouvelle', { titre: t(m.titre) })
   sauvegarder()
 }
@@ -50,6 +50,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
   const s = useGame.getState()
   let change = false
   let gagnes = 0 // dollars
+  let suivie = s.missionSuivie
   const suivant = { ...s.missions }
   for (const [id, etat] of Object.entries(s.missions)) {
     if (etat.etat !== 'active') continue
@@ -57,6 +58,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
     const etape = m?.etapes[etat.etape]
     if (!m || !etape || etape.type !== type || etape.cible !== cible) continue
     change = true
+    suivie = id
     // Collecte : l'étape ne se termine qu'au dernier objet ramassé
     if (etape.type === 'collecte') {
       const compte = (etat.compte ?? 0) + 1
@@ -77,7 +79,7 @@ export function evenementMission(type: Etape['type'], cible: string) {
     }
   }
   if (change) {
-    s.set({ missions: suivant })
+    s.set({ missions: suivant, missionSuivie: suivie })
     if (gagnes > 0) recompenserMission(gagnes)
     sauvegarder()
   }

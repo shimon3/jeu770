@@ -178,6 +178,22 @@
       "artistique": true
     },
     {
+      "id": "magasins",
+      "min": [
+        40.2,
+        -0.3,
+        -9.5
+      ],
+      "max": [
+        59.6,
+        3.6,
+        -1.75
+      ],
+      "interieur": true,
+      "calme": false,
+      "artistique": false
+    },
+    {
       "id": "cour",
       "min": [
         -9.0,
