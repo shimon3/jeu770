@@ -19,10 +19,10 @@ import { VITESSE_NATURELLE } from '../config/avatar'
 export type ModeleLeger = 'enfant' | 'fille' | 'femme' | 'vieux'
 
 const URLS: Record<ModeleLeger, string> = {
-  enfant: '/models/enfant_habad_v1.glb',
+  enfant: '/models/enfant_habad_v2.glb',
   fille: '/models/fille_habad_v1.glb',
-  femme: '/models/femme_habad_v1.glb',
-  vieux: '/models/vieux_habad_v1.glb',
+  femme: '/models/femme_habad_v2.glb',
+  vieux: '/models/vieux_habad_v2.glb',
 }
 
 // Décodeur Draco servi par le jeu (pas de CDN)
@@ -110,6 +110,57 @@ function mainsSurPoignee(racine: THREE.Object3D, bras: Bras[]) {
   }
 }
 
+// Jambes du garçon (16/11/2026). Mesuré dans le GLB (tools/mesurer-jambes-glb.mjs) :
+// hanches à ±9 cm mais chevilles à ±11 cm en marche et ±14 cm au repos. Les
+// jambes s'ouvrent en « A », comme à cheval. Après l'animation, chaque cuisse
+// est ramenée vers l'intérieur pour que la cheville passe sous la hanche.
+const SOUS_HANCHE = 0.8 // cheville à 80 % de l'écart de la hanche
+type Jambe = { cuisse: THREE.Bone; pied: THREE.Bone }
+const _H = new THREE.Vector3()
+const _F = new THREE.Vector3()
+const _AXE = new THREE.Vector3()
+
+function trouverJambes(racine: THREE.Object3D): Jambe[] {
+  const os = new Map<string, THREE.Bone>()
+  racine.traverse((o) => {
+    if ((o as THREE.Bone).isBone) os.set(o.name.replace(/mixamorig:?/, ''), o as THREE.Bone)
+  })
+  const res: Jambe[] = []
+  for (const c of ['Left', 'Right']) {
+    const cuisse = os.get(`${c}UpLeg`)
+    const pied = os.get(`${c}Foot`)
+    if (cuisse && pied) res.push({ cuisse, pied })
+  }
+  return res
+}
+
+function resserrerJambes(racine: THREE.Object3D, jambes: Jambe[]) {
+  racine.updateMatrixWorld(true)
+  // Axe avant du personnage, en repère monde
+  _AXE.set(0, 0, 1).transformDirection(racine.matrixWorld)
+  for (const j of jambes) {
+    racine.worldToLocal(j.cuisse.getWorldPosition(_H))
+    racine.worldToLocal(j.pied.getWorldPosition(_F))
+    const vx = _F.x - _H.x
+    const vy = _F.y - _H.y
+    const long = Math.hypot(vx, vy)
+    if (long < 0.05) continue
+    const voulu = _H.x * SOUS_HANCHE - _H.x
+    // On ne corrige que vers l'intérieur : un pied déjà sous la hanche reste tel quel
+    if (Math.abs(_H.x + vx) <= Math.abs(_H.x * SOUS_HANCHE)) continue
+    const delta = Math.asin(THREE.MathUtils.clamp(voulu / long, -1, 1)) - Math.atan2(vx, -vy)
+    _Q.setFromAxisAngle(_AXE, delta)
+    j.cuisse.getWorldQuaternion(_Q2)
+    _Q2.premultiply(_Q)
+    j.cuisse.parent!.getWorldQuaternion(_Q).invert()
+    j.cuisse.quaternion.copy(_Q.multiply(_Q2))
+    j.cuisse.updateMatrixWorld(true)
+  }
+}
+
+// ?jambes=0 : sans la correction (comparaison avant / après)
+const CORRIGER_JAMBES = typeof window === 'undefined' || new URLSearchParams(window.location.search).get('jambes') !== '0'
+
 function Poussette() {
   const { scene } = useGLTF(URL_POUSSETTE, DECODEUR_DRACO)
   // Clone léger : géométrie et matériaux partagés entre toutes les poussettes
@@ -136,6 +187,7 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
   const visible = usePrechauffe(racine)
   const mixer = useMemo(() => new THREE.AnimationMixer(racine), [racine])
   const bras = useMemo(() => (poussette ? trouverBras(racine) : []), [poussette, racine])
+  const jambes = useMemo(() => (modele === 'enfant' && CORRIGER_JAMBES ? trouverJambes(racine) : []), [modele, racine])
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
   const courant = useRef<string | null>(null)
   const ombreReglee = useRef(false)
@@ -191,6 +243,7 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
     // Pas plus courts que ceux d'un adulte : cadence plus rapide à vitesse égale
     if (suivante) suivante.timeScale = clip === 'Walking' ? THREE.MathUtils.clamp((vitesse / VITESSE_NATURELLE.Walking) * CADENCE[modele], 0.35, 2.2) : 1
     mixer.update(dt)
+    if (jambes.length) resserrerJambes(racine, jambes)
     if (poussette) mainsSurPoignee(racine, bras)
     diagnostics()?.set(id, { modele, etat, clip: courant.current })
   })

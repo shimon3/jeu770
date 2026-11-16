@@ -387,3 +387,18 @@ Choix de jeu, pas une reconstitution (aucune enseigne réelle). Code : `src/worl
 - Pizzeria : comptoir sans vendeur. Le contrôle des PNJ (`routines.ts`, inchangé) refuse toute position dans cette salle, située au-dessus de la place vide et de la pièce de la chaise.
 - Non testé : le compte des pièces à l'écran avec deux missions en cours ; l'entrée à pied dans les quatre autres magasins ; les collisions des meubles ; un vrai téléphone ; la suite de tests complète après ces changements.
 - Corrigé après les captures, non revu à l'écran : murs d'extrémité (pizzeria à gauche, chapeaux à droite) qui montraient la brique au lieu de l'habillage.
+
+## Chaussures des PNJ, magasins agrandis, générique, radar (16/11/2026, NON commité)
+
+### Fait et vérifié
+- Garçon : la chaussure du pied levé s'étirait en palme. Cause mesurée (`tools/analyser-poids-glb.mjs`) : 28 % du poids des sommets de la semelle sur le tibia, 5 à 9 % sur la cuisse. Corrigé dans le GLB (`tools/corriger-chaussures-glb.mjs`) : sous la cheville, pied et pointe seulement. Même correction (chaussures seules) sur la femme et le vieux hassid. Fichiers renommés `*_habad_v2.glb` (le cache garde l'ancien nom un jour). Gros plans avant/après regardés pour le garçon (`tools/captures/enfant.mjs`).
+- Garçon : chevilles plus écartées que les hanches (±11 cm en marche, ±14 cm au repos, hanches ±9 cm ; `tools/mesurer-jambes-glb.mjs`). Après l'animation, les cuisses sont ramenées pour que la cheville passe sous la hanche (`PnjEnfant.tsx`, `?jambes=0` pour comparer).
+- Magasins : salles de 10,5 m de profondeur (7,6 avant), porte de 1,4 m (1,0 avant), meubles plaqués aux murs et alternés, plus rien au milieu. Captures de la pizzeria et des chemises regardées.
+- Générique d'ouverture : image de la façade rendue par le jeu (`public/assets/generique.jpg`, `tools/captures/generique.mjs`), lignes successives, puis menu. Sauté par les tests automatiques (`navigator.webdriver`), forcé par `?generique=1`.
+- Radar rond en bas à gauche sur ordinateur (`src/ui/Radar.tsx`) : immeubles, chaussées, prochaine étape, PNJ donneurs.
+- Fluidité mesurée sur ce PC : 60 images/s dans la rue, 478 appels de dessin, 635 000 triangles. Les déplacements n'ont pas d'inertie (vitesse appliquée dans l'image).
+
+### Non testé
+- Femme et vieux hassid à l'écran (vérifiés par les poids seulement) ; fille non modifiée (2 % de poids parasites).
+- Fluidité sur téléphone ; générique sur téléphone et en hébreu ; radar en hébreu (RTL).
+- Suite de tests complète.

@@ -5,6 +5,7 @@ import { MISSIONS } from '../missions/missions'
 import { useEffect, useState } from 'react'
 import { fermerPorteProche, porteOuverteProche } from '../world/Porte'
 import { estTactile } from '../player/entrees'
+import { Radar } from './Radar'
 import { reciterTehilim, terminerPriere } from '../missions/objets'
 import { tefilaDuMoment, tehilimDuJour } from '../world/zmanim'
 import { conduite } from '../world/rue/conduite'
@@ -154,6 +155,7 @@ export function Hud({ verrouille }: { verrouille: boolean }) {
           <div>{Object.keys(missions).length === 0 ? t('hud.aucuneMission') : MISSIONS.every((m) => missions[m.id]?.etat === 'terminee') ? t('hud.toutesTerminees') : t('hud.missionDispo')}</div>
         )}
       </div>
+      {!TACTILE && !auVolant && <Radar />}
       <div className="hud-notifs">
         {notifications.map((n) => (
           <div key={n.id} className="notif">

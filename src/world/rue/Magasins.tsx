@@ -21,7 +21,7 @@ export const MAGASINS_X1 = 59.6
 const Z_FACADE = -1.0
 const LARGEUR = (MAGASINS_X1 - MAGASINS_X0) / MAGASINS.length
 const HAUTEUR = 11
-const PROFONDEUR = 10
+const PROFONDEUR = 13.5
 const RETRAIT = 0.8
 // Mur de façade côté salle, et fond de la salle
 const Z_SALLE = Z_FACADE - RETRAIT
@@ -65,9 +65,10 @@ export function Magasins() {
       pc.push({ t: [wx - larg / 2 - g, 2.7, RETRAIT + 0.12], p: [(g + wx - larg / 2) / 2, 1.15, zm + 0.06], m: 'chassisNoir' })
       // Entre vitrine et porte, à droite de la porte, linteau : l'entrée est
       // un passage de 1 m en retrait, la porte est au fond du passage
-      pc.push({ t: [xP - 0.5 - (wx + larg / 2), 2.7, RETRAIT + 0.12], p: [(xP - 0.5 + wx + larg / 2) / 2, 1.15, zm + 0.06], m: 'chassisNoir' })
-      pc.push({ t: [d - (xP + 0.5), 2.7, RETRAIT + 0.12], p: [(d + xP + 0.5) / 2, 1.15, zm + 0.06], m: 'chassisNoir', col: true })
-      pc.push({ t: [1.0, 0.2, RETRAIT + 0.12], p: [xP, 2.4, zm + 0.06], m: 'chassisNoir' })
+      const dp = SALLE.demiPorte
+      pc.push({ t: [xP - dp - (wx + larg / 2), 2.7, RETRAIT + 0.12], p: [(xP - dp + wx + larg / 2) / 2, 1.15, zm + 0.06], m: 'chassisNoir' })
+      if (d - (xP + dp) > 0.02) pc.push({ t: [d - (xP + dp), 2.7, RETRAIT + 0.12], p: [(d + xP + dp) / 2, 1.15, zm + 0.06], m: 'chassisNoir', col: true })
+      pc.push({ t: [2 * dp, 0.2, RETRAIT + 0.12], p: [xP, 2.4, zm + 0.06], m: 'chassisNoir' })
       // Allège en pierre sous la vitrine
       pc.push({ t: [LARGEUR * 0.56, 0.5, 0.14], p: [wx, 0.3, zf + 0.04], m: 'pierre' })
     })
@@ -99,7 +100,7 @@ function LumiereMagasin() {
   useFrame(() => {
     if (!lampe.current) return
     const i = Math.min(MAGASINS.length - 1, Math.max(0, Math.floor((joueur.position[0] - MAGASINS_X0) / LARGEUR)))
-    lampe.current.position.set(MAGASINS_X0 + LARGEUR * (i + 0.5), SALLE.plafond - 0.5, Z_SALLE - 4.2)
+    lampe.current.position.set(MAGASINS_X0 + LARGEUR * (i + 0.5), SALLE.plafond - 0.5, Math.min(Z_SALLE - 1.5, Math.max(Z_FOND + 1.5, joueur.position[2])))
   })
   if (zone !== 'magasins') return null
   return <pointLight ref={lampe} intensity={9} distance={11} decay={1.5} color="#fff1d6" />
@@ -115,10 +116,10 @@ function Devanture({ magasin, cx }: { magasin: Magasin; cx: number }) {
   })
   // Vitrine et soubassement : un seul bloc, on ne marche pas dans l'étalage
   const xg = cx - LARGEUR / 2
-  const xd = xPorte - 0.5
+  const xd = xPorte - SALLE.demiPorte
   return (
     <>
-      <Porte id={`porte-magasin-${magasin.id}`} charniere={[xPorte + 0.5, 0, Z_SALLE + 0.03]} largeur={1.0} hauteur={2.3} sens={-1} angleOuverture={-1.45} modele="vitree" couleur={magasin.couleur} rayon={2.6} />
+      <Porte id={`porte-magasin-${magasin.id}`} charniere={[xPorte + SALLE.demiPorte, 0, Z_SALLE + 0.03]} largeur={2 * SALLE.demiPorte} hauteur={2.3} sens={-1} angleOuverture={-1.45} modele="vitree" couleur={magasin.couleur} rayon={2.6} />
       <CuboidCollider args={[(xd - xg) / 2, 1.4, (RETRAIT + 0.12) / 2]} position={[(xg + xd) / 2, 1.2, Z_FACADE - RETRAIT / 2 + 0.06]} />
       <CuboidCollider args={[SALLE.demiLargeur, 0.55, 0.34]} position={[cx, 0.55, zComptoir]} />
       {(OBSTACLES[magasin.id] ?? []).map(([x, tt, dx, dt], k) => (
@@ -129,7 +130,7 @@ function Devanture({ magasin, cx }: { magasin: Magasin; cx: number }) {
           situées au sous-sol juste dessous) le refuse : comptoir sans vendeur. */}
       <PnjZal
         id={`pnj-magasin-${magasin.id}`}
-        position={[cx - 0.3, 0, Z_SALLE - 6.85]}
+        position={[cx - 0.3, 0, Z_SALLE - SALLE.comptoir - 0.95]}
         rotationY={0}
         parle={false}
         peau={['#d7a888', '#c99878', '#e0b896', '#b98a66', '#d1a07c'][i]}

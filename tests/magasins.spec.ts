@@ -20,7 +20,7 @@ test('pizzeria et glacier : entrer, acheter, manger', async ({ page }, info) => 
   await page.evaluate(() => {
     const w = window as any
     w.__770.store.getState().set({ pause: false, panneau: null, siege: null, dollars: 5 })
-    w.__770.teleporter(46.02, 0.9, -6.6, 0)
+    w.__770.teleporter(46.02, 0.9, -9.5, 0)
   })
   await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('magasin-glacier')
   await page.screenshot({ path: 'test-results/magasins-devanture.png' })
@@ -41,7 +41,7 @@ test('pizzeria : livraison, client, +3 $ ou +4 $ avec pourboire', async ({ page 
   await page.evaluate(() => {
     const w = window as any
     w.__770.store.getState().set({ pause: false, panneau: null, siege: null, dollars: 0 })
-    w.__770.teleporter(42.14, 0.9, -6.6, 0)
+    w.__770.teleporter(42.14, 0.9, -9.5, 0)
   })
   await expect.poll(async () => (await etat()).cible, { timeout: 60_000 }).toBe('magasin-pizzeria')
   await page.locator('.tbtn-e').click()

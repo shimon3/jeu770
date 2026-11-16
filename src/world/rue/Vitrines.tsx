@@ -206,17 +206,19 @@ function vitrineChapeaux(A: Poser, larg: number) {
 // Intérieurs (16/11/2026) : on entre dans chaque magasin. Repère `A` de la
 // salle : x depuis l'axe du magasin, y depuis le sol, z = -t où t est la
 // distance au mur de façade (la salle va de t = 0 à SALLE.fond).
-export const SALLE = { demiLargeur: 1.84, fond: 7.6, plafond: 3.2, comptoir: 5.9 }
+// 16/11/2026 (2) : salles approfondies (7,6 → 10,5 m), porte de 1,4 m, milieu
+// dégagé : les meubles sont plaqués aux murs et alternés gauche / droite.
+export const SALLE = { demiLargeur: 1.84, fond: 10.5, plafond: 3.2, comptoir: 8.8, demiPorte: 0.7 }
 const PARFUMS = ['#f29ab8', '#a8e0c0', '#fff1c0', '#6b3f26', '#b9d68a', '#9fd0f0']
 const TONS = ['#ffffff', '#eaf1fb', '#cfe0f5', '#f7f3e8', '#bcd3ee']
 
 // Meubles contre lesquels on bute : [x, t, demi-largeur x, demi-profondeur t]
 export const OBSTACLES: Record<string, [number, number, number, number][]> = {
-  pizzeria: [[-1.3, 1.7, 0.45, 0.45], [-1.3, 3.7, 0.45, 0.45], [1.5, 3.2, 0.3, 0.4]],
-  glacier: [[-1.3, 1.9, 0.4, 0.4], [-1.3, 3.8, 0.4, 0.4], [1.4, 1.3, 0.3, 0.3]],
-  vetements: [[-1.6, 3.0, 0.24, 2.0], [1.6, 3.6, 0.24, 1.4]],
-  chemises: [[-1.62, 3.0, 0.22, 2.0], [1.62, 3.4, 0.22, 1.6], [0, 3.2, 0.6, 0.38]],
-  chapeaux: [[-1.62, 3.0, 0.22, 2.0], [1.62, 3.4, 0.22, 1.6], [0, 3.2, 0.35, 0.35]],
+  pizzeria: [[-1.38, 2.2, 0.42, 0.42], [-1.38, 4.8, 0.42, 0.42], [1.52, 6.9, 0.3, 0.4]],
+  glacier: [[-1.4, 2.2, 0.4, 0.4], [-1.4, 4.8, 0.4, 0.4], [1.45, 7.3, 0.3, 0.3]],
+  vetements: [[-1.6, 3.1, 0.24, 2.0], [1.6, 6.7, 0.24, 1.4]],
+  chemises: [[-1.62, 3.0, 0.22, 2.0], [1.62, 6.8, 0.22, 1.3], [1.46, 2.6, 0.38, 0.62]],
+  chapeaux: [[-1.62, 3.0, 0.22, 2.0], [1.62, 6.8, 0.22, 1.3], [1.46, 2.6, 0.36, 0.36]],
 }
 
 const STYLE: Record<string, { mur: string; bas: string; sol: [string, string]; comptoir: string }> = {
@@ -232,7 +234,7 @@ function salle(A: Poser, id: string) {
   const st = STYLE[id]
   // Sol en damier, murs, soubassement, plafond et rampes lumineuses
   const nx = 4
-  const nt = 8
+  const nt = 11
   for (let i = 0; i < nx; i++) for (let k = 0; k < nt; k++) A(boite((2 * w) / nx, 0.012, f / nt), st.sol[(i + k) % 2], [-w + ((2 * w) / nx) * (i + 0.5), 0.006, -(f / nt) * (k + 0.5)])
   for (const c of [-1, 1]) {
     A(boite(0.02, h, f), st.mur, [c * (w - 0.01), h / 2, -f / 2])
@@ -240,7 +242,7 @@ function salle(A: Poser, id: string) {
   }
   A(boite(2 * w, h, 0.02), st.mur, [0, h / 2, -f + 0.01])
   A(boite(2 * w, 0.03, f), '#f4f1ea', [0, h, -f / 2])
-  for (const t of [1.5, 3.8, 6.1]) A(boite(1.0, 0.05, 0.28), '#fffbe8', [0, h - 0.04, -t])
+  for (const t of [1.5, 4.5, 7.5]) A(boite(1.0, 0.05, 0.28), '#fffbe8', [0, h - 0.04, -t])
   // Comptoir sur toute la largeur, caisse
   A(boite(2 * w, 1.0, 0.6), st.comptoir, [0, 0.5, -tc])
   A(boite(2 * w, 0.05, 0.72), '#efe7d8', [0, 1.025, -tc])
@@ -287,12 +289,12 @@ function interieurPizzeria(A: Poser) {
   for (let k = 0; k < 5; k++) A(boite(0.38, 0.05, 0.3), '#e8d9b8', [0.9, 1.15 + k * 0.052, -f + 0.2])
   for (let k = 0; k < 4; k++) A(boite(0.38, 0.05, 0.3), '#e8d9b8', [1.35, 1.7 + k * 0.052, -f + 0.2])
   // Deux tables et leurs tabourets, armoire à boissons
-  table(A, -1.3, 1.7, '#b3261e')
-  table(A, -1.3, 3.7, '#b3261e')
-  A(boite(0.56, 1.9, 0.76), '#f1f1ee', [1.52, 0.95, -3.2])
-  A(boite(0.02, 1.6, 0.66), '#9fc4d6', [1.23, 1.0, -3.2])
+  table(A, -1.38, 2.2, '#b3261e')
+  table(A, -1.38, 4.8, '#b3261e')
+  A(boite(0.56, 1.9, 0.76), '#f1f1ee', [1.52, 0.95, -6.9])
+  A(boite(0.02, 1.6, 0.66), '#9fc4d6', [1.23, 1.0, -6.9])
   ;['#c8182a', '#f2c200', '#2f9e44', '#1d3f8f'].forEach((c, e) => {
-    for (let i = 0; i < 5; i++) A(cyl(0.04, 0.04, 0.13, 8), c, [1.26, 0.42 + e * 0.38, -2.94 - i * 0.13])
+    for (let i = 0; i < 5; i++) A(cyl(0.04, 0.04, 0.13, 8), c, [1.26, 0.42 + e * 0.38, -6.64 - i * 0.13])
   })
 }
 
@@ -311,23 +313,23 @@ function interieurGlacier(A: Poser) {
     A(cyl(0.07, 0.06, 0.14, 12), PARFUMS[(i + 3) % 6], [-1.3 + i * 0.32, 1.74, -f + 0.2])
   }
   // Tables rondes et grand cornet décoratif
-  table(A, -1.3, 1.9, '#f29ab8', true)
-  table(A, -1.3, 3.8, '#a8e0c0', true)
-  A(boite(0.5, 0.12, 0.5), '#ffffff', [1.4, 0.06, -1.3])
-  A(new THREE.ConeGeometry(0.26, 1.0, 14), '#d9a25a', [1.4, 0.62, -1.3], [Math.PI, 0, 0])
-  A(boule(0.3), '#f29ab8', [1.4, 1.3, -1.3])
-  A(boule(0.24), '#fff1c0', [1.4, 1.66, -1.3])
-  A(boule(0.07), '#c8182a', [1.4, 1.93, -1.3])
+  table(A, -1.4, 2.2, '#f29ab8', true)
+  table(A, -1.4, 4.8, '#a8e0c0', true)
+  A(boite(0.5, 0.12, 0.5), '#ffffff', [1.45, 0.06, -7.3])
+  A(new THREE.ConeGeometry(0.26, 1.0, 14), '#d9a25a', [1.45, 0.62, -7.3], [Math.PI, 0, 0])
+  A(boule(0.3), '#f29ab8', [1.45, 1.3, -7.3])
+  A(boule(0.24), '#fff1c0', [1.45, 1.66, -7.3])
+  A(boule(0.07), '#c8182a', [1.45, 1.93, -7.3])
 }
 
 function interieurVetements(A: Poser) {
   const { demiLargeur: w, fond: f } = SALLE
   // Portant de manteaux le long du mur gauche
-  A(cyl(0.015, 0.015, 4.0, 8), '#c9a24a', [-w + 0.3, 1.75, -3.0], [Math.PI / 2, 0, 0])
+  A(cyl(0.015, 0.015, 4.0, 8), '#c9a24a', [-w + 0.3, 1.75, -3.1], [Math.PI / 2, 0, 0])
   for (let i = 0; i < 13; i++) A(boite(0.44, 1.05, 0.07), ['#141416', '#1c1c22', '#22201e', '#17171b'][i % 4], [-w + 0.3, 1.2, -1.2 - i * 0.3])
   // Chemises blanches et miroir à droite
-  A(cyl(0.015, 0.015, 2.8, 8), '#c9a24a', [w - 0.3, 1.75, -3.6], [Math.PI / 2, 0, 0])
-  for (let i = 0; i < 9; i++) A(boite(0.4, 0.75, 0.06), TONS[i % 5], [w - 0.3, 1.35, -2.4 - i * 0.3])
+  A(cyl(0.015, 0.015, 2.8, 8), '#c9a24a', [w - 0.3, 1.75, -6.7], [Math.PI / 2, 0, 0])
+  for (let i = 0; i < 9; i++) A(boite(0.4, 0.75, 0.06), TONS[i % 5], [w - 0.3, 1.35, -5.5 - i * 0.3])
   A(boite(0.03, 1.7, 0.8), '#bcd6e0', [w - 0.03, 1.15, -1.3])
   A(boite(0.05, 1.8, 0.9), '#c9a24a', [w - 0.02, 1.15, -1.3])
   // Derrière le comptoir : piles pliées, deux bustes
@@ -354,13 +356,13 @@ function interieurChemises(A: Poser) {
     for (let k = 0; k < 3 + ((i + e) % 2); k++) A(boite(0.3, 0.045, 0.3), TONS[(i + k + e) % 5], [x, y + 0.025 + k * 0.048, -t])
   }
   rayonsMur(A, -1, 1.0, 4.0, pile)
-  rayonsMur(A, 1, 1.8, 3.2, pile)
-  // Table centrale : chemises et cravates
-  A(boite(1.2, 0.72, 0.72), '#b08a5a', [0, 0.36, -3.2])
-  A(boite(1.28, 0.04, 0.78), '#efe7d8', [0, 0.74, -3.2])
+  rayonsMur(A, 1, 5.5, 2.6, pile)
+  // Table contre le mur de droite : chemises et cravates
+  A(boite(0.7, 0.72, 1.2), '#b08a5a', [1.46, 0.36, -2.6])
+  A(boite(0.76, 0.04, 1.26), '#efe7d8', [1.46, 0.74, -2.6])
   ;['#1f3a5f', '#6e1423', '#1f4a36', '#3a2c5a'].forEach((c, i) => {
-    A(boite(0.24, 0.04, 0.3), TONS[i], [-0.45 + i * 0.3, 0.78, -3.2])
-    A(boite(0.045, 0.045, 0.22), c, [-0.45 + i * 0.3, 0.785, -3.16])
+    A(boite(0.3, 0.04, 0.24), TONS[i], [1.46, 0.78, -2.15 - i * 0.3])
+    A(boite(0.22, 0.045, 0.045), c, [1.42, 0.785, -2.15 - i * 0.3])
   })
   // Fond : piles et cravates suspendues
   for (let i = 0; i < 8; i++) for (let k = 0; k < 3; k++) A(boite(0.3, 0.045, 0.28), TONS[(i + k) % 5], [-1.4 + i * 0.4, 1.145 + k * 0.048, -f + 0.2])
@@ -371,11 +373,11 @@ function interieurChapeaux(A: Poser) {
   const { demiLargeur: w, fond: f } = SALLE
   const pose = (x: number, y: number, t: number) => chapeau(A, x, y + 0.01, -t, 0, 14)
   rayonsMur(A, -1, 1.0, 4.0, pose)
-  rayonsMur(A, 1, 1.8, 3.2, pose)
-  // Présentoir central et miroir
-  A(cyl(0.3, 0.34, 0.9, 16), '#6e3d1a', [0, 0.45, -3.2])
-  A(cyl(0.09, 0.09, 0.14, 12), '#cdbb9c', [0, 0.97, -3.2])
-  chapeau(A, 0, 1.05, -3.2, 0.2, 20)
+  rayonsMur(A, 1, 5.5, 2.6, pose)
+  // Présentoir contre le mur de droite, et miroir
+  A(cyl(0.3, 0.34, 0.9, 16), '#6e3d1a', [1.46, 0.45, -2.6])
+  A(cyl(0.09, 0.09, 0.14, 12), '#cdbb9c', [1.46, 0.97, -2.6])
+  chapeau(A, 1.46, 1.05, -2.6, 0.2, 20)
   A(boite(0.03, 1.5, 0.7), '#bcd6e0', [w - 0.03, 1.25, -1.1])
   A(boite(0.05, 1.6, 0.8), '#c9a24a', [w - 0.02, 1.25, -1.1])
   // Fond : chapeaux, boîtes rondes, kippot
@@ -542,9 +544,9 @@ export function Vitrines({ x0, largeur: L, zFacade: Z, retrait: R }: Props) {
       E(boite(larg + 0.1, 0.07, 0.06), m.couleur, [wx, 0.58, Z + 0.14])
       for (const c of [-1, 1]) E(boite(0.07, 2.0, 0.06), m.couleur, [wx + (c * (larg + 0.03)) / 2, 1.55, Z + 0.14])
       // Entrée en retrait : encadrement, paillasson, plaque « OPEN » au linteau
-      for (const c of [-1, 1]) E(boite(0.08, 2.34, 0.06), m.couleur, [xP + c * 0.54, 1.15, zf + 0.1])
-      E(boite(1.16, 0.1, 0.06), m.couleur, [xP, 2.36, zf + 0.1])
-      E(boite(0.95, 0.02, 0.55), '#3a3a36', [xP, 0.012, zf + 0.5])
+      for (const c of [-1, 1]) E(boite(0.07, 2.34, 0.06), m.couleur, [xP + c * (SALLE.demiPorte + 0.035), 1.15, zf + 0.1])
+      E(boite(2 * SALLE.demiPorte + 0.14, 0.1, 0.06), m.couleur, [xP, 2.36, zf + 0.1])
+      E(boite(2 * SALLE.demiPorte - 0.1, 0.02, 0.55), '#3a3a36', [xP, 0.012, zf + 0.5])
       plaques.push(new THREE.PlaneGeometry(0.5, 0.19).translate(xP, 2.6, zf + 0.115))
       // Corniche au-dessus de l'enseigne
       E(boite(L - 0.24, 0.1, 0.3), m.encre, [cx, 3.77, Z + 0.2])
