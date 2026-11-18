@@ -11,14 +11,66 @@ const TACTILE = estTactile()
 // (sauf avec ?generique=1, pour le capturer)
 const AUTOMATE = typeof navigator !== 'undefined' && navigator.webdriver === true && !new URLSearchParams(window.location.search).has('generique')
 
+// Plans du générique (18/11/2026) : vues rendues par le jeu lui-même
+// (tools/captures/generique-plans.mjs ; aucune photo, aucun portrait).
+// Fondu enchaîné toutes les 4 s avec un lent travelling, légende du lieu en
+// bas à gauche comme dans un film. Le premier plan est l'image d'accueil.
+const PLANS: { image: string; legende: string; origine: string }[] = [
+  { image: '/assets/generique.jpg', legende: 'generique.plan.facade', origine: '38% 40%' },
+  { image: '/assets/generique-2.webp', legende: 'generique.plan.rue', origine: '50% 55%' },
+  { image: '/assets/generique-3.webp', legende: 'generique.plan.hanoukia', origine: '50% 35%' },
+  { image: '/assets/generique-4.webp', legende: 'generique.plan.maisons', origine: '60% 50%' },
+]
+const DUREE_PLAN = 4000
+
+function PlansGenerique({ actif }: { actif: boolean }) {
+  const t = useT()
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    if (!actif) return
+    const id = window.setInterval(() => setI((n) => (n + 1) % PLANS.length), DUREE_PLAN)
+    return () => window.clearInterval(id)
+  }, [actif])
+  return (
+    <>
+      {PLANS.map((p, k) => (
+        <div
+          key={p.image}
+          className={`generique-plan${k === i ? ' visible' : ''}${k % 2 ? ' sens2' : ''}`}
+          style={{ backgroundImage: `url('${p.image}')`, backgroundPosition: p.origine }}
+        />
+      ))}
+      <div className="generique-voile" />
+      {actif && (
+        <p key={i} className="generique-legende">
+          {t(PLANS[i].legende)}
+        </p>
+      )}
+    </>
+  )
+}
+
+// Fine barre dorée en bas de l'écran : le jeu se charge pendant le générique
+function BarreChargement() {
+  const { progress } = useProgress()
+  const prechauffe = useChargement((c) => c.prechauffe)
+  const max = useRef(0)
+  max.current = Math.max(max.current, prechauffe ? 100 : Math.min(85, progress * 0.85))
+  return (
+    <div className={`generique-barre${prechauffe ? ' finie' : ''}`} aria-hidden>
+      <div style={{ transform: `scaleX(${max.current / 100})` }} />
+    </div>
+  )
+}
+
 // Générique d'ouverture (16/11/2026) : image de la façade du 770 rendue par
 // le jeu (public/assets/generique.jpg : aucune photo, aucun portrait), lignes
 // qui apparaissent l'une après l'autre, puis « Appuyez pour commencer ».
 // Il commence par demander la langue, dans les deux langues (seuls textes en
 // dur : on ne sait pas encore laquelle afficher). Ensuite un clic, un toucher
-// ou une touche passe au menu ; sinon au bout de 16 s.
+// ou une touche passe au menu ; sinon à la fin des plans (≈ 17 s).
 // Le jeu se charge pendant ce temps.
-function Generique({ onFin }: { onFin: () => void }) {
+function Generique({ onFin, onLangue }: { onFin: () => void; onLangue: () => void }) {
   const t = useT()
   // Étape 1 : choix de la langue (question écrite dans les deux langues).
   // Étape 2 : le générique défile dans la langue choisie.
@@ -26,7 +78,7 @@ function Generique({ onFin }: { onFin: () => void }) {
   useEffect(() => {
     if (!choisie) return
     const fin = () => onFin()
-    const id = window.setTimeout(fin, 16000)
+    const id = window.setTimeout(fin, PLANS.length * DUREE_PLAN + 1500)
     window.addEventListener('keydown', fin)
     return () => {
       window.clearTimeout(id)
@@ -36,6 +88,7 @@ function Generique({ onFin }: { onFin: () => void }) {
   const choisir = (langue: 'fr' | 'he') => {
     useGame.getState().set({ langue })
     setChoisie(true)
+    onLangue()
   }
   if (!choisie)
     return (
@@ -65,10 +118,17 @@ function Generique({ onFin }: { onFin: () => void }) {
     )
   return (
     <div className="generique cliquable" onClick={onFin} role="button" tabIndex={0}>
+      <div className="generique-bande haut" />
+      <div className="generique-bande bas" />
+      <button className="generique-passer" onClick={(e) => (e.stopPropagation(), onFin())}>
+        {t('generique.passer')} ›
+      </button>
       <div className="generique-bh">ב״ה</div>
       <div className="generique-texte">
         <p className="generique-ligne g1">{t('generique.lieu')}</p>
-        <h1 className="generique-titre g2">{t('app.titre')}</h1>
+        <h1 className="generique-titre g2">
+          <span className="generique-reflet">{t('app.titre')}</span>
+        </h1>
         <div className="generique-filet g3" />
         <p className="generique-ligne g3">{t('app.sousTitre')}</p>
         <p className="generique-ligne g4">{t('generique.invitation')}</p>
@@ -117,12 +177,14 @@ export function Accueil({ sauvegardeExiste, onJouer, onLangue }: Props) {
   affiche.current = Math.max(affiche.current, brut)
   const ecran = useGame((s) => s.ecran)
   const [generique, setGenerique] = useState(!AUTOMATE)
+  const [langueChoisie, setLangueChoisie] = useState(false)
   if (ecran !== 'accueil') return null
   if (generique)
     return (
       <div className="accueil avec-image">
-        <div className="accueil-image zoom" />
-        <Generique onFin={() => setGenerique(false)} />
+        {langueChoisie ? <PlansGenerique actif /> : <div className="accueil-image zoom" />}
+        <Generique onFin={() => setGenerique(false)} onLangue={() => setLangueChoisie(true)} />
+        <BarreChargement />
       </div>
     )
   return (
