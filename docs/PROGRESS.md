@@ -1,5 +1,27 @@
 # Progression
 
+## Ville agrandie, foule, hanoukia, rendu, générique — 18-19 novembre 2026 (branche `ville-foule-hanoukia`)
+
+### Fait
+- **Ville** : rue de 170 m ; rangée de maisons à perron jouable à l'ouest (perrons franchissables, grilles, poubelles, cheminées) ; en face, maisons et immeubles d'appartements (escaliers de secours, citernes d'eau) ; rues transversales qui ferment la vue ; 766 et façade des magasins détaillés (`Immeubles.tsx`).
+- **Rendu** : vitres qui reflètent le ciel ; peinture vernie des voitures Meshy (`modelesRue.tsx`).
+- **Hanoukia** de 6,2 m sur le terre-plein face au 770 : lumières selon le soir réel de 'Hanouka à New York (1er soir : 4/12/2026) ; E : soir en cours ou jours restants ; `?hanouka=1..8` pour forcer.
+- **Foule** : 26 passants (12 sur téléphone ou en qualité « rapide ») ; `?foule=0` pour les retirer.
+- **Personnages Meshy** : bo'hour, policier, touriste (60 crédits Meshy), préparés dans Blender (`tools/blender/preparer-pnj-meshy.py`).
+- **Garçon** : traits blancs du pantalon venus de la carte de relief et de taches de texture : relief retiré, tissu mat, taches repeintes (`tools/blender/nettoyer-texture-glb.py`, `tools/matiere-mate-glb.py`, `tools/remplacer-image-glb.py`). Fille, femme et vieux hassid passés en tissu mat.
+- **Générique** : 4 plans rendus par le jeu, fondus, bandes de cinéma, légende, bouton Passer, barre de chargement.
+- **Menu** : cadre « Mon appareil » (carte graphique, mémoire, images/s, alerte sans accélération matérielle).
+
+### Vérifié (Chrome réel, ordinateur de Samuel)
+- `npm run build` sans erreur ; aucune erreur de page ni fichier manquant pendant les captures.
+- Images par seconde (build de production, qualité équilibrée, 1280×720) : 51-57 sans la foule, 46-54 avec.
+- Captures : maisons, perrons, hanoukia (5e et 8e soir), personnages Meshy en marche et au repos, générique FR et HE.
+
+### Non vérifié / reste
+- Téléphone réel. Plan (M) à régénérer (`tools/captures/plan.mjs`) : la rue a changé.
+- Quelques petites taches blanches restent en bas du pantalon du garçon (pixels partagés avec la chemise dans la texture).
+- Les bo'hourim n'ont pas de tsitsit visibles.
+
 
 
 

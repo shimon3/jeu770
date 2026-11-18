@@ -212,3 +212,13 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - Trois panneaux d'affichage verts le long des immeubles (x −31, −15 et 31 ; z 3,4) : mobilier inventé pour la mission des affiches. Affiche : texte seul (« פארברענגען — הערב ב־770 »), aucun portrait.
 - Pièces de tsedaka, colonne dorée et losanges : repères de jeu.
 - Plan (M) : vue de dessus du monde du jeu, pas un plan officiel ; mention affichée sous le plan.
+
+## Ville agrandie, foule, hanoukia, générique — 18/11/2026 (CHOIX DE JEU, non authentique)
+- Rue prolongée à 170 m ; zone à pied élargie à l'ouest jusqu'à x −68.
+- Maisons en rangée à perron (« brownstones ») à l'ouest du 766, immeubles d'appartements à escaliers de secours et citernes d'eau en face et aux angles, rues transversales aux deux bouts : bâtiments GÉNÉRIQUES typiques de Crown Heights, PAS les adresses réelles (non relevées). Hauteurs, couleurs et largeurs inventées (`src/world/rue/Immeubles.tsx`).
+- 766 : soubassement, croisillons, corniche à consoles, chaînes d'angle et portail central ajoutés : détails génériques non relevés sur photo.
+- Façade au-dessus des magasins : fenêtres à croisillons, corniche à consoles et pilastres : décor générique.
+- Grande hanoukia publique sur le terre-plein face au 770 (x 0, z 22) : demandée par Samuel ; forme à branches droites en diagonale (style des hanoukiot publiques de Habad), 6,2 m ; emplacement et dimensions inventés. Nombre de lumières allumées calculé pour le soir réel à New York (`src/world/hanouka.ts`).
+- Foule (`src/npc/FouleRue.tsx`) : 26 passants génériques, dont 2 policiers, 2 touristes et des bo'hourim (modèles Meshy, voir CREDITS.md). Aucun ne s'approche du grand Zal.
+- Générique : 4 plans rendus par le jeu lui-même (aucune photo, aucun portrait).
+
