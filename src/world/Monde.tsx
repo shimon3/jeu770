@@ -61,6 +61,7 @@ function PrechauffeScene() {
   return null
 }
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
+import { FouleRue } from '../npc/FouleRue'
 import { MissionTank } from '../missions/MissionTank'
 import { MissionsRue } from '../missions/MissionsRue'
 import * as THREE from 'three'
@@ -120,6 +121,8 @@ function FamillesRue() {
       {/* Vieux hassid : marche lente */}
       <PnjZal id="vieux-rue-1" modele="vieux" parle={false} vitesse={0.7} position={[24, 0, 9.8]} rotationY={Math.PI / 2} chemin={[[24, 9.8], [34, 9.8]]} />
       <PnjZal id="enfant-rue-3" modele="enfant" parle={false} position={[-36, 0, 8.0]} rotationY={Math.PI / 2} chemin={[[-36, 8.0], [-24, 8.0]]} />
+      {/* Rue plus fréquentée (18/11/2026) */}
+      <FouleRue />
     </>
   )
 }

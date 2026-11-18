@@ -16,19 +16,24 @@ import { VITESSE_NATURELLE } from '../config/avatar'
 // Clips : Idle_11 (repos) et Walking (marche), mêmes noms que les adultes.
 // Les états « assis » et « balancement » retombent sur Idle_11.
 
-export type ModeleLeger = 'enfant' | 'fille' | 'femme' | 'vieux'
+// bochur, policier, touriste : personnages Meshy (rig Meshy) préparés dans
+// Blender le 18/11/2026 (tools/blender/preparer-pnj-meshy.py)
+export type ModeleLeger = 'enfant' | 'fille' | 'femme' | 'vieux' | 'bochur' | 'policier' | 'touriste'
 
 const URLS: Record<ModeleLeger, string> = {
   enfant: '/models/enfant_habad_v2.glb',
   fille: '/models/fille_habad_v1.glb',
   femme: '/models/femme_habad_v2.glb',
   vieux: '/models/vieux_habad_v2.glb',
+  bochur: '/models/bochur_v1.glb',
+  policier: '/models/policier_v1.glb',
+  touriste: '/models/touriste_v1.glb',
 }
 
 // Décodeur Draco servi par le jeu (pas de CDN)
 const DECODEUR_DRACO = '/draco/'
 const FONDU = 0.3
-const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0, vieux: 1.0 }
+const CADENCE: Record<ModeleLeger, number> = { enfant: 1.3, fille: 1.25, femme: 1.0, vieux: 1.0, bochur: 1.0, policier: 1.0, touriste: 1.0 }
 // Poussette (objet fixe, landau devant la femme, poignée à l'origine)
 const URL_POUSSETTE = '/models/poussette_v1.glb'
 const AVANCE_POUSSETTE = 0.4
