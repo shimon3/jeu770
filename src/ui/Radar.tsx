@@ -14,7 +14,9 @@ const BATIMENTS: { x0: number; x1: number; z0: number; z1: number; c: string }[]
   { x0: -8, x1: 8, z0: -22, z1: -0.3, c: '#8a4a3a' }, // 770
   { x0: 9.6, x1: 40, z0: -31, z1: -1, c: '#6e5a4e' }, // 784-788, grand Zal dessous
   { x0: 40.2, x1: 59.6, z0: -14.5, z1: -1, c: '#3f6a8a' }, // magasins
-  { x0: -40, x1: -9.4, z0: -18, z1: -1, c: '#5c5148' }, // voisins de gauche
+  { x0: -32, x1: -9.4, z0: -18, z1: -1, c: '#5c5148' }, // voisins de gauche (766)
+  { x0: -85, x1: -32, z0: -12, z1: 1, c: '#6a4a3c' }, // maisons en rangée (18/11/2026)
+  { x0: -85, x1: 85, z0: 67, z1: 85, c: '#6a4a3c' }, // côté sud
 ]
 const CHAUSSEES: [number, number][] = [
   [12, 19], // contre-allée

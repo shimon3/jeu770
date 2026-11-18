@@ -20,6 +20,8 @@ import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
 import { Magasins, MAGASINS_X1 } from './Magasins'
 import { Livraison } from './Livraison'
+import { FondsDeRue, immeubleAppartements, rangee } from './Immeubles'
+import { Hanoukia } from './Hanoukia'
 
 // Profil d'Eastern Parkway devant le 770 : trottoir, contre-allée, terre-plein
 // planté, chaussée centrale. Largeurs ESTIMÉES (voir dimensions.ts).
@@ -29,7 +31,9 @@ const Z_CONTRE = Z_TROTTOIR + A.largeurTrottoir
 const Z_TERRE = Z_CONTRE + A.largeurContreAllee
 const Z_CHAUSSEE = Z_TERRE + A.largeurTerrePlein
 const Z_FIN = Z_CHAUSSEE + A.largeurChaussee
-const L = 120
+const L = 170 // agrandie le 18/11/2026 (120 m auparavant)
+// Limite ouest de la zone à pied (repoussée de -40 à -68 : rangée de maisons)
+export const X_OUEST = -68
 
 export function arbre(x: number, z: number, h = 7, y = 0): Piece[] {
   const pc: Piece[] = [{ geo: new THREE.CylinderGeometry(0.16, 0.24, h * 0.55, 7), p: [x, y + h * 0.275, z], m: 'tronc' }]
@@ -68,11 +72,11 @@ function lampadaire(x: number, z: number): Piece[] {
 const ARBRES = (() => {
   const platanes: { x: number; z: number; h: number }[] = []
   const feviers: { x: number; z: number; h: number }[] = []
-  for (const x of [-26, -16, 12, 27]) platanes.push({ x, z: Z_CONTRE - 0.9, h: 8 })
-  for (const x of [-36, -21, 21.5, 36]) feviers.push({ x, z: Z_CONTRE - 0.9, h: 7.5 })
-  for (let x = -50; x <= 50; x += 10) (x % 20 === 0 ? feviers : platanes).push({ x: x + 3, z: Z_FIN + 15, h: x % 20 === 0 ? 8 : 8.5 })
-  for (let x = -48; x <= 48; x += 9) if (Math.abs(x + 2) >= 9) platanes.push({ x: x + 2, z: (Z_TERRE + Z_CHAUSSEE) / 2, h: 9 })
-  for (let x = -48; x <= 48; x += 11) platanes.push({ x, z: Z_FIN + 3, h: 8 })
+  for (const x of [-64, -50, -26, -16, 12, 27]) platanes.push({ x, z: Z_CONTRE - 0.9, h: 8 })
+  for (const x of [-57, -43, -36, -21, 21.5, 36]) feviers.push({ x, z: Z_CONTRE - 0.9, h: 7.5 })
+  for (let x = -80; x <= 80; x += 10) (x % 20 === 0 ? feviers : platanes).push({ x: x + 3, z: Z_FIN + 15, h: x % 20 === 0 ? 8 : 8.5 })
+  for (let x = -84; x <= 84; x += 9) if (Math.abs(x + 2) >= 9) platanes.push({ x: x + 2, z: (Z_TERRE + Z_CHAUSSEE) / 2, h: 9 })
+  for (let x = -80; x <= 80; x += 11) platanes.push({ x, z: Z_FIN + 3, h: 8 })
   return { platanes, feviers }
 })()
 
@@ -83,6 +87,8 @@ const STATIONNEMENT: { x: number; modele: ModeleVoiture; rotY: number; couleur: 
   { x: -46, modele: 'berline', rotY: 0, couleur: 'voiture2' },
   { x: 39, modele: 'police', rotY: Math.PI, couleur: 'voiture3' },
   { x: -53, modele: 'monospace', rotY: 0, couleur: 'voiture0' },
+  { x: -61, modele: 'berline', rotY: 0, couleur: 'voiture3' },
+  { x: -67, modele: 'taxi', rotY: 0, couleur: 'taxi' },
   { x: 46, modele: 'berline', rotY: 0, couleur: 'voiture1' },
   { x: 21, modele: 'berline', rotY: Math.PI, couleur: 'voiture2' },
   { x: 27, modele: 'monospace', rotY: 0, couleur: 'voiture3' },
@@ -99,6 +105,10 @@ const STATIONNEMENT_SUD: { x: number; modele: ModeleVoiture; couleur: CouleurVoi
   { x: 16, modele: 'berline', couleur: 'voiture1' },
   { x: 30, modele: 'monospace', couleur: 'voiture0' },
   { x: 37, modele: 'berline', couleur: 'voiture2' },
+  { x: -62, modele: 'berline', couleur: 'voiture3' },
+  { x: -55, modele: 'taxi', couleur: 'taxi' },
+  { x: 52, modele: 'monospace', couleur: 'voiture1' },
+  { x: 64, modele: 'berline', couleur: 'voiture0' },
 ]
 
 function banc(x: number, z: number, rotY: number): Piece[] {
@@ -138,10 +148,25 @@ export function Rue() {
     pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 3], m: 'trottoir' })
     pc.push({ t: [L, 0.4, 7], p: [0, -0.35, Z_FIN + 9.5], m: 'asphalte' })
     pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 16], m: 'trottoir' })
-    for (let i = -5; i <= 5; i++) {
-      const h = 9 + ((i * 7919) % 5) * 2
-      pc.push({ t: [11, h, 12], p: [i * 11.5, h / 2, Z_FIN + 25], m: i % 2 ? 'briqueVoisin' : 'briqueVoisinClaire' })
+    // Côté sud (décor, hors de portée) : courettes, puis maisons en rangée
+    // et immeubles d'appartements avec escaliers de secours (Immeubles.tsx)
+    pc.push({ t: [L, 0.4, 4], p: [0, -0.2, Z_FIN + 21], m: 'trottoir' })
+    const zSud = Z_FIN + 22
+    pc.push(...immeubleAppartements({ x0: -L / 2, largeur: 22, zF: zSud, sens: -1, style: 'briqueJaune', etages: 6, ombre: false, col: false }))
+    pc.push(...rangee(-L / 2 + 22, -28, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 11 }))
+    pc.push(...immeubleAppartements({ x0: -28, largeur: 24, zF: zSud, sens: -1, style: 'briqueRouge', etages: 7, ombre: false, col: false, graine: 4 }))
+    pc.push(...rangee(-4, 30, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 23 }))
+    pc.push(...immeubleAppartements({ x0: 30, largeur: 20, zF: zSud, sens: -1, style: 'calcaire', etages: 6, ombre: false, col: false, graine: 9 }))
+    pc.push(...rangee(50, L / 2, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 37 }))
+    // Rues transversales aux deux bouts (décor) : asphalte et trottoirs
+    for (const s of [-1, 1]) {
+      pc.push({ t: [9, 0.4, 100], p: [s * (L / 2 + 4.5), -0.35, 30], m: 'asphalte' })
+      pc.push({ t: [4, 0.4, 100], p: [s * (L / 2 + 11), -0.2, 30], m: 'trottoir' })
     }
+    // Côté nord, à l'ouest du 766 : rangée de maisons à perron jouable
+    // (courette et grille devant), puis immeuble d'angle
+    pc.push(...rangee(X_OUEST - 4, -32, 1.0, 1, { jardin: 4.6, graine: 3 }))
+    pc.push(...immeubleAppartements({ x0: -L / 2, largeur: X_OUEST - 4 + L / 2, zF: 1.0, sens: 1, style: 'briqueRouge', etages: 6, ombre: false, graine: 17 }))
     // Arbres d'alignement : bord du trottoir et terre-plein. Choix de jeu
     // (photos 1 et 2 fournies par Samuel) : l'arbre qui, en réalité, masque
     // la façade du 770 est retiré pour dégager la vue ; aucun arbre n'est
@@ -150,8 +175,9 @@ export function Rue() {
     // vue sur la descente frontale du grand Zal.
     // (arbres : modèles Meshy en instances, voir ARBRES plus bas)
     // Lampadaires
-    for (const x of [-14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
-    for (const x of [-20, 0, 20]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
+    for (const x of [-60, -47, -14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
+    // (pas de lampadaire en x 0 : la hanoukia est dans l'axe du 770)
+    for (const x of [-60, -40, -20, 11, 20, 40, 60]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)
     // (les modèles Meshy sont dessinés à part, dans le rendu ci-dessous)
     for (const v of STATIONNEMENT) if (!aUnModele(v.modele)) pc.push(...voitureGaree(v.modele, v.x, Y_CONTRE, Z_CONTRE + 1.2, v.rotY, v.couleur))
@@ -183,10 +209,11 @@ export function Rue() {
       ))}
       <Circulation zContreNord={Z_CONTRE + 4.3} zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} zContreSud={Z_FIN + 10.5} y={-A.bordure} />
       <SolLointain />
+      <FondsDeRue xOuest={-L / 2 - 13} xEst={L / 2 + 13} z0={-20} z1={80} />
       {/* Limites de la zone jouable */}
       {/* Piéton seulement : la voiture conduite les traverse (conduite.ts) */}
       <CuboidCollider args={[L / 2, 3, 0.15]} position={[0, 3, Z_CHAUSSEE - 0.2]} collisionGroups={GROUPE_MUR_PIETON} />
-      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[-40, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[X_OUEST, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
       {/* À l'est, la limite recule jusqu'au bout de la rangée de magasins */}
       <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[MAGASINS_X1, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
       {/* Bus de ville : un de chaque côté, arrêt et montée des voyageurs */}
@@ -227,6 +254,7 @@ export function Rue() {
         return <Invisible key={v.x} taille={[l, h, w]} position={[v.x, Y_CONTRE + h / 2, Z_CONTRE + 1.2]} />
       })}
       <PanneauHistoire />
+      <Hanoukia x={0} z={(Z_TERRE + Z_CHAUSSEE) / 2} />
       <KiosqueMagasin />
       <Magasins />
       <Livraison />

@@ -13,7 +13,7 @@ import { CorpsVoiture } from './modelesRue'
 // réapparaît à l'autre bout de la rue. Collisions cinématiques là où le
 // joueur peut aller ; pas d'ombres portées (économie de calcul).
 
-const BORNE = 62 // demi-longueur parcourue (la rue fait 120 m)
+const BORNE = 86 // demi-longueur parcourue (la rue fait 170 m)
 const MARGE = 5 // distance d'arrêt derrière un obstacle (m)
 
 type Vehicule = { modele: ModeleVoiture; couleur: CouleurVoiture; z: number; vitesse: number; x0: number; collision?: boolean }

@@ -136,6 +136,17 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     enseigneJournaux: new THREE.MeshStandardMaterial({ map: rue.journaux, roughness: 0.6 }),
     panneauArretBus: new THREE.MeshStandardMaterial({ map: rue.arretBus, roughness: 0.5 }),
     verreAbri: new THREE.MeshStandardMaterial({ color: '#cfdde3', metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.3, depthWrite: false }),
+    // Maisons en rangée de Crown Heights (Immeubles.tsx) : mêmes textures
+    // que le reste de la rue, teintées (aucun téléchargement en plus)
+    brownstone: standard(tex.platre, 1.6, { color: '#8a5a44', roughness: 0.95 }),
+    brownstoneClair: standard(tex.platre, 1.6, { color: '#b08a6c', roughness: 0.95 }),
+    calcaire: standard(tex.platre, 1.6, { color: '#e2d6bd', roughness: 0.9 }),
+    briqueRouge: standard(tex.brique770, 1.0, { color: '#d77a5e' }),
+    briqueJaune: standard(tex.briqueVoisin, 1.4, { color: '#f0d9a8' }),
+    corniche: new THREE.MeshStandardMaterial({ color: '#3a332c', metalness: 0.35, roughness: 0.55 }),
+    rideau: new THREE.MeshStandardMaterial({ color: '#d9c7a0', roughness: 0.85 }),
+    porteVerte: new THREE.MeshStandardMaterial({ color: '#2f4a3a', roughness: 0.5 }),
+    porteRouge: new THREE.MeshStandardMaterial({ color: '#6e2620', roughness: 0.5 }),
   }
 }
 

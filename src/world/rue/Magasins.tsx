@@ -1,3 +1,4 @@
+import { immeubleAppartements } from './Immeubles'
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -73,7 +74,7 @@ export function Magasins() {
       pc.push({ t: [LARGEUR * 0.56, 0.5, 0.14], p: [wx, 0.3, zf + 0.04], m: 'pierre' })
     })
     // Immeuble d'angle au-delà (décor) pour fermer la vue
-    pc.push({ t: [16, 15, 14], p: [x1 + 8.2, 7.3, Z_FACADE - 7], m: 'briqueVoisin' })
+    pc.push(...immeubleAppartements({ x0: x1 + 0.2, largeur: 25.2, zF: Z_FACADE, sens: 1, style: 'briqueJaune', etages: 6, graine: 29 }))
     return pc
   }, [])
 

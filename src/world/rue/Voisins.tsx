@@ -34,6 +34,23 @@ export function Voisins() {
     for (const y of [4.4, 7.6, 10.8, 14.0]) pc.push({ t: [g.x1 - g.x0, 0.25, 0.12], p: [(g.x0 + g.x1) / 2, y - 0.3, g.z + 0.06], m: 'pierre' })
     pc.push({ t: [g.x1 - g.x0 + 0.4, 0.6, 0.5], p: [(g.x0 + g.x1) / 2, g.h - 0.2, g.z + 0.1], m: 'pierre' })
     pc.push(...grilleFenetres(g.x0 + 0.5, g.x1 - 0.5, g.z, [1.6, 4.8, 8.0, 11.2, 14.4], 2.1, 6, 'pierre'))
+    // Détails ajoutés le 18/11/2026 (génériques, NON relevés sur photo) :
+    // soubassement en pierre, croisillons des fenêtres, corniche à consoles,
+    // chaînes d'angle et portail d'entrée central. ESTIMÉ — à calibrer.
+    const xm = (g.x0 + g.x1) / 2
+    pc.push({ t: [g.x1 - g.x0, 1.2, 0.12], p: [xm, 0.5, g.z + 0.06], m: 'pierreFoncee' })
+    const pasF = (g.x1 - g.x0 - 1) / 6
+    for (const y of [1.6, 4.8, 8.0, 11.2, 14.4])
+      for (let i = 0; i < 6; i++) {
+        const cx = g.x0 + 0.5 + pasF * (i + 0.5)
+        pc.push({ t: [0.06, 2.1, 0.04], p: [cx, y + 1.05, g.z + 0.05], m: 'blancCamping', ombre: false })
+        pc.push({ t: [Math.min(1.3, pasF * 0.55), 0.06, 0.04], p: [cx, y + 1.15, g.z + 0.05], m: 'blancCamping', ombre: false })
+      }
+    for (let x = g.x0 + 0.4; x < g.x1 - 0.2; x += 1.0) pc.push({ t: [0.18, 0.5, 0.55], p: [x, g.h - 0.75, g.z + 0.28], m: 'pierre' })
+    for (const x of [g.x0 + 0.3, g.x1 - 0.3]) for (let y = 0.6; y < g.h - 1; y += 0.9) pc.push({ t: [0.65, 0.42, 0.1], p: [x, y, g.z + 0.05], m: 'pierre' })
+    pc.push({ t: [2.2, 3.6, 0.3], p: [xm, 1.8, g.z + 0.15], m: 'pierre' })
+    pc.push({ t: [1.5, 2.8, 0.1], p: [xm, 1.4, g.z + 0.31], m: 'cheneFonce', ombre: false })
+    pc.push({ t: [2.6, 0.35, 0.6], p: [xm, 3.75, g.z + 0.3], m: 'pierreFoncee' })
     // Le bâtiment de droite (784-788) est construit par complexe/Complexe784.tsx
     return pc
   }, [])

@@ -14,7 +14,7 @@ import { GABARIT, PORTE_BUS, geometriesParMateriau } from './voitures'
 // montés, puis reprend sa voie et quitte la rue. Il revient après une pause
 // hors champ, et de nouveaux voyageurs attendent à l'arrêt.
 
-const BORNE = 64
+const BORNE = 88
 const VMAX = 8
 const FREINAGE = 1.6 // m/s²
 const RABAT = 16 // distance sur laquelle le bus se rabat ou reprend sa voie (m)
