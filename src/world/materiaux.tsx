@@ -72,6 +72,11 @@ function standard(jeu: THREE.Texture[], motif: number, params: THREE.MeshStandar
   return new THREE.MeshStandardMaterial({ map, normalMap, roughnessMap, ...params })
 }
 
+// Peinture de carrosserie vernie (19/11/2026) : reflète le ciel
+function peinture(color: string, metalness: number) {
+  return new THREE.MeshPhysicalMaterial({ color, metalness, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 1.1 })
+}
+
 function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
   const vitrail = textureLosanges()
   const rue = texturesRue()
@@ -114,24 +119,24 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     inscription: new THREE.MeshStandardMaterial({ map: textureInscription(), roughness: 0.9 }),
     frise: new THREE.MeshStandardMaterial({ color: '#d9cdb2', bumpMap: textureFrise(), bumpScale: 3, roughness: 0.9 }),
     noir: new THREE.MeshStandardMaterial({ color: '#0d0d0d', roughness: 0.85 }),
-    voiture0: new THREE.MeshStandardMaterial({ color: '#2b2f36', metalness: 0.6, roughness: 0.35 }),
-    voiture1: new THREE.MeshStandardMaterial({ color: '#8e9296', metalness: 0.6, roughness: 0.35 }),
-    voiture2: new THREE.MeshStandardMaterial({ color: '#5a1e1e', metalness: 0.6, roughness: 0.35 }),
-    voiture3: new THREE.MeshStandardMaterial({ color: '#d8d8d4', metalness: 0.6, roughness: 0.35 }),
+    voiture0: peinture('#2b2f36', 0.6),
+    voiture1: peinture('#8e9296', 0.6),
+    voiture2: peinture('#5a1e1e', 0.6),
+    voiture3: peinture('#d8d8d4', 0.6),
     // Feux des voitures garées (éteints, légèrement lumineux)
     phare: new THREE.MeshStandardMaterial({ color: '#f4f1e6', emissive: '#fff6dc', emissiveIntensity: 0.15, roughness: 0.2 }),
     feuArriere: new THREE.MeshStandardMaterial({ color: '#8e1414', emissive: '#5a0808', emissiveIntensity: 0.3, roughness: 0.3 }),
-    taxi: new THREE.MeshStandardMaterial({ color: '#f2b705', metalness: 0.5, roughness: 0.35 }),
-    policeBleu: new THREE.MeshStandardMaterial({ color: '#1d3f8f', roughness: 0.4 }),
+    taxi: peinture('#f2b705', 0.5),
+    policeBleu: peinture('#1d3f8f', 0.2),
     gyroRouge: new THREE.MeshStandardMaterial({ color: '#d01818', emissive: '#ff2020', emissiveIntensity: 0.8, roughness: 0.3 }),
     gyroBleu: new THREE.MeshStandardMaterial({ color: '#1838d0', emissive: '#2050ff', emissiveIntensity: 0.8, roughness: 0.3 }),
-    rougePompier: new THREE.MeshStandardMaterial({ color: '#b3121b', metalness: 0.4, roughness: 0.4 }),
+    rougePompier: peinture('#b3121b', 0.4),
     feuillageFonce: new THREE.MeshStandardMaterial({ color: '#3b5a2a', roughness: 1 }),
-    jauneMashiah: new THREE.MeshStandardMaterial({ color: '#f2c200', metalness: 0.3, roughness: 0.45 }),
+    jauneMashiah: peinture('#f2c200', 0.3),
     blancCamping: new THREE.MeshStandardMaterial({ color: '#f4f2ea', metalness: 0.2, roughness: 0.5 }),
     bandeauMashiah: new THREE.MeshStandardMaterial({ map: rue.mashiah, roughness: 0.5 }),
-    turquoiseTank: new THREE.MeshStandardMaterial({ color: '#58bfcb', metalness: 0.25, roughness: 0.45 }),
-    rougeTank: new THREE.MeshStandardMaterial({ color: '#c7262c', metalness: 0.25, roughness: 0.45 }),
+    turquoiseTank: peinture('#58bfcb', 0.25),
+    rougeTank: peinture('#c7262c', 0.25),
     flancTank: new THREE.MeshStandardMaterial({ map: rue.flancTank, metalness: 0.15, roughness: 0.45 }),
     bandeauMivtsaim: new THREE.MeshStandardMaterial({ map: rue.mivtsaim, roughness: 0.5 }),
     enseigneJournaux: new THREE.MeshStandardMaterial({ map: rue.journaux, roughness: 0.6 }),

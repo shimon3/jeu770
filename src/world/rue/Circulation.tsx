@@ -91,9 +91,9 @@ export function Circulation({ zContreNord, zChaussee, largeur, zContreSud, y }: 
       { modele: 'berline', couleur: 'voiture2', z: voie(0.62), vitesse: 10, x0: -40, collision: true },
       { modele: 'police', couleur: 'voiture3', z: voie(0.8), vitesse: 8, x0: 0, collision: true },
       { modele: 'taxi', couleur: 'taxi', z: voie(0.8), vitesse: 10, x0: -35, collision: true },
-      // Contre-allée sud (sens unique +x), décor hors de portée
-      { modele: 'berline', couleur: 'voiture0', z: zContreSud, vitesse: 6, x0: -20 },
-      { modele: 'monospace', couleur: 'voiture2', z: zContreSud, vitesse: 6, x0: 30 },
+      // Contre-allée sud (sens unique +x), accessible au joueur depuis le 19/11/2026
+      { modele: 'berline', couleur: 'voiture0', z: zContreSud, vitesse: 6, x0: -20, collision: true },
+      { modele: 'monospace', couleur: 'voiture2', z: zContreSud, vitesse: 6, x0: 30, collision: true },
     ]
   }, [zContreNord, zChaussee, largeur, zContreSud])
   return (

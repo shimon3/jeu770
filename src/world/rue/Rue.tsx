@@ -16,9 +16,8 @@ import { abriBus, kiosqueJournaux } from './mobilier'
 import { VoitureConduite } from './VoitureConduite'
 import { aUnModele, ArbresRue, CorpsVoiture } from './modelesRue'
 import { LigneBus } from './Bus'
-import { GROUPE_MUR_PIETON } from './conduite'
 import { CuboidCollider } from '@react-three/rapier'
-import { Magasins, MAGASINS_X1 } from './Magasins'
+import { Magasins } from './Magasins'
 import { Livraison } from './Livraison'
 import { FondsDeRue, immeubleAppartements, rangee } from './Immeubles'
 import { Hanoukia } from './Hanoukia'
@@ -145,23 +144,24 @@ export function Rue() {
     // Bordures de granit
     for (const z of [Z_CONTRE, Z_TERRE, Z_CHAUSSEE]) pc.push({ t: [L, 0.3, 0.18], p: [0, -0.12, z], m: 'pierre' })
     // Au-delà : terre-plein, contre-allée et immeubles du côté sud (décor)
-    pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 3], m: 'trottoir' })
-    pc.push({ t: [L, 0.4, 7], p: [0, -0.35, Z_FIN + 9.5], m: 'asphalte' })
-    pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 16], m: 'trottoir' })
+    // (sols avec collisions : on peut traverser et se promener en face)
+    pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 3], m: 'trottoir', col: true })
+    pc.push({ t: [L, 0.4, 7], p: [0, -0.35, Z_FIN + 9.5], m: 'asphalte', col: true })
+    pc.push({ t: [L, 0.4, 6], p: [0, -0.2, Z_FIN + 16], m: 'trottoir', col: true })
     // Côté sud (décor, hors de portée) : courettes, puis maisons en rangée
     // et immeubles d'appartements avec escaliers de secours (Immeubles.tsx)
-    pc.push({ t: [L, 0.4, 4], p: [0, -0.2, Z_FIN + 21], m: 'trottoir' })
+    pc.push({ t: [L, 0.4, 4], p: [0, -0.2, Z_FIN + 21], m: 'trottoir', col: true })
     const zSud = Z_FIN + 22
-    pc.push(...immeubleAppartements({ x0: -L / 2, largeur: 22, zF: zSud, sens: -1, style: 'briqueJaune', etages: 6, ombre: false, col: false }))
-    pc.push(...rangee(-L / 2 + 22, -28, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 11 }))
-    pc.push(...immeubleAppartements({ x0: -28, largeur: 24, zF: zSud, sens: -1, style: 'briqueRouge', etages: 7, ombre: false, col: false, graine: 4 }))
-    pc.push(...rangee(-4, 30, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 23 }))
-    pc.push(...immeubleAppartements({ x0: 30, largeur: 20, zF: zSud, sens: -1, style: 'calcaire', etages: 6, ombre: false, col: false, graine: 9 }))
-    pc.push(...rangee(50, L / 2, zSud, -1, { jardin: 2.5, ombre: false, col: false, graine: 37 }))
+    pc.push(...immeubleAppartements({ x0: -L / 2, largeur: 22, zF: zSud, sens: -1, style: 'briqueJaune', etages: 6, ombre: false }))
+    pc.push(...rangee(-L / 2 + 22, -28, zSud, -1, { jardin: 2.5, ombre: false, graine: 11 }))
+    pc.push(...immeubleAppartements({ x0: -28, largeur: 24, zF: zSud, sens: -1, style: 'briqueRouge', etages: 7, ombre: false, graine: 4 }))
+    pc.push(...rangee(-4, 30, zSud, -1, { jardin: 2.5, ombre: false, graine: 23 }))
+    pc.push(...immeubleAppartements({ x0: 30, largeur: 20, zF: zSud, sens: -1, style: 'calcaire', etages: 6, ombre: false, graine: 9 }))
+    pc.push(...rangee(50, L / 2, zSud, -1, { jardin: 2.5, ombre: false, graine: 37 }))
     // Rues transversales aux deux bouts (décor) : asphalte et trottoirs
     for (const s of [-1, 1]) {
-      pc.push({ t: [9, 0.4, 100], p: [s * (L / 2 + 4.5), -0.35, 30], m: 'asphalte' })
-      pc.push({ t: [4, 0.4, 100], p: [s * (L / 2 + 11), -0.2, 30], m: 'trottoir' })
+      pc.push({ t: [9, 0.4, 100], p: [s * (L / 2 + 4.5), -0.35, 30], m: 'asphalte', col: true })
+      pc.push({ t: [4, 0.4, 100], p: [s * (L / 2 + 11), -0.2, 30], m: 'trottoir', col: true })
     }
     // Côté nord, à l'ouest du 766 : rangée de maisons à perron jouable
     // (courette et grille devant), puis immeuble d'angle
@@ -210,12 +210,22 @@ export function Rue() {
       <Circulation zContreNord={Z_CONTRE + 4.3} zChaussee={Z_CHAUSSEE} largeur={A.largeurChaussee} zContreSud={Z_FIN + 10.5} y={-A.bordure} />
       <SolLointain />
       <FondsDeRue xOuest={-L / 2 - 13} xEst={L / 2 + 13} z0={-20} z1={80} />
-      {/* Limites de la zone jouable */}
-      {/* Piéton seulement : la voiture conduite les traverse (conduite.ts) */}
-      <CuboidCollider args={[L / 2, 3, 0.15]} position={[0, 3, Z_CHAUSSEE - 0.2]} collisionGroups={GROUPE_MUR_PIETON} />
-      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[X_OUEST, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
-      {/* À l'est, la limite recule jusqu'au bout de la rangée de magasins */}
-      <CuboidCollider args={[0.15, 3, Z_CHAUSSEE / 2 + 2]} position={[MAGASINS_X1, 3, Z_CHAUSSEE / 2 - 2]} collisionGroups={GROUPE_MUR_PIETON} />
+      {/* Limites de la zone jouable (19/11/2026) : on se promène dans toute
+          la ville, on traverse la chaussée (la circulation s'arrête devant le
+          joueur) ; seules les façades des rues transversales, aux deux bouts,
+          et les extrémités de ces rues arrêtent le promeneur */}
+      {[-1, 1].map((s) => (
+        <group key={s}>
+          <CuboidCollider args={[0.15, 4, 51]} position={[s * (L / 2 + 13.1), 4, 30]} />
+          <CuboidCollider args={[7, 4, 0.15]} position={[s * (L / 2 + 6.5), 4, -19]} />
+          <CuboidCollider args={[7, 4, 0.15]} position={[s * (L / 2 + 6.5), 4, 79]} />
+        </group>
+      ))}
+      {/* Voitures garées en face : collisions */}
+      {STATIONNEMENT_SUD.map((v) => {
+        const [l, h, w] = GABARIT[v.modele]
+        return <Invisible key={`cs${v.x}`} taille={[l, h, w]} position={[v.x, -0.15 + h / 2, Z_FIN + 7.5]} />
+      })}
       {/* Bus de ville : un de chaque côté, arrêt et montée des voyageurs */}
       <LigneBus
         id="bus-nord"

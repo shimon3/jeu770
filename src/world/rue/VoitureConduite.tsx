@@ -33,7 +33,8 @@ const RALENTI = 2.2 // décélération sans accélérer (m/s²)
 const LISSAGE_VOLANT = 7 // réactivité du volant (plus haut = plus sec)
 const ZONE_MORTE = 0.15 // joystick
 const DECOLLE = 0.2 // hauteur du bas de la caisse de collision au-dessus du sol
-const LIMITES = { x: 56, z0: 12.4, z1: 44.6 }
+// Toute la longueur de la rue et la contre-allée d'en face (19/11/2026)
+const LIMITES = { x: 82, z0: 12.4, z1: 57.6 }
 const q = new THREE.Quaternion()
 const axeY = new THREE.Vector3(0, 1, 0)
 
@@ -88,8 +89,8 @@ export function VoitureConduite({ id = 'voiture-conduite', modele, couleur, x, z
   const sortir = () => {
     const c = conduite.cap
     // Côté conducteur (gauche), ramené dans la zone où l'on marche
-    const sx = THREE.MathUtils.clamp(conduite.x - Math.sin(c) * 1.7, -39, 39)
-    const sz = THREE.MathUtils.clamp(conduite.z - Math.cos(c) * 1.7, 12.6, 24.4)
+    const sx = THREE.MathUtils.clamp(conduite.x - Math.sin(c) * 1.7, -80, 80)
+    const sz = THREE.MathUtils.clamp(conduite.z - Math.cos(c) * 1.7, 12.6, 62)
     conduite.sortie = [sx, 0.2, sz]
     conduite.active = false
     conduite.vehicule = null

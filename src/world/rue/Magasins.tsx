@@ -91,8 +91,8 @@ export function Magasins() {
         <Devanture key={m.id} magasin={m} cx={MAGASINS_X0 + LARGEUR * (i + 0.5)} />
       ))}
       <LumiereMagasin />
-      {/* Mur piéton au bout de la rangée */}
-      <CuboidCollider args={[0.15, 3, 8]} position={[MAGASINS_X1 + 0.15, 3, 2]} />
+      {/* Pignon est (le trottoir devant reste libre : on continue vers l'est) */}
+      <CuboidCollider args={[0.15, 3, 4.5]} position={[MAGASINS_X1 + 0.15, 3, -5.5]} />
     </>
   )
 }

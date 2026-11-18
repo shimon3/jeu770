@@ -38,13 +38,41 @@ const calotte = (r: number) => new THREE.SphereGeometry(r, 14, 6, 0, Math.PI * 2
 
 // Ombrage « cuit » dans les couleurs : la vitrine paraît éclairée de
 // l'intérieur à toute heure, sans lumière supplémentaire.
-function cuire(geo: THREE.BufferGeometry) {
+// Depuis le 19/11/2026 : en plus de la lumière directionnelle douce, des
+// flaques de lumière sous chaque suspension (`lampes`, en coordonnées monde)
+// et une occlusion d'angle (pied et haut des murs plus sombres). Les murs,
+// le plafond et le sol sont subdivisés pour que ces dégradés se voient.
+const _L = new THREE.Vector3()
+function cuire(geo: THREE.BufferGeometry, lampes: THREE.Vector3[] = [], plafond = 3.2) {
+  const pos = geo.attributes.position
   const nor = geo.attributes.normal
   const col = geo.attributes.color
   const l = new THREE.Vector3(0.25, 0.8, 0.55).normalize()
   for (let i = 0; i < col.count; i++) {
-    const d = Math.max(0, nor.getX(i) * l.x + nor.getY(i) * l.y + nor.getZ(i) * l.z)
-    const k = 0.62 + 0.38 * d
+    const nx = nor.getX(i)
+    const ny = nor.getY(i)
+    const nz = nor.getZ(i)
+    const d = Math.max(0, nx * l.x + ny * l.y + nz * l.z)
+    let k = lampes.length ? 0.46 + 0.28 * d : 0.62 + 0.38 * d
+    const x = pos.getX(i)
+    const y = pos.getY(i)
+    const z = pos.getZ(i)
+    for (const lp of lampes) {
+      // Seulement les lampes du même magasin (pas à travers les murs mitoyens)
+      if (Math.abs(lp.x - x) > 1.95) continue
+      _L.set(lp.x - x, lp.y - y, lp.z - z)
+      const dist2 = _L.lengthSq()
+      if (dist2 > 30) continue
+      _L.normalize()
+      const ndl = Math.max(0, nx * _L.x + ny * _L.y + nz * _L.z)
+      k += (0.8 * (0.2 + 0.8 * ndl)) / (1 + dist2 * 0.45)
+    }
+    if (lampes.length) {
+      // Occlusion d'angle : bas des murs et bord du plafond
+      if (y < 0.5) k *= 0.8 + 0.4 * y
+      if (y > plafond - 0.35 && Math.abs(ny) < 0.5) k *= 0.88
+      k = Math.min(k, 1.18)
+    }
     col.setXYZ(i, col.getX(i) * k, col.getY(i) * k, col.getZ(i) * k)
   }
   return geo
@@ -229,27 +257,87 @@ const STYLE: Record<string, { mur: string; bas: string; sol: [string, string]; c
   chapeaux: { mur: '#ddd0b6', bas: '#2a211a', sol: ['#3a2c22', '#2f241c'], comptoir: '#2a211a' },
 }
 
+// Suspensions (profondeur depuis l'entrée), aussi utilisées par l'éclairage cuit
+const SUSPENSIONS = [1.6, 4.4, 7.2]
+// Commerces de bouche : certificat de cacherout encadré près du comptoir
+const BOUCHE = new Set(['pizzeria', 'glacier'])
+// Paysages encadrés (ciel, colline, soleil) : décor générique, aucun portrait
+const PAYSAGES: [string, string, string][] = [
+  ['#8fbbe0', '#5f8f4a', '#f2c94c'],
+  ['#f2b98a', '#7a6a4a', '#fff1c0'],
+  ['#9fc8d8', '#c9a86a', '#ffffff'],
+]
+
+function cadre(A: Poser, cote: 1 | -1, t: number, y: number, k: number) {
+  const { demiLargeur: w } = SALLE
+  const x = cote * (w - 0.03)
+  const [ciel, terre, soleil] = PAYSAGES[k % PAYSAGES.length]
+  A(boite(0.03, 0.56, 0.74), '#b8923a', [x, y, -t])
+  A(boite(0.035, 0.46, 0.64), ciel, [x - cote * 0.005, y + 0.02, -t])
+  A(boite(0.04, 0.16, 0.64), terre, [x - cote * 0.008, y - 0.13, -t])
+  A(boule(0.05), soleil, [x - cote * 0.02, y + 0.1, -t + 0.15])
+}
+
 function salle(A: Poser, id: string) {
   const { demiLargeur: w, fond: f, plafond: h, comptoir: tc } = SALLE
   const st = STYLE[id]
-  // Sol en damier, murs, soubassement, plafond et rampes lumineuses
+  // Sol en damier, murs, soubassement, plafond (19/11/2026 : subdivisés pour
+  // l'éclairage cuit, moulures, plafond à caissons, suspensions)
   const nx = 4
   const nt = 11
-  for (let i = 0; i < nx; i++) for (let k = 0; k < nt; k++) A(boite((2 * w) / nx, 0.012, f / nt), st.sol[(i + k) % 2], [-w + ((2 * w) / nx) * (i + 0.5), 0.006, -(f / nt) * (k + 0.5)])
+  for (let i = 0; i < nx; i++) for (let k = 0; k < nt; k++) A(new THREE.BoxGeometry((2 * w) / nx, 0.012, f / nt, 2, 1, 2), st.sol[(i + k) % 2], [-w + ((2 * w) / nx) * (i + 0.5), 0.006, -(f / nt) * (k + 0.5)])
   for (const c of [-1, 1]) {
-    A(boite(0.02, h, f), st.mur, [c * (w - 0.01), h / 2, -f / 2])
-    A(boite(0.03, 0.95, f), st.bas, [c * (w - 0.02), 0.475, -f / 2])
+    A(new THREE.BoxGeometry(0.02, h, f, 1, 8, 24), st.mur, [c * (w - 0.01), h / 2, -f / 2])
+    A(new THREE.BoxGeometry(0.03, 0.95, f, 1, 2, 24), st.bas, [c * (w - 0.02), 0.475, -f / 2])
+    // Cimaise, plinthe et corniche moulurée
+    A(boite(0.05, 0.05, f), '#fbf7ee', [c * (w - 0.04), 0.97, -f / 2])
+    A(boite(0.04, 0.12, f), '#3a2c22', [c * (w - 0.035), 0.06, -f / 2])
+    A(boite(0.08, 0.1, f), '#fbf7ee', [c * (w - 0.05), h - 0.06, -f / 2])
   }
-  A(boite(2 * w, h, 0.02), st.mur, [0, h / 2, -f + 0.01])
-  A(boite(2 * w, 0.03, f), '#f4f1ea', [0, h, -f / 2])
-  for (const t of [1.5, 4.5, 7.5]) A(boite(1.0, 0.05, 0.28), '#fffbe8', [0, h - 0.04, -t])
+  A(new THREE.BoxGeometry(2 * w, h, 0.02, 10, 8, 1), st.mur, [0, h / 2, -f + 0.01])
+  A(new THREE.BoxGeometry(2 * w, 0.03, f, 10, 1, 24), '#f4f1ea', [0, h, -f / 2])
+  // Plafond à caissons
+  for (let t = 1.0; t < f; t += 1.5) A(boite(2 * w, 0.06, 0.05), '#e6e0d2', [0, h - 0.04, -t])
+  for (const x of [-w / 2, 0, w / 2]) A(boite(0.05, 0.06, f), '#e6e0d2', [x, h - 0.04, -f / 2])
+  // Suspensions : tige, abat-jour, ampoule
+  for (const t of SUSPENSIONS) {
+    A(cyl(0.008, 0.008, 0.55, 6), '#2a2a2e', [0, h - 0.3, -t])
+    A(cyl(0.07, 0.26, 0.24, 18), st.bas, [0, h - 0.67, -t])
+    A(boule(0.07), '#fff8dc', [0, h - 0.79, -t])
+  }
   // Comptoir sur toute la largeur, caisse
   A(boite(2 * w, 1.0, 0.6), st.comptoir, [0, 0.5, -tc])
   A(boite(2 * w, 0.05, 0.72), '#efe7d8', [0, 1.025, -tc])
   A(boite(0.36, 0.24, 0.3), '#2a2a2e', [1.1, 1.17, -tc])
   A(boite(0.26, 0.2, 0.02), '#9fd0f0', [1.1, 1.36, -tc + 0.05], [-0.3, 0, 0])
+  // Pouchké (boîte de tsedaka) sur le comptoir
+  A(boite(0.12, 0.17, 0.1), '#1d4f9a', [0.62, 1.135, -tc + 0.12])
+  A(boite(0.06, 0.006, 0.012), '#111111', [0.62, 1.223, -tc + 0.12])
   // Rayonnage du fond, derrière le comptoir
   for (const y of [1.1, 1.65, 2.2]) A(boite(2 * w - 0.3, 0.04, 0.34), '#b08a5a', [0, y, -f + 0.2])
+  // Horloge au mur du fond
+  A(cyl(0.2, 0.2, 0.04, 28), '#2a2a2e', [1.15, 2.75, -f + 0.04], [Math.PI / 2, 0, 0])
+  A(cyl(0.18, 0.18, 0.05, 28), '#fbf7ee', [1.15, 2.75, -f + 0.05], [Math.PI / 2, 0, 0])
+  A(boite(0.015, 0.12, 0.01), '#111111', [1.15, 2.8, -f + 0.08])
+  A(boite(0.1, 0.015, 0.01), '#111111', [1.19, 2.75, -f + 0.08])
+  // Cadres en haut des murs (au-dessus des rayonnages)
+  cadre(A, -1, 2.6, 2.55, 0)
+  cadre(A, 1, 4.0, 2.55, 1)
+  cadre(A, -1, 6.4, 2.55, 2)
+  if (BOUCHE.has(id)) {
+    // Certificat de cacherout : cadre doré, papier, bandeau, sceau
+    const tcert = tc - 0.9
+    A(boite(0.03, 0.42, 0.32), '#c9a24a', [w - 0.03, 1.75, -tcert])
+    A(boite(0.035, 0.36, 0.26), '#fbf7ee', [w - 0.035, 1.75, -tcert])
+    A(boite(0.04, 0.03, 0.18), '#1d3f8f', [w - 0.04, 1.86, -tcert])
+    A(cyl(0.035, 0.035, 0.01, 12), '#b3261e', [w - 0.045, 1.66, -tcert], [0, 0, Math.PI / 2])
+  }
+  // Mezouza sur le montant droit de la porte (côté +x en entrant), inclinée
+  // vers l'intérieur, dans le tiers supérieur
+  A(boite(0.035, 0.16, 0.035), '#c9a24a', [w - 0.05, 1.75, -0.1], [0, 0, -0.35])
+  // Plante en pot à l'entrée, côté gauche
+  A(cyl(0.16, 0.12, 0.34, 12), '#7a4a2a', [-w + 0.28, 0.17, -0.45])
+  for (const [dx, dy, dz, r] of [[0, 0.62, 0, 0.2], [0.1, 0.5, 0.08, 0.16], [-0.08, 0.52, -0.06, 0.15]] as const) A(boule(r), '#3f7a3a', [-w + 0.28 + dx, dy, -0.45 + dz])
 }
 
 function table(A: Poser, x: number, t: number, plateau: string, rond = false) {
@@ -523,6 +611,7 @@ export function Vitrines({ x0, largeur: L, zFacade: Z, retrait: R }: Props) {
   const { interieur, exterieur, verre, ouvert, parMagasin, matInterieur, matExterieur, matOuvert } = useMemo(() => {
     const dedans: Lot = []
     const dehors: Lot = []
+    const lampes: THREE.Vector3[] = []
     const vitres: THREE.BufferGeometry[] = []
     const plaques: THREE.BufferGeometry[] = []
     const zf = Z + 0.06
@@ -536,6 +625,8 @@ export function Vitrines({ x0, largeur: L, zFacade: Z, retrait: R }: Props) {
       vitres.push(new THREE.PlaneGeometry(larg, 1.9).translate(wx, 1.55, Z + 0.1))
       const I: Poser = (geo, couleur, p, r, s) => poser(dedans, geo, couleur, [cx + p[0], p[1], Z - R + p[2]], r, s)
       salle(I, m.id)
+      for (const t of SUSPENSIONS) lampes.push(new THREE.Vector3(cx, SALLE.plafond - 0.85, Z - R - t))
+      lampes.push(new THREE.Vector3(cx, 2.4, Z - R - SALLE.fond + 1.2))
       MEUBLER[m.id]?.(I)
 
       const E = (geo: THREE.BufferGeometry, couleur: string, p: V3, r?: V3) => poser(dehors, geo, couleur, p, r)
@@ -592,7 +683,7 @@ export function Vitrines({ x0, largeur: L, zFacade: Z, retrait: R }: Props) {
       }
     })
     return {
-      interieur: cuire(mergeGeometries(dedans)),
+      interieur: cuire(mergeGeometries(dedans), lampes),
       exterieur: mergeGeometries(dehors),
       verre: mergeGeometries(vitres),
       ouvert: mergeGeometries(plaques),

@@ -45,7 +45,7 @@ function disque() {
 }
 
 let partage: { geo: THREE.BufferGeometry; mat: THREE.MeshBasicMaterial } | null = null
-function ressources() {
+export function ressources() {
   if (!partage) {
     const geo = disque()
     const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -8 })

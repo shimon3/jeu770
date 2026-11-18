@@ -3,7 +3,8 @@ import { usePrechauffe } from '../prechauffage'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useMateriaux } from '../materiaux'
-import { geometriesParMateriau, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { GABARIT, geometriesParMateriau, type CouleurVoiture, type ModeleVoiture } from './voitures'
+import { ressources as ombreSol } from '../../npc/OmbreSol'
 
 // Modèles Meshy de la rue (12/11/2026, demande de Samuel) : quatre voitures
 // et deux arbres, allégés dans Blender (Draco, textures 1K, ~0,2 Mo chacun).
@@ -86,12 +87,26 @@ export function CorpsVoiture({ modele, couleur, ombre = true, interieur = false 
   if (interieur) return <CorpsProcedural modele={modele} couleur={couleur} ombre={ombre} interieur />
   const url = VOITURES_GLB[modele]
   const repli = <CorpsProcedural modele={modele} couleur={couleur} ombre={ombre} />
-  if (!url) return repli
   return (
-    <Suspense fallback={repli}>
-      <CorpsGlb url={url} ombre={ombre} />
-    </Suspense>
+    <>
+      <OmbreVehicule modele={modele} />
+      {url ? (
+        <Suspense fallback={repli}>
+          <CorpsGlb url={url} ombre={ombre} />
+        </Suspense>
+      ) : (
+        repli
+      )}
+    </>
   )
+}
+
+// Ombre de contact douce sous le véhicule (19/11/2026) : sans elle, les
+// véhicules qui roulent (sans ombre portée, par économie) semblent flotter
+function OmbreVehicule({ modele }: { modele: ModeleVoiture }) {
+  const { geo, mat } = ombreSol()
+  const [l, , w] = GABARIT[modele]
+  return <mesh geometry={geo} material={mat} position={[0, 0.02, 0]} scale={[l * 1.12, 1, w * 1.35]} renderOrder={-1} />
 }
 
 // Arbres en instances : un seul appel de rendu par espèce

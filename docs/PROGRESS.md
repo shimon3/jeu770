@@ -12,6 +12,11 @@
 - **Générique** : 4 plans rendus par le jeu, fondus, bandes de cinéma, légende, bouton Passer, barre de chargement.
 - **Menu** : cadre « Mon appareil » (carte graphique, mémoire, images/s, alerte sans accélération matérielle).
 
+### Ajouts du 19/11/2026 (même branche)
+- **Promenade libre** : plus de murs invisibles sur la chaussée ni au bout du trottoir ; on traverse (la circulation s'arrête devant le joueur), on marche en face, dans les rues transversales ; la voiture roule sur toute la rue et la contre-allée d'en face. Limites : façades des rues transversales. Vérifié : `node tools/captures/verifier-promenade.mjs` (10 endroits, aucun vide).
+- **Intérieurs des magasins** : éclairage cuit (flaques de lumière sous les suspensions, angles plus sombres), plafond à caissons, suspensions, moulures, cadres de paysages, horloge, mezouza à droite de la porte, pouchké sur le comptoir, plante, certificat de cacherout (pizzeria, glacier).
+- **Véhicules** : peinture vernie pour tous les véhicules dessinés en code, ombre de contact sous chaque véhicule (y compris ceux qui roulent).
+
 ### Vérifié (Chrome réel, ordinateur de Samuel)
 - `npm run build` sans erreur ; aucune erreur de page ni fichier manquant pendant les captures.
 - Images par seconde (build de production, qualité équilibrée, 1280×720) : 51-57 sans la foule, 46-54 avec.
