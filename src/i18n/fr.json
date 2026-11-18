@@ -333,5 +333,9 @@
   "graphismes.auto": "automatique",
   "graphismes.haute": "haute qualité",
   "graphismes.equilibree": "équilibrée",
-  "graphismes.rapide": "rapide"
+  "graphismes.rapide": "rapide",
+  "action.hanoukia": "Regarder la hanoukia",
+  "hanoukia.soir": "'Hanouka : {n}e soir. Hag Ourim saméa'h !",
+  "hanoukia.ceSoir": "Premier soir de 'Hanouka ce soir, à la tombée de la nuit !",
+  "hanoukia.bientot": "'Hanouka commence dans {n} jours : la hanoukia sera allumée chaque soir."
 }

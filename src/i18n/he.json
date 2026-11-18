@@ -333,5 +333,9 @@
   "graphismes.auto": "אוטומטי",
   "graphismes.haute": "איכות גבוהה",
   "graphismes.equilibree": "מאוזן",
-  "graphismes.rapide": "מהיר"
+  "graphismes.rapide": "מהיר",
+  "action.hanoukia": "להסתכל בחנוכייה",
+  "hanoukia.soir": "חנוכה: נר {n}. חג אורים שמח!",
+  "hanoukia.ceSoir": "הלילה הדלקת נר ראשון של חנוכה!",
+  "hanoukia.bientot": "חנוכה מתחיל בעוד {n} ימים: החנוכייה תודלק בכל ערב."
 }
