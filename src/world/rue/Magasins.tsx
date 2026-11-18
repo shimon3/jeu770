@@ -38,7 +38,12 @@ export function Magasins() {
     pc.push({ t: [x1 - x0, HAUTEUR - 3.9, PROFONDEUR], p: [mx, 3.7 + (HAUTEUR - 3.9) / 2, Z_FACADE - PROFONDEUR / 2], m: 'briqueVoisinClaire' })
     pc.push({ t: [x1 - x0 + 0.3, 0.35, 0.35], p: [mx, 4.1, Z_FACADE + 0.12], m: 'pierre' })
     pc.push({ t: [x1 - x0 + 0.3, 0.5, 0.45], p: [mx, HAUTEUR - 0.2, Z_FACADE + 0.1], m: 'pierre' })
-    pc.push(...grilleFenetres(x0 + 0.5, x1 - 0.5, Z_FACADE, [5.0, 8.0], 1.9, MAGASINS.length * 2, 'pierre'))
+    pc.push(...grilleFenetres(x0 + 0.5, x1 - 0.5, Z_FACADE, [5.0, 8.0], 1.9, MAGASINS.length * 2, 'pierre', true))
+    // Corniche à consoles et frise sous la corniche (18/11/2026, décor générique)
+    pc.push({ t: [x1 - x0, 0.45, 0.12], p: [mx, HAUTEUR - 0.75, Z_FACADE + 0.06], m: 'corniche' })
+    for (let x = x0 + 0.4; x < x1 - 0.2; x += 0.95) pc.push({ t: [0.16, 0.45, 0.5], p: [x, HAUTEUR - 0.6, Z_FACADE + 0.27], m: 'corniche' })
+    // Pilastres de brique entre les magasins, au-dessus des enseignes
+    for (let i = 0; i <= MAGASINS.length; i++) pc.push({ t: [0.22, HAUTEUR - 4.6, 0.12], p: [x0 + LARGEUR * i + (i === 0 ? 0.11 : i === MAGASINS.length ? -0.11 : 0), 4.3 + (HAUTEUR - 4.6) / 2, Z_FACADE + 0.06], m: 'briqueVoisin' })
     // Dalle du rez-de-chaussée (la pièce de la chaise et le Zal sont dessous),
     // massif du fond, murs mitoyens entre les salles
     pc.push({ t: [x1 - x0, 0.4, PROFONDEUR], p: [mx, -0.2, Z_FACADE - PROFONDEUR / 2 - 0.01], m: 'trottoir', col: true })

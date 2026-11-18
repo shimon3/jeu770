@@ -102,7 +102,8 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     vitrailClair: new THREE.MeshStandardMaterial({ map: vitrail, color: '#c9d6dc', metalness: 0.1, roughness: 0.1, transparent: true, opacity: 0.38, depthWrite: false }),
     // Pare-brise des véhicules : transparent, pour la vue du conducteur (V)
     vitreVehicule: new THREE.MeshStandardMaterial({ color: '#9fc4d6', metalness: 0.3, roughness: 0.05, transparent: true, opacity: 0.22, depthWrite: false }),
-    vitre: new THREE.MeshStandardMaterial({ color: '#33424c', metalness: 0.6, roughness: 0.1 }),
+    // Vitre : reflète le ciel (carte d'environnement) au lieu d'un bleu uni
+    vitre: new THREE.MeshStandardMaterial({ color: '#28343d', metalness: 0.92, roughness: 0.06, envMapIntensity: 1.35 }),
     vitreEclairee: new THREE.MeshStandardMaterial({ color: '#e8d6a8', emissive: '#f0d090', emissiveIntensity: 0.5 }),
     tronc: new THREE.MeshStandardMaterial({ color: '#4a3b2e', roughness: 1 }),
     feuillage: new THREE.MeshStandardMaterial({ color: '#4d6e34', roughness: 1 }),
@@ -147,6 +148,8 @@ function creerMateriaux(tex: Record<CleTex, THREE.Texture[]>) {
     rideau: new THREE.MeshStandardMaterial({ color: '#d9c7a0', roughness: 0.85 }),
     porteVerte: new THREE.MeshStandardMaterial({ color: '#2f4a3a', roughness: 0.5 }),
     porteRouge: new THREE.MeshStandardMaterial({ color: '#6e2620', roughness: 0.5 }),
+    boisCiterne: new THREE.MeshStandardMaterial({ color: '#7a5f45', roughness: 0.95 }),
+    toitGoudron: new THREE.MeshStandardMaterial({ color: '#3d3a38', roughness: 1 }),
   }
 }
 

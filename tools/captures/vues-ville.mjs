@@ -32,6 +32,9 @@ const toutes = [
   ['policier', [-5.6, 1.5, 12.6], [-7.6, 1.0, 10.4], 45],
   ['photo', [1.2, 1.5, 7.9], [1.2, 1.0, 10.3], 45],
   ['bochurs', [24.2, 1.5, 12.2], [24.1, 1.0, 9.2], 45],
+  ['magasins', [50, 1.7, 13], [50, 2.6, 0], 60],
+  ['voiture', [-42.5, 1.5, 16.5], [-46, 0.6, 13.2], 50],
+  ['facade-sud', [-10, 1.7, 50], [-10, 6, 67], 60],
 ]
 const filtre = process.env.VUES?.split(',')
 for (const [nom, pos, cible, fov] of toutes) {

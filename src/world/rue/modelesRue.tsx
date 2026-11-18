@@ -38,8 +38,32 @@ function CorpsProcedural({ modele, couleur, ombre, interieur = false }: { modele
   )
 }
 
+// Peinture vernie (18/11/2026) : les modèles Meshy n'ont qu'un matériau mat ;
+// on le remplace une fois par modèle par un matériau à vernis transparent
+// qui reflète le ciel (carte d'environnement). Pneus et vitres partagent ce
+// matériau : rugosité moyenne pour rester crédible sur les deux.
+function vernir(scene: THREE.Object3D) {
+  if (scene.userData.verni) return
+  scene.userData.verni = true
+  scene.traverse((o) => {
+    const m = o as THREE.Mesh
+    if (!m.isMesh) return
+    const ancien = m.material as THREE.MeshStandardMaterial
+    m.material = new THREE.MeshPhysicalMaterial({
+      map: ancien.map,
+      roughness: 0.38,
+      metalness: 0.3,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.08,
+      envMapIntensity: 1.2,
+    })
+    ancien.dispose()
+  })
+}
+
 function CorpsGlb({ url, ombre }: { url: string; ombre: boolean }) {
   const { scene } = useGLTF(url, DRACO)
+  vernir(scene)
   // Clone léger : géométrie et matériaux partagés entre toutes les copies
   const objet = useMemo(() => {
     const o = scene.clone()

@@ -162,6 +162,11 @@ export function maisonRangee(m: Maison): Piece[] {
   pc.push({ t: [w, 0.55, 0.12], p: P(xm, h - 0.75, 0.06), m: 'corniche', ombre })
   pc.push({ t: [w + 0.05, 0.35, 0.7], p: P(xm, h - 0.25, 0.35), m: 'corniche', ombre })
   for (let x = x0 + 0.35; x < x0 + w - 0.2; x += 0.95) pc.push({ t: [0.16, 0.45, 0.55], p: P(x, h - 0.65, 0.3), m: 'corniche', ombre })
+  // Cheminées en brique sur le toit (une ou deux par maison)
+  for (const f of hasard(graine + 11) < 0.5 ? [0.2] : [0.2, 0.8]) {
+    pc.push({ t: [0.7, 1.3, 0.5], p: P(x0 + w * f, h + 0.55, -prof + 1.2), m: 'briqueRouge', ombre })
+    pc.push({ t: [0.8, 0.1, 0.6], p: P(x0 + w * f, h + 1.22, -prof + 1.2), m: 'corniche', ombre: false })
+  }
   // Courette devant : grille basse en fer forgé, ouverte au pied du perron
   if (jardin > 0) {
     const dz = jardin
@@ -238,6 +243,19 @@ export function immeubleAppartements(a: Appartements): Piece[] {
   pc.push({ t: [w, 0.6, 0.15], p: P(xm, h - 0.85, 0.07), m: decor, ombre })
   pc.push({ t: [w + 0.1, 0.4, 0.85], p: P(xm, h - 0.35, 0.42), m: 'corniche', ombre })
   for (let x = x0 + 0.4; x < x0 + w - 0.2; x += 1.1) pc.push({ t: [0.18, 0.5, 0.7], p: P(x, h - 0.75, 0.36), m: 'corniche', ombre })
+  // Citerne d'eau en bois sur pilotis (silhouette typique des toits de
+  // New York), un immeuble sur deux environ
+  if (hasard(graine + 5) < 0.6) {
+    const cx = x0 + w * (0.3 + hasard(graine + 6) * 0.4)
+    const cz = -prof * 0.55
+    for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) pc.push({ t: [0.14, 2.2, 0.14], p: P(cx + dx * 1.0, h + 1.1, cz + dz * 1.0), m: 'fer', ombre })
+    pc.push({ t: [2.6, 0.12, 2.6], p: P(cx, h + 2.2, cz), m: 'boisCiterne', ombre })
+    pc.push({ geo: new THREE.CylinderGeometry(1.35, 1.45, 3.0, 16), p: P(cx, h + 3.75, cz), m: 'boisCiterne', ombre })
+    for (const y of [2.8, 3.8, 4.8]) pc.push({ geo: new THREE.CylinderGeometry(1.47, 1.47, 0.06, 16), p: P(cx, h + y, cz), m: 'fer', ombre: false })
+    pc.push({ geo: new THREE.ConeGeometry(1.5, 1.1, 16), p: P(cx, h + 5.8, cz), m: 'toitGoudron', ombre })
+  }
+  // Édicule d'escalier sur le toit
+  pc.push({ t: [3, 2.4, 3], p: P(x0 + w * 0.75, h + 1.2, -prof * 0.4), m: mur, ombre })
   // Escaliers de secours : paliers et échelles en zigzag sur deux travées
   if (secours) {
     const travees = [Math.floor(nb / 2) - 1, Math.floor(nb / 2)].filter((i) => i >= 0 && i < nb)
