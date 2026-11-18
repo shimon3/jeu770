@@ -4,6 +4,7 @@ import { useGame } from '../state/store'
 import { sauvegarder } from '../missions/missions'
 import { Commandes } from './Commandes'
 import { NIVEAUX, useQualite } from '../config/qualite'
+import { InfosAppareil } from './InfosAppareil'
 
 type Props = { onReprendre: () => void; onLangue: () => void; onAccueil: () => void }
 
@@ -29,6 +30,7 @@ export function Menu({ onReprendre, onLangue, onAccueil }: Props) {
           <button onClick={onAccueil}>{t('menu.accueil')}</button>
         </div>
         {message && <p className="source">{t(message)}</p>}
+        <InfosAppareil />
         <Commandes />
       </div>
     </div>

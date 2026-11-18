@@ -337,5 +337,18 @@
   "action.hanoukia": "Regarder la hanoukia",
   "hanoukia.soir": "'Hanouka : {n}e soir. Hag Ourim saméa'h !",
   "hanoukia.ceSoir": "Premier soir de 'Hanouka ce soir, à la tombée de la nuit !",
-  "hanoukia.bientot": "'Hanouka commence dans {n} jours : la hanoukia sera allumée chaque soir."
+  "hanoukia.bientot": "'Hanouka commence dans {n} jours : la hanoukia sera allumée chaque soir.",
+  "generique.passer": "Passer",
+  "generique.plan.facade": "770 Eastern Parkway",
+  "generique.plan.rue": "Eastern Parkway, Crown Heights",
+  "generique.plan.hanoukia": "La grande hanoukia",
+  "generique.plan.maisons": "Les maisons du quartier",
+  "appareil.titre": "Mon appareil (si le jeu est lent)",
+  "appareil.carte": "Carte graphique",
+  "appareil.coeurs": "Cœurs du processeur",
+  "appareil.memoire": "Mémoire",
+  "appareil.ecran": "Écran (pixels)",
+  "appareil.ips": "Images par seconde",
+  "appareil.sansCarte": "Le navigateur dessine le jeu SANS la carte graphique : c'est la cause de la lenteur. Activez « Utiliser l'accélération graphique » dans les paramètres du navigateur, puis relancez-le.",
+  "appareil.conseil": "Moins de 30 images par seconde : choisissez Graphismes « rapide ». Une capture de ce cadre aide à trouver la cause."
 }

@@ -337,5 +337,18 @@
   "action.hanoukia": "להסתכל בחנוכייה",
   "hanoukia.soir": "חנוכה: נר {n}. חג אורים שמח!",
   "hanoukia.ceSoir": "הלילה הדלקת נר ראשון של חנוכה!",
-  "hanoukia.bientot": "חנוכה מתחיל בעוד {n} ימים: החנוכייה תודלק בכל ערב."
+  "hanoukia.bientot": "חנוכה מתחיל בעוד {n} ימים: החנוכייה תודלק בכל ערב.",
+  "generique.passer": "דלג",
+  "generique.plan.facade": "770 איסטרן פארקווי",
+  "generique.plan.rue": "איסטרן פארקווי, קראון הייטס",
+  "generique.plan.hanoukia": "החנוכייה הגדולה",
+  "generique.plan.maisons": "בתי השכונה",
+  "appareil.titre": "המכשיר שלי (אם המשחק איטי)",
+  "appareil.carte": "כרטיס מסך",
+  "appareil.coeurs": "ליבות מעבד",
+  "appareil.memoire": "זיכרון",
+  "appareil.ecran": "מסך (פיקסלים)",
+  "appareil.ips": "תמונות לשנייה",
+  "appareil.sansCarte": "הדפדפן מצייר את המשחק בלי כרטיס המסך: זו סיבת האיטיות. הפעילו „השתמש בהאצת חומרה” בהגדרות הדפדפן והפעילו אותו מחדש.",
+  "appareil.conseil": "פחות מ־30 תמונות לשנייה: בחרו גרפיקה „מהירה”. צילום מסך של מסגרת זו עוזר למצוא את הסיבה."
 }

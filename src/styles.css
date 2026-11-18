@@ -986,3 +986,158 @@ html.mode-tactile .hud-dollars {
   border-radius: 50%;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
 }
+
+/* Générique en plans (18/11/2026) : fondus enchaînés, travelling lent,
+   bandes de cinéma, légende du lieu, bouton Passer, barre de chargement */
+.generique-plan {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 1.4s ease-in-out;
+  will-change: opacity, transform;
+}
+.generique-plan.visible {
+  opacity: 1;
+  animation: plan-avance 5.5s linear both;
+}
+.generique-plan.visible.sens2 {
+  animation-name: plan-lateral;
+}
+@keyframes plan-avance {
+  from { transform: scale(1.14) translate3d(0, 0, 0); }
+  to { transform: scale(1.02) translate3d(0, -1%, 0); }
+}
+@keyframes plan-lateral {
+  from { transform: scale(1.1) translate3d(2.5%, 0, 0); }
+  to { transform: scale(1.1) translate3d(-2.5%, 0, 0); }
+}
+.generique-voile {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(8, 7, 6, 0) 45%, rgba(8, 7, 6, 0.55) 100%),
+    linear-gradient(180deg, rgba(8, 7, 6, 0.5) 0%, rgba(8, 7, 6, 0.15) 40%, rgba(8, 7, 6, 0.75) 100%);
+  pointer-events: none;
+}
+.generique-bande {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 7vh;
+  background: #050403;
+  z-index: 1;
+  animation: bande-entre 1.2s ease-out both;
+}
+.generique-bande.haut { top: 0; transform-origin: top; }
+.generique-bande.bas { bottom: 0; transform-origin: bottom; }
+@keyframes bande-entre {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.generique-legende {
+  position: fixed;
+  bottom: calc(7vh + 18px);
+  inset-inline-start: 22px;
+  margin: 0;
+  z-index: 2;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f3e7c9;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  border-inline-start: 2px solid #d9a54a;
+  padding-inline-start: 10px;
+  animation: legende 4s ease-in-out both;
+}
+:root[lang='he'] .generique-legende { letter-spacing: 0.04em; }
+@keyframes legende {
+  0% { opacity: 0; transform: translateY(6px); }
+  18%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+.generique-passer {
+  position: fixed;
+  top: calc(7vh + 12px);
+  inset-inline-end: 18px;
+  z-index: 3;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: #f3e7c9;
+  background: rgba(10, 9, 8, 0.45);
+  border: 1px solid rgba(217, 165, 74, 0.6);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.generique-passer:hover,
+.generique-passer:focus-visible { background: rgba(217, 165, 74, 0.25); }
+.generique .generique-bh { top: calc(7vh + 14px); inset-inline-end: auto; inset-inline-start: 18px; z-index: 2; }
+.generique-reflet {
+  background: linear-gradient(100deg, #f3c96a 0%, #f3c96a 40%, #fff6dc 50%, #f3c96a 60%, #f3c96a 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: reflet 3.5s ease-in-out 2.6s 2 both;
+}
+@keyframes reflet {
+  from { background-position: 100% 0; }
+  to { background-position: -50% 0; }
+}
+.generique-barre {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  z-index: 4;
+  background: rgba(255, 255, 255, 0.06);
+  transition: opacity 1s ease 0.6s;
+}
+.generique-barre > div {
+  height: 100%;
+  background: linear-gradient(90deg, #a87a2a, #f3c96a);
+  transform-origin: left;
+  transition: transform 0.5s ease-out;
+}
+:root[dir='rtl'] .generique-barre > div { transform-origin: right; }
+.generique-barre.finie { opacity: 0; }
+.generique-commencer { bottom: calc(7vh + 16px); z-index: 2; }
+@media (prefers-reduced-motion: reduce) {
+  .generique-plan.visible, .generique-bande, .generique-legende, .generique-reflet { animation: none; }
+  .generique-plan { transform: none; }
+}
+.generique-reflet {
+  text-shadow: none;
+  filter: drop-shadow(0 2px 0 #7a5a1c) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.7));
+}
+
+/* Menu : « Mon appareil » */
+.infos-appareil {
+  margin-top: 14px;
+  text-align: start;
+}
+.infos-appareil summary {
+  cursor: pointer;
+  color: var(--encre-douce);
+}
+.infos-appareil dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 10px 0 6px;
+  font-size: 0.9rem;
+}
+.infos-appareil dt { color: var(--encre-douce); }
+.infos-appareil dd { margin: 0; overflow-wrap: anywhere; }
+.infos-appareil .alerte {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(200, 60, 40, 0.18);
+  border: 1px solid rgba(220, 90, 60, 0.6);
+}
