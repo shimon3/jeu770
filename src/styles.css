@@ -1141,3 +1141,18 @@ html.mode-tactile .hud-dollars {
   background: rgba(200, 60, 40, 0.18);
   border: 1px solid rgba(220, 90, 60, 0.6);
 }
+
+/* Crédits de l'auteur (22/11/2026) */
+.panneau.menu .credits {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  text-align: center;
+}
+.panneau.menu .credits a {
+  color: inherit;
+  font-weight: 600;
+}
+.generique-credits {
+  margin-top: 10px;
+}

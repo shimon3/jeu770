@@ -5,6 +5,7 @@ import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { Commandes } from './Commandes'
 import { estTactile } from '../player/entrees'
+import { AUTEUR, TELEPHONE } from '../config/credits'
 
 const TACTILE = estTactile()
 // Les tests automatiques (Playwright) passent directement au menu
@@ -133,6 +134,9 @@ function Generique({ onFin, onLangue }: { onFin: () => void; onLangue: () => voi
         <p className="generique-ligne g3">{t('app.sousTitre')}</p>
         <p className="generique-ligne g4">{t('generique.invitation')}</p>
         <p className="generique-ligne petit g5">{t('generique.note')}</p>
+        <p className="generique-ligne petit g5 generique-credits">
+          {t('credits.auteur', { auteur: AUTEUR })} · <span dir="ltr">{TELEPHONE}</span>
+        </p>
       </div>
       <p className="generique-commencer g6">{t(TACTILE ? 'generique.toucher' : 'generique.commencer')}</p>
     </div>

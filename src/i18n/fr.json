@@ -350,5 +350,7 @@
   "appareil.ecran": "Écran (pixels)",
   "appareil.ips": "Images par seconde",
   "appareil.sansCarte": "Le navigateur dessine le jeu SANS la carte graphique : c'est la cause de la lenteur. Activez « Utiliser l'accélération graphique » dans les paramètres du navigateur, puis relancez-le.",
-  "appareil.conseil": "Moins de 30 images par seconde : choisissez Graphismes « rapide ». Une capture de ce cadre aide à trouver la cause."
+  "appareil.conseil": "Moins de 30 images par seconde : choisissez Graphismes « rapide ». Une capture de ce cadre aide à trouver la cause.",
+  "credits.auteur": "Un jeu de {auteur}",
+  "credits.contact": "Contact :"
 }

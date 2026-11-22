@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AUTEUR, TELEPHONE } from '../config/credits'
 import { useT } from '../i18n'
 import { useGame } from '../state/store'
 import { sauvegarder } from '../missions/missions'
@@ -30,6 +31,12 @@ export function Menu({ onReprendre, onLangue, onAccueil }: Props) {
           <button onClick={onAccueil}>{t('menu.accueil')}</button>
         </div>
         {message && <p className="source">{t(message)}</p>}
+        <p className="credits">
+          {t('credits.auteur', { auteur: AUTEUR })} · {t('credits.contact')}{' '}
+          <a href={`tel:${TELEPHONE}`} dir="ltr">
+            {TELEPHONE}
+          </a>
+        </p>
         <InfosAppareil />
         <Commandes />
       </div>
