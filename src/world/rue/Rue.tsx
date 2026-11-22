@@ -302,7 +302,8 @@ function SolLointain() {
       [ZAL.x1 + 0.5, ZAL.z0 - 0.5],
       [ZAL.shalashX0 - 0.5, ZAL.z0 - 0.5],
     ]
-    pts.forEach(([x, z], i) => (i ? trou.lineTo(x, -z) : trou.moveTo(x, -z)))
+    // Trou décalé avec le Zal (DX_ZAL, 22/11/2026)
+    pts.forEach(([x, z], i) => (i ? trou.lineTo(x + DX_ZAL, -z) : trou.moveTo(x + DX_ZAL, -z)))
     trou.closePath()
     f.holes.push(trou)
     return new THREE.ShapeGeometry(f)
