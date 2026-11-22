@@ -15,6 +15,7 @@ import { estTactile } from '../player/entrees'
 const TACTILE = estTactile()
 import { Complexe784 } from './complexe/Complexe784'
 import { PanneauxDirection } from './rue/PanneauxDirection'
+import { Deplace } from './decalage'
 import { PnjZal } from '../npc/PnjZal'
 import { pnjLegersActifs } from '../npc/PnjEnfant'
 import { useQualite } from '../config/qualite'
@@ -137,7 +138,7 @@ const LIEUX_GARCONS: [number, number][] = [[-17.6, 8.4], [-29.0, 8.6], [-11.0, 8
 // tout le grand Zal souterrain, sinon le sol du Zal serait éclairé à travers
 // son plafond.
 const CIBLE_SOLEIL = new THREE.Object3D()
-CIBLE_SOLEIL.position.set(10, 0, -8)
+CIBLE_SOLEIL.position.set(-20, 0, -10) // Zal à gauche du 770 depuis le 22/11/2026
 
 function Soleil() {
   // Soleil d'après-midi venant du sud-ouest (la façade regarde vers le sud)
@@ -155,7 +156,7 @@ function Soleil() {
   return (
     <directionalLight
       ref={lumiere}
-      position={[10 - 18, 30, -8 + 26]}
+      position={[-20 - 18, 30, -10 + 26]}
       target={CIBLE_SOLEIL}
       intensity={2.6}
       color="#fff3e0"
@@ -197,12 +198,16 @@ export function Monde({ cle }: { cle: number }) {
             <Suspense fallback={null}>
               <MaisonRabbi />
             </Suspense>
-            <Complexe784 />
+            {/* Grand Zal et 784-788 : décrits dans leur repère d'origine,
+                déplacés à gauche du 770 (world/decalage.tsx, 22/11/2026) */}
+            <Deplace>
+              <Complexe784 />
+              <Suspense fallback={null}>
+                <GrandZal />
+              </Suspense>
+              <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
+            </Deplace>
             <PanneauxDirection />
-            <Suspense fallback={null}>
-              <GrandZal />
-            </Suspense>
-            <PnjZal id="pnj-entree-zal" position={[18.4, 0, 6.1]} rotationY={1.2} peau="#cf9d7c" barbe="#5a4030" />
             <PnjImmobile id="pnj-trottoir" position={[-3.4, 0, 8.6]} rotationY={1.3} />
             {PNJ_LEGERS && <FamillesRue />}
             <MissionTank />

@@ -13,10 +13,10 @@ export const DELAI_POURBOIRE = 60 // secondes
 export const DESTINATIONS: { cle: string; x: number; z: number }[] = [
   { cle: 'livraison.lieu.770', x: 0.5, z: 8.7 },
   { cle: 'livraison.lieu.kiosque', x: -13, z: 9.2 },
-  { cle: 'livraison.lieu.bibliotheque', x: -22, z: 8.6 },
+  { cle: 'livraison.lieu.bibliotheque', x: 22, z: 8.6 },
   { cle: 'livraison.lieu.bus', x: -28.2, z: 9.2 },
   { cle: 'livraison.lieu.bout', x: -37, z: 8.7 },
-  { cle: 'livraison.lieu.784', x: 24, z: 8.7 },
+  { cle: 'livraison.lieu.784', x: -32, z: 8.7 },
 ]
 
 let derniere = -1

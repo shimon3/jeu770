@@ -8,6 +8,7 @@ import { joueur, useGame } from '../state/store'
 import { t } from '../i18n'
 import { evenementMission } from '../missions/missions'
 import type { V3 } from './primitives'
+import { Annule, useDecalage } from './decalage'
 
 type Modele = 'principale' | 'interieure' | 'zal' | 'vitree'
 
@@ -64,7 +65,20 @@ const CHROME = new THREE.MeshStandardMaterial({ color: '#c9cdd2', metalness: 0.9
 const q = new THREE.Quaternion()
 const e = new THREE.Euler()
 
-export function Porte({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, couleur = '#1b1b1b', rayon = 1.7, rotationY = 0, ouverteInitiale = false, fixe = false, fermetureAuto = true, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
+// Sous un <Deplace> (grand Zal), la porte est reconstruite en coordonnées
+// monde (gond décalé)
+export function Porte(props: Props) {
+  const d = useDecalage()
+  if (d === 0) return <PorteMonde {...props} />
+  const c = props.charniere
+  return (
+    <Annule>
+      <PorteMonde {...props} charniere={[c[0] + d, c[1], c[2]]} />
+    </Annule>
+  )
+}
+
+function PorteMonde({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, angleOuverture, modele = 'interieure', verrouillee, couleur = '#1b1b1b', rayon = 1.7, rotationY = 0, ouverteInitiale = false, fixe = false, fermetureAuto = true, cle, messageSansCle = 'message.porteFermeeCle' }: Props) {
   const corps = useRef<RapierRigidBody>(null)
   const [ouverte, setOuverte] = useState(ouverteInitiale)
   const angle = useRef(ouverteInitiale ? angleOuverture : 0)

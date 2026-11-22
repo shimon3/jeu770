@@ -1,12 +1,14 @@
-import { PIECE_CHAISE, PLACE_VIDE } from '../config/grandZal'
+import { DX_ZAL, PIECE_CHAISE, PLACE_VIDE } from '../config/grandZal'
 
 // RÈGLE ABSOLUE : aucun PNJ ne s'assoit à la place du Rebbe ni ne s'en
 // approche, et aucun n'entre dans la pièce de la chaise. Tout point de trajet ou de station est vérifié ici ; un point
 // trop proche est refusé (et signalé en développement).
 
-const CENTRE: [number, number] = [(PLACE_VIDE.x0 + PLACE_VIDE.x1) / 2, (PLACE_VIDE.z0 + PLACE_VIDE.z1) / 2]
+// Coordonnées MONDE en entrée : x est ramené dans le repère Zal (DX_ZAL)
+const CENTRE: [number, number] = [(PLACE_VIDE.x0 + PLACE_VIDE.x1) / 2 + DX_ZAL, (PLACE_VIDE.z0 + PLACE_VIDE.z1) / 2]
 
-export function distancePlaceVide(x: number, z: number) {
+export function distancePlaceVide(xm: number, z: number) {
+  const x = xm - DX_ZAL
   // Distance au rectangle de l'estrade (0 à l'intérieur)
   const dx = Math.max(PLACE_VIDE.x0 - x, 0, x - PLACE_VIDE.x1)
   const dz = Math.max(PLACE_VIDE.z0 - z, 0, z - PLACE_VIDE.z1)
@@ -14,7 +16,8 @@ export function distancePlaceVide(x: number, z: number) {
 }
 
 // Pièce de la chaise du Rabbi : aucun PNJ n'y entre ni ne s'approche de sa porte
-export function distancePieceChaise(x: number, z: number) {
+export function distancePieceChaise(xm: number, z: number) {
+  const x = xm - DX_ZAL
   const dx = Math.max(PIECE_CHAISE.x0 - x, 0, x - PIECE_CHAISE.x1)
   const dz = Math.max(PIECE_CHAISE.z0 - z, 0, z - PIECE_CHAISE.z1)
   return Math.hypot(dx, dz)

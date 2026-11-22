@@ -5,6 +5,7 @@ import { escalier, Invisible } from '../primitives'
 import { PiecesLibres, type PieceLibre } from './PiecesLibres'
 import type { MateriauxZal } from './materiauxZal'
 import { useInteractif } from '../interaction'
+import { useDecalage } from '../decalage'
 import { useGame } from '../../state/store'
 import { t } from '../../i18n'
 
@@ -24,7 +25,15 @@ const SEGMENTS: [number, number][] = [
   [-22.7, -27.3],
 ]
 // Rangées : bloc ouest et bloc est, de part et d'autre de la bimah
-const RANGEES = [...Array.from({ length: 8 }, (_, i) => 11.4 + i * 1.2), ...Array.from({ length: 6 }, (_, i) => 28.4 + i * 1.2)]
+const RANGEES_OUEST = Array.from({ length: 8 }, (_, i) => 11.4 + i * 1.2)
+const RANGEES_EST = Array.from({ length: 6 }, (_, i) => 28.4 + i * 1.2)
+// Devant le heichal (bloc est) : 2 bancs par rangée au lieu de 4 (Samuel,
+// 22/11/2026) ; on garde les deux segments qui bordent l'allée centrale
+const SEGMENTS_EST: [number, number][] = [SEGMENTS[1], SEGMENTS[2]]
+const BLOCS: [number[], [number, number][]][] = [
+  [RANGEES_OUEST, SEGMENTS],
+  [RANGEES_EST, SEGMENTS_EST],
+]
 
 export type SiegeDef = { id: string; position: Vector3Tuple; rotationY: number; sortie: Vector3Tuple }
 
@@ -63,8 +72,9 @@ export function bancsEtSieges(m: MateriauxZal) {
   const pieces: PieceLibre[] = []
   const colliders: { t: Vector3Tuple; p: Vector3Tuple }[] = []
   const sieges: SiegeDef[] = []
-  for (const rx of RANGEES)
-    for (const [za, zb] of SEGMENTS) {
+  for (const [rangees, segments] of BLOCS)
+  for (const rx of rangees)
+    for (const [za, zb] of segments) {
       pieces.push(...banc(m, rx, za, zb))
       colliders.push({ t: [0.64, 1.0, za - zb], p: [rx - 0.07, S + 0.5, (za + zb) / 2] })
       // Une place assise au bout des bancs qui bordent l'allée centrale
@@ -166,8 +176,12 @@ export function MobilierZal({ m }: { m: MateriauxZal }) {
 }
 
 function Siege({ def }: { def: SiegeDef }) {
+  // Place assise en coordonnées monde (le Zal est décalé par <Deplace>)
+  const d = useDecalage()
   useInteractif(def.id, [def.position[0], def.position[1] + 0.6, def.position[2]], 1.0, () => t('action.asseoir'), () => {
-    useGame.getState().set({ siege: { position: def.position, rotationY: def.rotationY, sortie: def.sortie } })
+    const [px, py, pz] = def.position
+    const [sx, sy, sz] = def.sortie
+    useGame.getState().set({ siege: { position: [px + d, py, pz], rotationY: def.rotationY, sortie: [sx + d, sy, sz] } })
     useGame.getState().notifier('message.leverDebout')
   })
   return null

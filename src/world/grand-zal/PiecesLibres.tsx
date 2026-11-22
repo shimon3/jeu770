@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { CuboidCollider } from '@react-three/rapier'
+import { CollidersMonde } from '../primitives'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { geoBoite, type V3 } from '../primitives'
@@ -53,9 +53,7 @@ export function PiecesLibres({ pieces, ombres = true }: { pieces: PieceLibre[]; 
       {lots.map((l, i) => (
         <mesh key={i} geometry={l.geo} material={l.mat} castShadow={ombres && l.ombre} receiveShadow />
       ))}
-      {colliders.map((c, i) => (
-        <CuboidCollider key={i} args={[c.t[0] / 2, c.t[1] / 2, c.t[2] / 2]} position={c.p} rotation={c.r} />
-      ))}
+      <CollidersMonde colliders={colliders} />
     </>
   )
 }

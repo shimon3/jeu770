@@ -62,8 +62,8 @@ export function GrandZal() {
       <PnjZal id="pnj-balancement-2" position={[2.0, S, -29.4]} rotationY={Math.PI} etat="balancement" parle={false} peau="#b98466" />
       <PnjZal id="pnj-assis-1" position={[13.8, S, -12.0]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#2b1d14" />
       <PnjZal id="pnj-assis-2" position={[17.4, S, -19.5]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#d9b08f" barbe="#8a6a4a" />
-      <PnjZal id="pnj-assis-3" position={[29.6, S, -24.5]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#3d2b1f" />
-      <PnjZal id="pnj-assis-4" position={[32.0, S, -7.0]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#c89a7a" barbe="#555" />
+      <PnjZal id="pnj-assis-3" position={[29.6, S, -18.5]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#3d2b1f" />
+      <PnjZal id="pnj-assis-4" position={[32.0, S, -13.0]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#c89a7a" barbe="#555" />
       <PnjZal
         id="pnj-marcheur-1"
         position={[21.0, S, -3.0]}

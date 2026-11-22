@@ -7,6 +7,7 @@ import { CorpsPnj, type ModelePnj } from './CorpsPnj'
 import { gabaritPnj } from './PnjEnfant'
 import { OmbreSol } from './OmbreSol'
 import { cheminAutorise, pointAutorise } from './routines'
+import { Annule, cheminMonde, useDecalage } from '../world/decalage'
 
 // Petit groupe de PNJ qui discutent ensemble puis se déplacent ensemble.
 // Règle de jeu (Samuel, 12/11/2026) : un PNJ est soit en mouvement, soit
@@ -37,7 +38,19 @@ function hasard(a: number, b: number) {
   return a + Math.random() * (b - a)
 }
 
-export function GroupeDiscussion({ id, y, lieux, membres, rayon }: Props) {
+// Sous un <Deplace> (grand Zal) : lieux donnés dans le repère Zal
+export function GroupeDiscussion(props: Props) {
+  const d = useDecalage()
+  const lieux = useMemo(() => cheminMonde(props.lieux, d) ?? props.lieux, [props.lieux, d])
+  if (d === 0) return <GroupeMonde {...props} />
+  return (
+    <Annule>
+      <GroupeMonde {...props} lieux={lieux} />
+    </Annule>
+  )
+}
+
+function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
   const route = useMemo(() => cheminAutorise(lieux), [lieux])
   const n = membres.length
   const r = rayon ?? (membres.every((m) => m.modele === 'enfant' || m.modele === 'fille') ? 0.55 : 0.75)

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { Vector3Tuple } from 'three'
 import { useGame } from '../state/store'
+import { useDecalage } from './decalage'
 
 // Déclare un objet interactif (touche E). `label` et `action` sont relus à
 // chaque appel via une ref : pas besoin de ré-enregistrer à chaque rendu.
@@ -13,7 +14,10 @@ export function useInteractif(
 ) {
   const ref = useRef({ label, action })
   ref.current = { label, action }
-  const [x, y, z] = position
+  // Sous un <Deplace> (grand Zal) : position donnée dans le repère Zal
+  const d = useDecalage()
+  const [x0, y, z] = position
+  const x = x0 + d
   useEffect(() => {
     const { enregistrer, retirer } = useGame.getState()
     enregistrer({

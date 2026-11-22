@@ -21,6 +21,17 @@
 //
 // Repère identique à dimensions.ts : x vers la droite vu de la rue (est),
 // z vers la rue (sud), y vers le haut, 0 = trottoir.
+//
+// CORRECTION DU 22/11/2026 (photo Google Maps fournie par Samuel, prise du
+// trottoir) : le bâtiment de brique rouge au-dessus du grand Zal est à
+// GAUCHE du 770, pas à droite. Le Zal est DÉPLACÉ tel quel (translation,
+// sans miroir : l'intérieur garde sa disposition, place du Rebbe à droite de
+// l'Aron). Les cotes ci-dessous restent écrites dans le repère d'origine
+// (« repère Zal ») ; x monde = x ci-dessous + DX_ZAL (world/decalage.tsx).
+// Avec -53,6 : salle principale de x -44 à -13,6, pièce de la chaise de
+// -13,3 à -9 (sous le passage entre le 784 et le 770), shalash de -59,6 à
+// -44 (derrière les maisons). ESTIMÉ — choix de jeu.
+export const DX_ZAL = -53.6
 
 export const ZAL = {
   sol: -3.4, // ESTIMÉ — à calibrer

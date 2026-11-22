@@ -11,6 +11,7 @@ import { useGame } from '../state/store'
 import { t } from '../i18n'
 import { demarrerMission, evenementMission, MISSIONS } from '../missions/missions'
 import { cheminAutorise, pointAutorise } from './routines'
+import { Annule, cheminMonde, useDecalage } from '../world/decalage'
 
 // Hassid anonyme et générique (visage lisse, sans traits). Trois usages :
 // - immobile (debout, assis ou en balancement d'étude) ;
@@ -36,7 +37,21 @@ type Props = {
 
 const v = new THREE.Vector3()
 
-export function PnjZal({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false, poussette = false, vitesse = 1.1 }: Props) {
+// Sous un <Deplace> (grand Zal) : position et chemin donnés dans le repère
+// Zal, convertis ici en coordonnées monde
+export function PnjZal(props: Props) {
+  const d = useDecalage()
+  const { position: p, chemin } = props
+  const cheminM = useMemo(() => cheminMonde(chemin, d), [chemin, d])
+  if (d === 0) return <PnjZalMonde {...props} />
+  return (
+    <Annule>
+      <PnjZalMonde {...props} position={[p[0] + d, p[1], p[2]]} chemin={cheminM} />
+    </Annule>
+  )
+}
+
+function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false, poussette = false, vitesse = 1.1 }: Props) {
   const g = gabaritPnj(modele)
   const anim = useRef<Anim>({ etat, vitesse: 0 })
   const groupe = useRef<THREE.Group>(null)

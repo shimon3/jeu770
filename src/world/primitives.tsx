@@ -3,6 +3,7 @@ import { CuboidCollider } from '@react-three/rapier'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { useMateriaux, type Materiaux } from './materiaux'
+import { Annule, posMonde, useDecalage } from './decalage'
 
 export type V3 = [number, number, number]
 type CleMat = { [K in keyof Materiaux]: Materiaux[K] extends THREE.Material ? K : never }[keyof Materiaux]
@@ -75,16 +76,31 @@ export function Pieces({ pieces }: { pieces: Piece[] }) {
       {lots.map((l, i) => (
         <mesh key={i} geometry={l.geo} material={mats[l.cle as CleMat]} castShadow={l.ombre} receiveShadow />
       ))}
-      {colliders.map((c, i) => (
-        <CuboidCollider key={i} args={[c.t[0] / 2, c.t[1] / 2, c.t[2] / 2]} position={c.p} rotation={c.r} />
-      ))}
+      <CollidersMonde colliders={colliders} />
     </>
   )
 }
 
 // Collider seul (limites invisibles, rampes d'escalier)
 export function Invisible({ taille, position, rotation }: { taille: V3; position: V3; rotation?: V3 }) {
-  return <CuboidCollider args={[taille[0] / 2, taille[1] / 2, taille[2] / 2]} position={position} rotation={rotation} />
+  const d = useDecalage()
+  return (
+    <Annule>
+      <CuboidCollider args={[taille[0] / 2, taille[1] / 2, taille[2] / 2]} position={posMonde(position, d)} rotation={rotation} />
+    </Annule>
+  )
+}
+
+// Colliders de boîtes, convertis en coordonnées monde sous un <Deplace>
+export function CollidersMonde({ colliders }: { colliders: { t: V3; p: V3; r?: V3 }[] }) {
+  const d = useDecalage()
+  return (
+    <Annule>
+      {colliders.map((c, i) => (
+        <CuboidCollider key={i} args={[c.t[0] / 2, c.t[1] / 2, c.t[2] / 2]} position={posMonde(c.p, d)} rotation={c.r} />
+      ))}
+    </Annule>
+  )
 }
 
 export type Rect = { x0: number; x1: number; y0: number; y1: number }

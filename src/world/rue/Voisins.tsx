@@ -38,11 +38,13 @@ export function Voisins() {
   const pieces = useMemo(() => {
     const pc: Piece[] = []
     // --- 766 : bibliothèque (à gauche) ---
-    const g = { x0: -32, x1: -9.6, z: 1.5, h: 17.5, prof: 24 }
+    // Placée à DROITE du 770 depuis le 22/11/2026 : le 784-788 (grand Zal)
+    // occupe la gauche (photo Google Maps fournie par Samuel)
+    const g = { x0: 9.6, x1: 40, z: 1.5, h: 17.5, prof: 24 }
     pc.push({ t: [g.x1 - g.x0, g.h, g.prof], p: [(g.x0 + g.x1) / 2, g.h / 2 - 0.2, g.z - g.prof / 2], m: 'briqueVoisinClaire', col: true })
     for (const y of [4.4, 7.6, 10.8, 14.0]) pc.push({ t: [g.x1 - g.x0, 0.25, 0.12], p: [(g.x0 + g.x1) / 2, y - 0.3, g.z + 0.06], m: 'pierre' })
     pc.push({ t: [g.x1 - g.x0 + 0.4, 0.6, 0.5], p: [(g.x0 + g.x1) / 2, g.h - 0.2, g.z + 0.1], m: 'pierre' })
-    pc.push(...grilleFenetres(g.x0 + 0.5, g.x1 - 0.5, g.z, [1.6, 4.8, 8.0, 11.2, 14.4], 2.1, 6, 'pierre', true))
+    pc.push(...grilleFenetres(g.x0 + 0.5, g.x1 - 0.5, g.z, [1.6, 4.8, 8.0, 11.2, 14.4], 2.1, 8, 'pierre', true))
     // Détails ajoutés le 18/11/2026 (génériques, NON relevés sur photo) :
     // soubassement en pierre, croisillons des fenêtres (grilleFenetres),
     // corniche à consoles,

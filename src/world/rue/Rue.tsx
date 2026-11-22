@@ -2,7 +2,7 @@ import { PnjZal } from '../../npc/PnjZal'
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { ABORDS } from '../../config/dimensions'
-import { COURETTE, ENTREE, ZAL } from '../../config/grandZal'
+import { COURETTE, DX_ZAL, ENTREE, ZAL } from '../../config/grandZal'
 import { Invisible, Pieces, type Piece, type V3 } from '../primitives'
 import { useInteractif } from '../interaction'
 import { useMateriaux } from '../materiaux'
@@ -71,8 +71,8 @@ function lampadaire(x: number, z: number): Piece[] {
 const ARBRES = (() => {
   const platanes: { x: number; z: number; h: number }[] = []
   const feviers: { x: number; z: number; h: number }[] = []
-  for (const x of [-64, -50, -26, -16, 12, 27]) platanes.push({ x, z: Z_CONTRE - 0.9, h: 8 })
-  for (const x of [-57, -43, -36, -21, 21.5, 36]) feviers.push({ x, z: Z_CONTRE - 0.9, h: 7.5 })
+  for (const x of [-64, -50, 26, 16, -12, -27]) platanes.push({ x, z: Z_CONTRE - 0.9, h: 8 })
+  for (const x of [-57, -43, 36, 21, -21.5, -36]) feviers.push({ x, z: Z_CONTRE - 0.9, h: 7.5 })
   for (let x = -80; x <= 80; x += 10) (x % 20 === 0 ? feviers : platanes).push({ x: x + 3, z: Z_FIN + 15, h: x % 20 === 0 ? 8 : 8.5 })
   for (let x = -84; x <= 84; x += 9) if (Math.abs(x + 2) >= 9) platanes.push({ x: x + 2, z: (Z_TERRE + Z_CHAUSSEE) / 2, h: 9 })
   for (let x = -80; x <= 80; x += 11) platanes.push({ x, z: Z_FIN + 3, h: 8 })
@@ -131,16 +131,22 @@ export function Rue() {
     pc.push({ t: [L, 0.4, A.largeurContreAllee], p: [0, -0.2 - A.bordure, (Z_CONTRE + Z_TERRE) / 2], m: 'asphalte', col: true })
     pc.push({ t: [L, 0.4, A.largeurTerrePlein], p: [0, -0.2, (Z_TERRE + Z_CHAUSSEE) / 2], m: 'trottoir', col: true })
     pc.push({ t: [L, 0.4, A.largeurChaussee], p: [0, -0.2 - A.bordure, (Z_CHAUSSEE + Z_FIN) / 2], m: 'asphalte', col: true })
-    // Sol devant les parcelles voisines. À droite (784-788), il est percé
-    // pour la courette anglaise frontale de l'escalier du grand Zal et
-    // s'arrête à la façade (le Zal est dessous).
-    pc.push({ t: [L / 2 - 9.4, 0.4, 12], p: [-(9.4 + (L / 2 - 9.4) / 2), -0.2, Z_TROTTOIR - 6], m: 'trottoir', col: true })
-    const solDroit = (x0: number, x1: number, z0: number, z1: number) =>
+    // Sol devant les parcelles voisines. À droite (bibliothèque 766), sol
+    // plein. À gauche (784-788, déplacé le 22/11/2026 de DX_ZAL), il est
+    // percé pour la courette anglaise frontale de l'escalier du grand Zal et
+    // s'arrête à la façade au-dessus du Zal. Le sol couvre la pièce de la
+    // chaise (passage entre le 784 et le 770) et le shalash (derrière les
+    // maisons).
+    const sol = (x0: number, x1: number, z0: number, z1: number) =>
       pc.push({ t: [x1 - x0, 0.4, z1 - z0], p: [(x0 + x1) / 2, -0.2, (z0 + z1) / 2], m: 'trottoir', col: true })
-    solDroit(9.4, L / 2, COURETTE.zHaut, Z_TROTTOIR)
-    solDroit(9.4, ENTREE.x0, ENTREE.z0, COURETTE.zHaut)
-    solDroit(ENTREE.x1, L / 2, ENTREE.z0, COURETTE.zHaut)
-    solDroit(ZAL.x1 + 0.3, L / 2, Z_TROTTOIR - 12, ENTREE.z0)
+    sol(9.4, L / 2, Z_TROTTOIR - 12, Z_TROTTOIR)
+    const zx0 = ZAL.x0 + DX_ZAL
+    const zx1 = ZAL.x1 + DX_ZAL
+    sol(-L / 2, -9.4, COURETTE.zHaut, Z_TROTTOIR)
+    sol(-L / 2, ENTREE.x0 + DX_ZAL, ENTREE.z0, COURETTE.zHaut)
+    sol(ENTREE.x1 + DX_ZAL, -9.4, ENTREE.z0, COURETTE.zHaut)
+    sol(-L / 2, zx0 - 0.3, Z_TROTTOIR - 12, ENTREE.z0)
+    sol(zx1 + 0.3, -9.4, Z_TROTTOIR - 12, ENTREE.z0)
     // Bordures de granit
     for (const z of [Z_CONTRE, Z_TERRE, Z_CHAUSSEE]) pc.push({ t: [L, 0.3, 0.18], p: [0, -0.12, z], m: 'pierre' })
     // Au-delà : terre-plein, contre-allée et immeubles du côté sud (décor)
@@ -165,7 +171,7 @@ export function Rue() {
     }
     // Côté nord, à l'ouest du 766 : rangée de maisons à perron jouable
     // (courette et grille devant), puis immeuble d'angle
-    pc.push(...rangee(X_OUEST - 4, -32, 1.0, 1, { jardin: 4.6, graine: 3 }))
+    pc.push(...rangee(X_OUEST - 4, -44.4, 1.0, 1, { jardin: 4.6, graine: 3 }))
     pc.push(...immeubleAppartements({ x0: -L / 2, largeur: X_OUEST - 4 + L / 2, zF: 1.0, sens: 1, style: 'briqueRouge', etages: 6, ombre: false, graine: 17 }))
     // Arbres d'alignement : bord du trottoir et terre-plein. Choix de jeu
     // (photos 1 et 2 fournies par Samuel) : l'arbre qui, en réalité, masque
@@ -175,7 +181,7 @@ export function Rue() {
     // vue sur la descente frontale du grand Zal.
     // (arbres : modèles Meshy en instances, voir ARBRES plus bas)
     // Lampadaires
-    for (const x of [-60, -47, -14, -4.5, 6.5, 17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
+    for (const x of [-60, -47, 14, 4.5, -6.5, -17]) pc.push(...lampadaire(x, Z_CONTRE - 0.45))
     // (pas de lampadaire en x 0 : la hanoukia est dans l'axe du 770)
     for (const x of [-60, -40, -20, 11, 20, 40, 60]) pc.push(...lampadaire(x, Z_TERRE + 0.8))
     // Voitures garées le long de la contre-allée (aucune derrière le point de départ)

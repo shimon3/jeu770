@@ -8,7 +8,7 @@ export type PointCollecte = { id: string; p: [number, number, number]; rotationY
 export const COLLECTES: Record<string, PointCollecte[]> = {
   // Pièces de tsedaka égarées sur le trottoir (ramassées en passant dessus)
   piece: [
-    { id: 'piece-1', p: [-34, 0.9, 5.2] },
+    { id: 'piece-1', p: [-39, 0.9, 5.2] }, // hors de la courette du Zal (22/11/2026)
     { id: 'piece-2', p: [-26, 0.9, 7.4] },
     { id: 'piece-3', p: [-18, 0.9, 4.8] },
     { id: 'piece-4', p: [-12, 0.9, 7.0] },
@@ -20,7 +20,7 @@ export const COLLECTES: Record<string, PointCollecte[]> = {
   // Panneaux d'affichage où coller l'annonce du farbrenguen (touche E)
   affiche: [
     { id: 'affiche-1', p: [-15, 0, 3.4] },
-    { id: 'affiche-2', p: [-31, 0, 3.4] },
+    { id: 'affiche-2', p: [-40, 0, 3.4] }, // hors de la courette du Zal (22/11/2026)
     { id: 'affiche-3', p: [31, 0, 3.4] },
   ],
 }

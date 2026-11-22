@@ -174,10 +174,6 @@ export default function App() {
           gl={{ antialias: true, powerPreference: 'high-performance' }}
           camera={{ fov: 62, near: 0.05, far: 400, position: [0, 3, 16] }}
           onCreated={({ gl }) => {
-            // En production, ne pas relire le journal de compilation de chaque
-            // shader : cette lecture bloque le jeu 20 à 30 s au démarrage sur
-            // carte graphique intégrée (mesuré le 22/11/2026)
-            gl.debug.checkShaderErrors = import.meta.env.DEV
             gl.toneMapping = THREE.ACESFilmicToneMapping
             gl.toneMappingExposure = 1.0
           }}
