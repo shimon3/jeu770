@@ -36,8 +36,21 @@ function lireNiveau(): Niveau {
   }
 }
 
+// Plafond de pixels dessinés (22/11/2026) : sur un grand écran (2560 px de
+// large, résolution 1,5), la carte graphique intégrée dessinait 3 à 5 millions
+// de pixels par image et le jeu tombait à 1-3 images/s. On vise au plus
+// ~2 millions de pixels (≈ 1920×1080) en automatique, ~1,3 million en rapide.
+const PIXELS_MAX: Record<Niveau, number> = { auto: 2.1e6, haute: 3.7e6, equilibree: 2.1e6, rapide: 1.3e6 }
+
+function plafondPixels(n: Niveau) {
+  if (typeof window === 'undefined') return Infinity
+  const surface = Math.max(1, window.innerWidth * window.innerHeight)
+  return Math.sqrt(PIXELS_MAX[n] / surface)
+}
+
 function dprDe(n: Niveau) {
-  return Math.min(ecran, n === 'haute' ? 1.5 : n === 'rapide' ? 1 : DPR_MAX)
+  const voulu = Math.min(ecran, n === 'haute' ? 1.5 : n === 'rapide' ? 1 : DPR_MAX)
+  return Math.max(0.5, +Math.min(voulu, plafondPixels(n)).toFixed(2))
 }
 
 type Qualite = {
@@ -71,12 +84,21 @@ export const useQualite = create<Qualite>((set) => ({
     set((s) => {
       // En automatique, on coupe d'abord les effets : c'est le plus gros gain
       if (s.niveau === 'auto' && s.effets) return { effets: false }
-      return { dpr: Math.max(DPR_MIN, +(s.dpr - 0.25).toFixed(2)), ombresBasses: true }
+      return { dpr: Math.max(Math.min(DPR_MIN, s.dpr), +(s.dpr - 0.25).toFixed(2)), ombresBasses: true }
     }),
   monter: () =>
     set((s) => {
       const max = dprDe(s.niveau)
       return { dpr: Math.min(max, +(s.dpr + 0.25).toFixed(2)), ombresBasses: s.niveau === 'rapide' || s.dpr + 0.25 < max }
     }),
-  minimum: () => set((s) => ({ dpr: DPR_MIN, ombresBasses: true, effets: s.niveau === 'haute' })),
+  minimum: () => set((s) => ({ dpr: Math.min(DPR_MIN, s.dpr), ombresBasses: true, effets: s.niveau === 'haute' })),
 }))
+
+// Fenêtre redimensionnée (plein écran, écran externe) : le plafond suit
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', () => {
+    const s = useQualite.getState()
+    const max = dprDe(s.niveau)
+    if (s.dpr > max) useQualite.setState({ dpr: max })
+  })
+}
