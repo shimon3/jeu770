@@ -12,7 +12,7 @@ export type Panneau =
   | { type: 'journal' }
   | { type: 'plan' }
   | { type: 'message'; cle: string }
-  | { type: 'dialogue'; nomCle: string; cle: string }
+  | { type: 'dialogue'; nomCle: string; cle: string; mission?: string } // mission : fiche de départ (22/11/2026)
   | { type: 'bibliotheque' }
   | { type: 'magasin' }
   | { type: 'boutique'; id: string }

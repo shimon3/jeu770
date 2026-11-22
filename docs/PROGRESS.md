@@ -1,5 +1,27 @@
 # Progression
 
+## Grand Zal à gauche du 770, crédits, missions plus claires, performance — 22 novembre 2026 (branche `inversion-zal`)
+
+### Fait
+- **Performance grand écran** : nombre de pixels dessinés plafonné selon la taille de la fenêtre (`config/qualite.ts`) ; sur un écran de 2560 px, 2048 px de large au lieu de 3200. La coupure de la vérification des shaders a été annulée : elle vidait l'affichage dans le grand Zal.
+- **Grand Zal et 784-788 à GAUCHE du 770** (photo Google Maps fournie par Samuel) : déplacés tels quels, sans miroir (`world/decalage.tsx`, `DX_ZAL = -53,6` dans `config/grandZal.ts`). L'intérieur ne change pas : place du Rebbe à droite de l'Aron. Collisions, portes, PNJ, places assises et interactions convertis en coordonnées monde.
+- **Bâtiment 784-788 refait d'après la photo** : 4 niveaux de brique rouge, toit plat, grande corniche sombre à consoles, encadrements de pierre blanche (cintrés au dernier niveau), chaîne centrale.
+- **Bibliothèque 766 à droite** du 770 (x 9,6 à 40). Rangée de maisons arrêtée à x -44,4. Panneau indicateur, chalia'h, pièces, affiches, livraisons, radar et plan (M) suivis.
+- **Devant le heichal** : 2 bancs par rangée au lieu de 4 (bloc est, segments de l'allée centrale gardés).
+- **Crédits** : « Un jeu de Shmouel Bentouza · 0587967455 » à la fin du générique et dans le menu Pause (lien d'appel).
+- **Missions plus claires** : fiche de départ (étapes numérotées, récompense, mots à connaître), confirmation « ✓ Étape n/N réussie. Suite : … », glossaire FR/HE (`missions/glossaire.ts`).
+
+### Vérifié (Chrome réel, ordinateur de Samuel, build de production local)
+- `tsc -b` et `vite build` sans erreur ; `verifier-missions.mjs` : 23/23 (positions mises à jour) ; `verifier-promenade.mjs` : 10/10.
+- Captures : rue (Zal à gauche), descente du Zal, intérieur face à l'Aron et face au shalash, fiche de mission, crédits.
+
+### Non vérifié / reste
+- Images du générique (`public/assets/generique*.webp`) : prises avant le déplacement, à refaire (`tools/captures/generique-plans.mjs`).
+- Qualité « Haute » : après une téléportation dans le Zal, l'image peut rester vide (défaut déjà présent avant ces changements).
+- Shalash : avec le déplacement, il n'est plus derrière le 770 mais derrière les maisons (choix de jeu, demandé : déplacer sans miroir).
+- Textes hébreux du glossaire et des crédits : à relire par Samuel.
+- Policier et touriste : immobiles, sans rôle (à faire).
+
 ## Ville agrandie, foule, hanoukia, rendu, générique — 18-19 novembre 2026 (branche `ville-foule-hanoukia`)
 
 ### Fait

@@ -4,6 +4,7 @@ import { useGame } from '../state/store'
 import { Plan } from './Plan'
 import { rang } from '../missions/guide'
 import { MISSIONS } from '../missions/missions'
+import { termesDe } from '../missions/glossaire'
 import tefilot from '../config/tefilot.json'
 import bibliotheque from '../config/bibliotheque.json'
 import { ARTICLES, acheter } from '../missions/boutique'
@@ -260,7 +261,12 @@ export function Panneaux() {
       break
     case 'dialogue':
       titre = t(panneau.nomCle)
-      corps = <p className="dialogue">« {t(panneau.cle)} »</p>
+      corps = (
+        <>
+          <p className="dialogue">« {t(panneau.cle)} »</p>
+          {panneau.mission && <FicheMission id={panneau.mission} />}
+        </>
+      )
       break
   }
 
@@ -271,6 +277,44 @@ export function Panneaux() {
         <div className="panneau-corps">{corps}</div>
         <button onClick={fermer}>{t('panneau.fermer')}</button>
       </div>
+    </div>
+  )
+}
+
+// Fiche de départ d'une mission (22/11/2026) : ce qu'il faut faire, étape par
+// étape, ce que l'on gagne, et les mots à connaître (glossaire)
+function FicheMission({ id }: { id: string }) {
+  const t = useT()
+  const m = MISSIONS.find((x) => x.id === id)
+  if (!m) return null
+  const textes = [t(`mission.${m.id}.debut`), t(m.description), ...m.etapes.map((e) => t(e.texte))]
+  const termes = termesDe(textes.join(' '), t)
+  return (
+    <div className="fiche-mission">
+      <p className="fiche-titre">
+        {t('fiche.nouvelle')} : <strong>{t(m.titre)}</strong>
+      </p>
+      <p className="fiche-sous-titre">{t('fiche.aFaire')}</p>
+      <ol>
+        {m.etapes.map((e, i) => (
+          <li key={i}>{t(e.texte)}</li>
+        ))}
+      </ol>
+      <p className="fiche-recompense">{t('fiche.recompense', { n: String(m.recompense ?? 1) })}</p>
+      {termes.length > 0 && (
+        <>
+          <p className="fiche-sous-titre">{t('fiche.mots')}</p>
+          <dl className="fiche-glossaire">
+            {termes.map((g) => (
+              <div key={g.mot}>
+                <dt>{g.mot}</dt>
+                <dd>{g.def}</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
+      <p className="fiche-aide">{t('fiche.aide')}</p>
     </div>
   )
 }

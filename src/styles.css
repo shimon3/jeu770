@@ -1156,3 +1156,58 @@ html.mode-tactile .hud-dollars {
 .generique-credits {
   margin-top: 10px;
 }
+
+/* Fiche de départ des missions (22/11/2026) */
+.fiche-mission {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(232, 185, 90, 0.45);
+  border-radius: 10px;
+  background: rgba(232, 185, 90, 0.08);
+  text-align: start;
+}
+.fiche-mission p {
+  margin: 4px 0;
+}
+.fiche-mission .fiche-titre {
+  color: #e8b95a;
+}
+.fiche-mission .fiche-sous-titre {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+.fiche-mission ol {
+  margin: 4px 0;
+  padding-inline-start: 22px;
+}
+.fiche-mission li {
+  margin: 3px 0;
+}
+.fiche-mission .fiche-recompense {
+  font-weight: 600;
+}
+.fiche-glossaire {
+  margin: 4px 0;
+}
+.fiche-glossaire div {
+  margin: 3px 0;
+}
+.fiche-glossaire dt {
+  display: inline;
+  font-weight: 600;
+}
+.fiche-glossaire dt::after {
+  content: ' : ';
+}
+.fiche-glossaire dd {
+  display: inline;
+  margin: 0;
+}
+.fiche-mission .fiche-aide {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}

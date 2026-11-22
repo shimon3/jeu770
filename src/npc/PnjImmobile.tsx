@@ -21,12 +21,16 @@ export function PnjImmobile({ id, position, rotationY, peau = '#c99878', barbe =
   useInteractif(id, [position[0], position[1] + g.hauteurBulle, position[2]], 1.8, () => t('action.parler'), () => {
     const st = useGame.getState()
     let cle = 'pnj.debut'
+    let nouvelle: string | undefined
     if (missionDonnee) {
       const etat = st.missions[missionDonnee.id]
-      if (!etat) demarrerMission(missionDonnee.id)
+      if (!etat) {
+        demarrerMission(missionDonnee.id)
+        nouvelle = missionDonnee.id
+      }
       else cle = etat.etat === 'terminee' ? 'pnj.fin' : 'pnj.enCours'
     }
-    useGame.getState().set({ panneau: { type: 'dialogue', nomCle: 'pnj.nom', cle } })
+    useGame.getState().set({ panneau: { type: 'dialogue', nomCle: 'pnj.nom', cle, mission: nouvelle } })
   })
 
   return (

@@ -75,7 +75,13 @@ export function evenementMission(type: Etape['type'], cible: string) {
       gagnes += m.recompense ?? RECOMPENSE_MISSION
     } else {
       suivant[id] = { etat: 'active', etape: etat.etape + 1 }
-      s.notifier('mission.etape')
+      // Confirmation claire (22/11/2026) : numéro de l'étape réussie et
+      // objectif suivant, verbe + lieu
+      s.notifier('mission.etapeReussie', {
+        n: String(etat.etape + 1),
+        total: String(m.etapes.length),
+        suite: t(m.etapes[etat.etape + 1].texte),
+      })
     }
   }
   if (change) {

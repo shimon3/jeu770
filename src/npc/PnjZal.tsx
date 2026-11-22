@@ -80,15 +80,17 @@ function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = 
       const miennes = MISSIONS.filter((m) => m.donneur === id)
       const enCours = miennes.find((m) => apres[m.id]?.etat === 'active')
       let cle = repliqueCle
+      let nouvelle: string | undefined
       if (enCours) cle = `mission.${enCours.id}.rappel`
       else {
         const suivante = miennes.find((m) => !apres[m.id])
         if (suivante) {
           demarrerMission(suivante.id)
           cle = `mission.${suivante.id}.debut`
+          nouvelle = suivante.id
         } else if (miennes.length) cle = avance ? `mission.${miennes[miennes.length - 1].id}.fin` : repliqueCle
       }
-      useGame.getState().set({ panneau: { type: 'dialogue', nomCle, cle } })
+      useGame.getState().set({ panneau: { type: 'dialogue', nomCle, cle, mission: nouvelle } })
     },
   )
 
