@@ -25,7 +25,7 @@ const attendre = async (texte, test, ms = 15000) => {
 }
 const e = async () => { await p.keyboard.press('KeyE'); await p.waitForTimeout(300) }
 const parlerChaliah = async () => {
-  await aller(13, 0.9, 6.9)
+  await aller(-22.5, 0.9, 6.9)
   await attendre('chalia\'h à portée', (s) => s.cible === 'pnj-chaliah')
   await e()
 }
@@ -35,7 +35,7 @@ await parlerChaliah()
 await attendre('mission pièces démarrée', (s) => s.missions['pieces-tsedaka']?.etat === 'active' && s.panneau === 'dialogue')
 await p.screenshot({ path: `${dossier}/1-dialogue.png` })
 await e()
-const pieces = [[-34, 5.2], [-26, 7.4], [-18, 4.8], [-12, 7.0], [11, 8.9], [15.5, 4.6], [28, 6.8], [35, 5.0]]
+const pieces = [[-39, 5.2], [-26, 7.4], [-18, 4.8], [-12, 7.0], [11, 8.9], [15.5, 4.6], [28, 6.8], [35, 5.0]]
 await aller(pieces[0][0] + 4, 0.9, pieces[0][1] + 3)
 await p.waitForTimeout(800)
 await p.screenshot({ path: `${dossier}/2-piece-balise.png` })
@@ -54,7 +54,7 @@ await attendre('mission pièces terminée (+5 $), affiches démarrée', (s) => s
 await e()
 
 // 2. Affiches
-for (const [i, [x, z]] of [[-15, 3.4], [-31, 3.4], [31, 3.4]].entries()) {
+for (const [i, [x, z]] of [[-15, 3.4], [-40, 3.4], [31, 3.4]].entries()) {
   await aller(x, 0.9, z + 1.2)
   await attendre(`panneau ${i + 1} à portée`, (s) => s.cible === `affiche-${i + 1}`)
   await e()

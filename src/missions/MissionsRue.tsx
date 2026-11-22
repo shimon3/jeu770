@@ -224,7 +224,7 @@ export function MissionsRue() {
   }, [inventaire])
   return (
     <>
-      <PnjZal id="pnj-chaliah" position={[-13, 0, 5.6]} rotationY={0} nomCle="chaliah.nom" repliqueCle="chaliah.repos" peau="#d6a586" barbe="#3a2a1e" />
+      <PnjZal id="pnj-chaliah" position={[-22.5, 0, 5.6]} rotationY={0} nomCle="chaliah.nom" repliqueCle="chaliah.repos" peau="#d6a586" barbe="#3a2a1e" />
       <Pieces />
       <Affiches />
       <Balise />
