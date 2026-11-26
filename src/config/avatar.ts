@@ -6,10 +6,11 @@
 // 'ancien' : avatar procédural d'origine (src/player/Avatar.tsx)
 // Retour immédiat : passer AVATAR_JOUEUR à 'v6' ou 'ancien', ou ouvrir le jeu
 // avec ?avatar=v6, ?avatar=v6sym ou ?avatar=ancien dans l'adresse.
-export type ChoixAvatar = 'v6' | 'v6sym' | 'ancien'
-export type ChoixGlb = Exclude<ChoixAvatar, 'ancien'>
+// 'meshy'  : nouveau personnage principal Meshy (26/11/2026), distinct des PNJ
+export type ChoixAvatar = 'v6' | 'v6sym' | 'ancien' | 'meshy'
+export type ChoixGlb = Exclude<ChoixAvatar, 'ancien' | 'meshy'>
 
-export const AVATAR_JOUEUR: ChoixAvatar = 'v6sym'
+export const AVATAR_JOUEUR: ChoixAvatar = 'meshy'
 
 export const URL_AVATAR: Record<ChoixGlb, string> = {
   v6: '/models/hasidic_man_v6.glb',
@@ -108,7 +109,7 @@ export function pnjModeleChoisi(): ChoixPnj {
 export function avatarChoisi(): ChoixAvatar {
   try {
     const p = new URLSearchParams(window.location.search).get('avatar')
-    if (p === 'ancien' || p === 'v6' || p === 'v6sym') return p
+    if (p === 'ancien' || p === 'v6' || p === 'v6sym' || p === 'meshy') return p
   } catch {
     // adresse illisible : réglage par défaut
   }

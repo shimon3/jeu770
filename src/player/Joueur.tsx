@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { OmbreSol } from '../npc/OmbreSol'
 import { Avatar, type Anim } from './Avatar'
 import { AvatarV6 } from './AvatarV6'
+import { AvatarMeshy } from './AvatarMeshy'
 import { avatarChoisi } from '../config/avatar'
 import { glissementCamera, joystick, touche } from './entrees'
 import { joueur, useGame } from '../state/store'
@@ -340,7 +341,7 @@ export function Joueur() {
       <RigidBody ref={corps} type="kinematicPosition" colliders={false} position={depart.position} enabledRotations={[false, false, false]}>
         <CapsuleCollider args={[DEMI, RAYON]} />
       </RigidBody>
-      <group ref={avatar}>{choixAvatar === 'ancien' ? <Avatar anim={anim} /> : <AvatarV6 anim={anim} choix={choixAvatar} />}
+      <group ref={avatar}>{choixAvatar === 'ancien' ? <Avatar anim={anim} /> : choixAvatar === 'meshy' ? <AvatarMeshy anim={anim} /> : <AvatarV6 anim={anim} choix={choixAvatar} />}
         <OmbreSol rayon={0.42} />
       </group>
     </>

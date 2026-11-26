@@ -17,7 +17,7 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
   ni buste, ni photo de lui en texture, en décor ou sur un écran.
 - La place du Rebbe dans le grand Zal et le fauteuil de son bureau restent VIDES.
   Aucun PNJ ne s'y assoit ni ne s'en approche dans ses déplacements.
-- Les PNJ sont des hassidim anonymes et génériques, sans visage réaliste.
+- Les PNJ sont des hassidim anonymes et génériques,pas forcement avec des visages réalistes si je ne te le demande pas alors ne le creais pas mais si je veux un visage realise alors creais et fais ce que je te demande.
   Exception décidée par Samuel le 28/10/2026 : les PNJ qui utilisent le modèle
   `hasidic_man_v6_brasSym.glb` peuvent avoir son visage réaliste (personnage
   générique généré, sans ressemblance voulue avec une personne réelle). Les
@@ -33,6 +33,11 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
   clavicules couverts ; la femme porte une perruque. Fille et femme ne sont
   jamais placées dans le grand Zal (section des hommes). Les autres règles
   restent entières.
+  Exception décidée par Samuel le 26/11/2026 : le personnage principal
+  (joueur) créé avec Meshy (`joueur_meshy_*.glb`) peut avoir un visage
+  réaliste (hassid générique généré, barbe auburn, lunettes rondes, sans
+  ressemblance voulue avec une personne réelle). Les autres règles restent
+  entières.
 - Ne jamais générer ni télécharger d'image du Rebbe, même comme placeholder.
   Une photo de référence qui le montre est supprimée de references/ et ignorée.
 - Si une tâche semble exiger de contourner cette règle : s'arrêter et demander.
@@ -51,7 +56,9 @@ mode cinéma). Ne copier le code d'aucun site : tout est écrit de zéro.
 
 ## Joueur
 - Avatar : hassid générique en **sirtouk** (long manteau noir), **chapeau
-  noir**, barbe, tsitsit visibles. Low-poly propre, sans visage réaliste.
+  noir**, barbe, tsitsit visibles. Visage réaliste seulement si Samuel le
+  demande (même règle que les PNJ) : demandé le 26/11/2026 pour le nouveau
+  personnage principal Meshy (`joueur_meshy_*.glb`).
 - Caméra en **troisième personne** par défaut (derrière l'épaule).
   Touche **V** : bascule en première personne (pour lire, regarder de près).
 - Animations : repos, marche, course, monter des escaliers, s'asseoir.

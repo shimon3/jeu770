@@ -341,6 +341,7 @@ export function AvatarV6({ anim, choix = 'v6' }: { anim: MutableRefObject<Anim>;
 
 // Préchargement du seul GLB choisi
 const choixInitial = avatarChoisi()
-if (choixInitial !== 'ancien') {
+if (choixInitial === 'meshy') useGLTF.preload('/models/joueur_meshy_v1.glb', '/draco/')
+else if (choixInitial !== 'ancien') {
   useGLTF.preload(choixInitial === 'v6sym' ? URL_AVATAR_JOUEUR_V6SYM : URL_AVATAR[choixInitial], '/draco/')
 }
