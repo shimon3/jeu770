@@ -88,6 +88,20 @@ export function AronKodesh({ m }: { m: MateriauxZal }) {
     pc.push({ t: [0.04, 0.05, lc - 0.08], p: [xF - 0.06, yP + 0.02, z], mat: m.or, ombre: false })
     pc.push({ geo: plan(lc + 0.1, 0.42), p: [xF - 0.1, yP + hp - 0.08, z], r: face, mat: cantonniere })
     pc.push({ geo: new THREE.CylinderGeometry(0.022, 0.022, lc + 0.3, 8), p: [xF - 0.1, yP + hp + 0.14, z], r: [Math.PI / 2, 0, 0], mat: m.or, ombre: false })
+    // Amud (pupitre de l'officiant) à droite de l'Aron vu de la salle (+z),
+    // contre le mur : meuble marqueté de losanges, plateau incliné couvert
+    // d'un tissu bordeaux, plaque « chiviti » argentée encadrée au-dessus
+    // (photos anash.org fournies par Samuel, 26/11/2026). Entre l'Aron et
+    // l'estrade de la place vide, sans y toucher. Cotes ESTIMÉES.
+    const za = z + L / 2 + 0.5
+    const xa = xMur - 0.4
+    pc.push({ t: [0.62, 1.05, 0.72], p: [xa, y0 + 0.525, za], mat: m.boisFonce, col: true })
+    pc.push({ geo: plan(0.62, 0.86), p: [xa - 0.315, y0 + 0.53, za], r: face, mat: m.damierAmud, ombre: false })
+    pc.push({ t: [0.7, 0.05, 0.8], p: [xa - 0.02, y0 + 1.1, za], r: [0, 0, 0.18], mat: m.bordeaux })
+    pc.push({ t: [0.06, 0.95, 0.68], p: [xMur - 0.06, y0 + 1.75, za], mat: m.boisFonce })
+    pc.push({ geo: plan(0.54, 0.8), p: [xMur - 0.095, y0 + 1.75, za], r: face, mat: m.plaqueArgent, ombre: false })
+    pc.push({ t: [0.03, 0.05, 0.34], p: [xMur - 0.11, y0 + 1.72, za - 0.07], r: [0.9, 0, 0], mat: m.metal, ombre: false })
+    pc.push({ t: [0.03, 0.05, 0.34], p: [xMur - 0.11, y0 + 1.72, za + 0.07], r: [-0.9, 0, 0], mat: m.metal, ombre: false })
     return pc
   }, [m, xMur, z, L, H, P, S])
 

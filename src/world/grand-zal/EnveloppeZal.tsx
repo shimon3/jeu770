@@ -92,12 +92,15 @@ export function EnveloppeZal({ m }: { m: MateriauxZal }) {
     for (const x of COLONNES.xs)
       for (const z of COLONNES.zs) {
         pc.push({ t: [c, P - S, c], p: [x, yM, z], mat: m.peintureBlanche, col: true })
+        // Pied évasé blanc puis bande sombre au sol (photos anash.org 2026)
         pc.push({ t: [c + 0.18, 0.45, c + 0.18], p: [x, S + 0.225, z], mat: m.peintureBlanche })
+        pc.push({ t: [c + 0.22, 0.2, c + 0.22], p: [x, S + 0.1, z], mat: m.socleColonne })
       }
     // Les trois grands piliers des anciennes limites
     for (const [x, z] of GRANDS_PILIERS) {
       pc.push({ t: [0.9, P - S, 0.9], p: [x, yM, z], mat: m.peintureBlanche, col: true })
       pc.push({ t: [1.1, 0.5, 1.1], p: [x, S + 0.25, z], mat: m.peintureBlanche })
+      pc.push({ t: [1.14, 0.22, 1.14], p: [x, S + 0.11, z], mat: m.socleColonne })
     }
     return pc
   }, [m])

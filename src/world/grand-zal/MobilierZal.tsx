@@ -94,15 +94,15 @@ function tableLongue(m: MateriauxZal, tx: number, za: number, zb: number, cle: n
   const pieces: PieceLibre[] = [
     // Plateau, ceinture, pieds en panneaux
     { t: [0.82, 0.05, L], p: [tx, S + 0.76, zc], mat: m.bancs },
-    { t: [0.05, 0.12, L - 0.2], p: [tx, S + 0.67, zc], mat: m.boisFonce },
+    { t: [0.05, 0.12, L - 0.2], p: [tx, S + 0.67, zc], mat: m.boisMeuble },
   ]
-  for (const z of [za - 0.12, zb + 0.12, ...inter]) pieces.push({ t: [0.66, 0.72, 0.06], p: [tx, S + 0.37, z], mat: m.boisFonce })
+  for (const z of [za - 0.12, zb + 0.12, ...inter]) pieces.push({ t: [0.66, 0.72, 0.06], p: [tx, S + 0.37, z], mat: m.boisMeuble })
   // Un banc de chaque côté de la table
   for (const s of [-1, 1]) {
     const bx = tx + s * ECART_BANC
     pieces.push({ t: [0.36, 0.06, L], p: [bx, S + 0.45, zc], mat: m.bancs })
-    pieces.push({ t: [0.04, 0.1, L], p: [bx + s * 0.16, S + 0.39, zc], mat: m.boisFonce })
-    for (const z of [za - 0.15, zb + 0.15, ...inter]) pieces.push({ t: [0.3, 0.42, 0.06], p: [bx, S + 0.21, z], mat: m.boisFonce })
+    pieces.push({ t: [0.04, 0.1, L], p: [bx + s * 0.16, S + 0.39, zc], mat: m.boisMeuble })
+    for (const z of [za - 0.15, zb + 0.15, ...inter]) pieces.push({ t: [0.3, 0.42, 0.06], p: [bx, S + 0.21, z], mat: m.boisMeuble })
   }
   pieces.push(...livresSurTable(tx, S + 0.785, za, zb, cle))
   return pieces
@@ -145,16 +145,16 @@ export const TABLES_SHALASH: { id: string; x: number; z: number }[] = [
 function tableEtBancs(m: MateriauxZal, x: number, z: number): { pieces: PieceLibre[]; sieges: SiegeDef[] } {
   const pieces: PieceLibre[] = [
     { t: [3.0, 0.05, 0.9], p: [x, S + 0.76, z], mat: m.bancs, col: true },
-    { t: [2.8, 0.7, 0.06], p: [x, S + 0.38, z], mat: m.boisFonce },
+    { t: [2.8, 0.7, 0.06], p: [x, S + 0.38, z], mat: m.boisMeuble },
   ]
-  for (const dx of [-1.4, 1.4]) pieces.push({ t: [0.06, 0.74, 0.8], p: [x + dx, S + 0.37, z], mat: m.boisFonce, col: true })
+  for (const dx of [-1.4, 1.4]) pieces.push({ t: [0.06, 0.74, 0.8], p: [x + dx, S + 0.37, z], mat: m.boisMeuble, col: true })
   // Livres sur la table (table le long de x : on échange x et z)
   for (const l of livresSurTable(z, S + 0.785, x + 1.4, x - 1.4, Math.round(x * 7 + 50)))
     if ('t' in l) pieces.push({ ...l, t: [l.t[2], l.t[1], l.t[0]], p: [l.p[2], l.p[1], l.p[0]], r: l.r ? [l.r[2], l.r[1], l.r[0]] : undefined })
   const sieges: SiegeDef[] = []
   for (const s of [-1, 1]) {
     pieces.push({ t: [3.0, 0.05, 0.36], p: [x, S + 0.45, z + s * 0.8], mat: m.bancs, col: true })
-    for (const dx of [-1.3, 1.3]) pieces.push({ t: [0.06, 0.43, 0.3], p: [x + dx, S + 0.215, z + s * 0.8], mat: m.boisFonce })
+    for (const dx of [-1.3, 1.3]) pieces.push({ t: [0.06, 0.43, 0.3], p: [x + dx, S + 0.215, z + s * 0.8], mat: m.boisMeuble })
     // Places assises côté nord seulement : côté sud, la touche E sert à la
     // table (mission du farbrenguen)
     if (s > 0) continue
@@ -176,7 +176,7 @@ function pupitre(m: MateriauxZal, x: number, z: number, rot: number): PieceLibre
     return { t: [0.19, ep, 0.27], p: [x + d.x, S + 1.08 + d.y, z + d.z], r: [0.35, rot, 0], mat }
   }
   return [
-    { t: [0.5, 1.0, 0.4], p: [x, S + 0.5, z], r: [0, rot, 0], mat: m.boisFonce, col: true },
+    { t: [0.5, 1.0, 0.4], p: [x, S + 0.5, z], r: [0, rot, 0], mat: m.boisMeuble, col: true },
     { t: [0.6, 0.04, 0.5], p: [x, S + 1.08, z], r: [0.35, rot, 0], mat: m.bancs },
     livre(-0.1, 0, COUVERTURES[0], 0.012),
     livre(0.1, 0, COUVERTURES[0], 0.012),

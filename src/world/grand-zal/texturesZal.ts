@@ -16,41 +16,79 @@ function texture(c: HTMLCanvasElement, metres: number, srgb = true) {
   return t
 }
 
-// Carrelage du Zal (COLlive 2025, photos 021, 026, 037) : carreaux crème
-// d'environ 30 cm, losanges saumon espacés. Module de 2,4 m. Teintes et
-// espacement ESTIMÉS.
+// Carrelage du Zal, refait d'après les photos anash.org fournies par Samuel
+// (26/11/2026) : grand champ de carreaux crème, larges bandes saumon-orangé
+// bordées de filets blancs qui dessinent de grands cadres, et carrés
+// terracotta foncés posés dans le champ crème. Module de 4,8 m ; teintes
+// relevées sur les photos, cotes ESTIMÉES. Aucune photo n'est plaquée.
 export function textureCarrelage() {
-  // Photos du Grand Zal en 2020 (rapport Aaron Valuation, p. 9-10) :
-  // carreaux crème, carrés saumon et bandes rectilignes qui dessinent
-  // de grands cadres. L'ancien grand losange central n'est pas visible.
-  // Les tailles et l'espacement restent ESTIMÉS ; la texture se répète
-  // sans image protégée par le droit d'auteur.
-  const { c, g } = toile(576, 576)
-  const n = 12
+  const { c, g } = toile(1024, 1024)
+  const M = 4.8 // module en mètres
+  const px = (m: number) => (m / M) * c.width
+  // Champ crème, carreaux de 30 cm légèrement nuancés
+  const n = 16
   const p = c.width / n
   for (let i = 0; i < n; i++)
     for (let j = 0; j < n; j++) {
-      const v = 234 + ((i * 7 + j * 13) % 5) * 2
-      let couleur = `rgb(${v},${v - 12},${v - 27})`
-      // Un cadre terracotta de 30 cm tous les 3,6 m.
-      if (i === 0 || j === 0) couleur = '#d1a080'
-      // Petits carreaux carrés placés dans la partie claire du cadre.
-      else if ([3, 8].includes(i) && [3, 8].includes(j)) couleur = '#be826c'
-      g.fillStyle = couleur
+      const v = ((i * 7 + j * 13) % 5) * 2
+      g.fillStyle = `rgb(${240 - v},${224 - v},${200 - v})`
       g.fillRect(i * p, j * p, p, p)
     }
-  // Joints de carreaux ; aucune diagonale ni losange inventé.
-  g.strokeStyle = 'rgba(121,108,94,0.35)'
-  g.lineWidth = 1.3
-  for (let k = 0; k <= n; k++) {
+  // Bandes saumon de 60 cm sur les bords du module (cadre), filets blancs
+  const bande = px(0.6)
+  const filet = px(0.08)
+  g.fillStyle = '#f7f3ea'
+  g.fillRect(0, 0, c.width, bande + 2 * filet)
+  g.fillRect(0, 0, bande + 2 * filet, c.height)
+  g.fillStyle = '#dc9a68'
+  g.fillRect(0, filet, c.width, bande)
+  g.fillRect(filet, 0, bande, c.height)
+  // Carrés terracotta foncés : un au croisement des bandes, deux dans le
+  // champ crème, sur l'axe du module (photos 2026)
+  g.fillStyle = '#b4613f'
+  g.fillRect(filet, filet, bande, bande)
+  const k = px(0.9)
+  for (const [cx, cy] of [
+    [2.7, 1.7],
+    [2.7, 3.7],
+  ])
+    g.fillRect(px(cx) - k / 2, px(cy) - k / 2, k, k)
+  // Joints fins
+  g.strokeStyle = 'rgba(150,120,95,0.28)'
+  g.lineWidth = 1.2
+  for (let q = 0; q <= n; q++) {
     g.beginPath()
-    g.moveTo(k * p, 0)
-    g.lineTo(k * p, c.height)
-    g.moveTo(0, k * p)
-    g.lineTo(c.width, k * p)
+    g.moveTo(q * p, 0)
+    g.lineTo(q * p, c.height)
+    g.moveTo(0, q * p)
+    g.lineTo(c.width, q * p)
     g.stroke()
   }
-  return texture(c, 3.6)
+  return texture(c, M)
+}
+
+// Marqueterie en losanges de l'amud (photo anash.org de l'Aron, 2026)
+export function textureDamierAmud() {
+  const { c, g } = toile(128, 128)
+  g.fillStyle = '#a8743a'
+  g.fillRect(0, 0, 128, 128)
+  for (let i = 0; i < 4; i++)
+    for (let j = 0; j < 4; j++) {
+      const x = i * 32 + 16
+      const y = j * 32 + 16
+      g.fillStyle = (i + j) % 2 ? '#d9ad6a' : '#7a4a1e'
+      g.beginPath()
+      g.moveTo(x, y - 14)
+      g.lineTo(x + 14, y)
+      g.lineTo(x, y + 14)
+      g.lineTo(x - 14, y)
+      g.closePath()
+      g.fill()
+    }
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  return t
 }
 
 // Faux plafond à dalles de 60 cm (photos 2025)
@@ -68,16 +106,25 @@ export function texturePlafond() {
   return texture(c, 0.6)
 }
 
-// Lambris de bois foncé à rainures verticales (photos 2025, Commons 10)
+// Lambris à lattes verticales, bois doré à veinage marqué (photos
+// anash.org 2026 : mur latéral et gradins habillés de lattes de 10 cm).
 export function textureLambris() {
   const { c, g } = toile(256, 256)
+  const latte = 21 // ≈ 10 cm pour 1,2 m
   for (let x = 0; x < 256; x++) {
-    const v = 90 + Math.sin(x * 0.21) * 14 + Math.sin(x * 0.047) * 18 + Math.random() * 6
-    g.fillStyle = `rgb(${v + 22},${v - 18},${v - 52})`
+    const k = Math.floor(x / latte)
+    const base = 120 + ((k * 37) % 5) * 9
+    const v = base + Math.sin(x * 0.9 + k) * 6 + Math.sin(x * 0.13) * 8 + Math.random() * 5
+    g.fillStyle = `rgb(${v + 38},${v - 2},${v - 48})`
     g.fillRect(x, 0, 1, 256)
   }
-  g.fillStyle = 'rgba(25,12,5,0.6)'
-  for (const x of [0, 64, 128, 192]) g.fillRect(x, 0, 3, 256)
+  // Veinage horizontal léger
+  for (let i = 0; i < 260; i++) {
+    g.fillStyle = `rgba(70,35,10,${Math.random() * 0.12})`
+    g.fillRect(Math.random() * 256, Math.random() * 256, 6 + Math.random() * 14, 1)
+  }
+  g.fillStyle = 'rgba(40,18,6,0.7)'
+  for (let x = 0; x < 256; x += latte) g.fillRect(x, 0, 2, 256)
   return texture(c, 1.2)
 }
 

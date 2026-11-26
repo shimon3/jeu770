@@ -1,5 +1,24 @@
 # Progression
 
+## Grand Zal d'après les photos anash.org — 26 novembre 2026 (branche `grand-zal-photos-anash`)
+
+### Fait
+- Photos fournies par Samuel (anash.org, 2026) : référence seulement, jamais publiées ni plaquées en texture (non versionnées).
+- **Carrelage** refait : champ crème, larges bandes saumon bordées de filets blancs, carrés terracotta foncés ; vinyle ciré plus brillant (`textureCarrelage`, module 4,8 m ESTIMÉ).
+- **Plafond** : grands panneaux LED rectangulaires (≈ 60 × 120 cm) à cadre blanc au lieu de dalles carrées à cadre sombre ; grilles d'aération grises.
+- **Lustres** : trois lustres de cristal devant l'Aron (positions ESTIMÉES).
+- **Bois** : bancs et tables brun-roux moyen verni ; bimah et estrade à roulettes en chêne miel clair (`boisMiel`, `boisMielFonce`) ; lambris à lattes verticales dorées.
+- **Colonnes et grands piliers** : bande sombre au pied.
+- **Amud** à droite de l'Aron : meuble marqueté de losanges, plateau bordeaux, plaque « chiviti » argentée encadrée au-dessus. Entre l'Aron et l'estrade de la place vide, sans y toucher.
+
+### Vérifié
+- `npm run build` sans erreur ; captures du Zal (Chrome sans carte graphique, qualité « rapide ») : allée centrale, Aron, bimah, vue vers le fond.
+
+### Non vérifié / reste
+- Disposition et orientation des rangées de bancs : non modifiées (les photos grand angle ne suffisent pas à les fixer).
+- Mur latéral en gradins inclinés habillés de lattes (visible sur les photos) : pas encore modélisé.
+- En qualité « équilibrée », Chrome sans carte graphique n'affiche pas le Zal après une téléportation (même défaut que « Haute ») : à vérifier sur un vrai ordinateur.
+
 ## Corrections du dossier problemes/ — 26 novembre 2026 (branche `corrections-problemes`)
 
 ### Fait
