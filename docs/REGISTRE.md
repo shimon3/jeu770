@@ -222,3 +222,18 @@ Photo de référence supprimée : `bureau/01` (photo historique de groupe en inc
 - Foule (`src/npc/FouleRue.tsx`) : 26 passants génériques, dont 2 policiers, 2 touristes et des bo'hourim (modèles Meshy, voir CREDITS.md). Aucun ne s'approche du grand Zal.
 - Générique : 4 plans rendus par le jeu lui-même (aucune photo, aucun portrait).
 
+
+## Photos du grand Zal fournies par Samuel (anash.org, 26/11/2026)
+
+Source : anash.org (photos 2026, salle nettoyée avant Pessa'h) et une capture d'écran de téléphone. Référence seulement : jamais publiées ni plaquées en texture, non versionnées. Aucune ne montre le Rebbe. Une photo montre un homme réel (portrait, en haut à droite d'un montage) : ignorée.
+
+| Élément 3D | Confirmé par les photos | Approximatif / choix de jeu |
+|---|---|---|
+| Carrelage | Champ crème, larges bandes saumon bordées de filets blancs, carrés terracotta foncés, vinyle ciré brillant | Module de 4,8 m, largeur des bandes, place des carrés |
+| Plafond | Faux plafond blanc, grands panneaux LED rectangulaires à cadre blanc, grilles d'aération, ventilateurs blancs | Nombre et répartition des panneaux |
+| Lustres | Lustres de cristal devant l'Aron | Nombre (3) et positions |
+| Colonnes | Colonnes carrées blanches à bande sombre au pied | Hauteur de la bande |
+| Bimah, estrade à roulettes | Chêne miel clair, balustres tournés, marches, tissu bordeaux | Teinte exacte |
+| Bancs et tables | Bois brun-roux verni, pieds métalliques | Disposition et orientation des rangées : NON modifiées |
+| Amud | À droite de l'Aron vu de la salle : meuble marqueté de losanges, plaque « chiviti » argentée encadrée au-dessus | Cotes ; le texte de la plaque n'est pas reproduit |
+| Mur latéral | Lambris à lattes verticales, gradins inclinés habillés de lattes | Gradins inclinés pas encore modélisés |
