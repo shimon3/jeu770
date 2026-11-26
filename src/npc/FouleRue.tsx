@@ -1,5 +1,7 @@
 import { PnjZal } from './PnjZal'
 import type { ModelePnj } from './CorpsPnj'
+import type { Geste } from '../player/Avatar'
+import type { Icone } from './Bulle'
 import { useQualite } from '../config/qualite'
 import { estTactile } from '../player/entrees'
 
@@ -10,7 +12,8 @@ import { estTactile } from '../player/entrees'
 // un policier en faction, un touriste qui photographie la façade, des
 // bo'hourim qui attendent.
 // Téléphone ou qualité « rapide » : une personne sur deux seulement.
-// Aucun ne parle (pas de touche E). Trajets vérifiés par cheminAutorise.
+// Seuls les policiers et le touriste photographe parlent (touche E).
+// Trajets vérifiés par cheminAutorise.
 
 type Passant = {
   id: string
@@ -22,6 +25,14 @@ type Passant = {
   peau?: string
   barbe?: string
   leger?: boolean // gardé sur téléphone
+  // Rôle (26/11/2026) : parle au joueur, gestes et bulle aux arrêts, salut
+  parle?: boolean
+  nomCle?: string
+  repliqueCle?: string
+  gestesArret?: Geste[]
+  bulleArret?: Icone
+  pauseArret?: [number, number]
+  salue?: boolean
 }
 
 const PEAUX = ['#c99878', '#d7a888', '#b9825f', '#e0b597', '#8d5a3b', '#a8714f']
@@ -54,12 +65,15 @@ const PASSANTS: Passant[] = [
   { id: 'foule-20', modele: 'bochur', de: [50, 61.2], a: [-30, 61.2], vitesse: 1.25 },
   { id: 'foule-21', modele: 'vieux', de: [10, 60.0], a: [30, 60.0], vitesse: 0.7 },
   // Personnes à l'arrêt
-  // Policier en faction au coin du 766, face à la rue
-  { id: 'foule-policier-1', modele: 'policier', de: [-7.6, 10.4], rotationY: 0.2, leger: true },
+  // Policier en patrouille devant le 770, au bord du trottoir (il ne bloque
+  // plus le portail) : s'arrête pour parler dans sa radio, salue le joueur,
+  // et on peut lui parler (E) : il indique les lieux (26/11/2026)
+  { id: 'foule-policier-1', modele: 'policier', de: [-9, 10.9], a: [7, 10.9], vitesse: 0.75, leger: true, parle: true, nomCle: 'policier.nom', repliqueCle: 'policier.replique', gestesArret: ['telephone'], bulleArret: 'radio', pauseArret: [4, 8], salue: true },
   // Second policier qui fait les cent pas devant les magasins
-  { id: 'foule-policier-2', modele: 'policier', de: [36, 10.6], a: [44, 10.6], vitesse: 0.6 },
-  // Touriste qui photographie la façade du 770 (tourné vers elle)
-  { id: 'foule-photo', modele: 'touriste', de: [1.2, 10.3], rotationY: Math.PI - 0.15, leger: true },
+  { id: 'foule-policier-2', modele: 'policier', de: [36, 10.6], a: [44, 10.6], vitesse: 0.6, parle: true, nomCle: 'policier.nom', repliqueCle: 'policier.replique2', gestesArret: ['telephone', 'salue'], bulleArret: 'radio', pauseArret: [3, 6], salue: true },
+  // Touriste qui photographie la façade du 770 (tourné vers elle) ; on peut
+  // lui parler
+  { id: 'foule-photo', modele: 'touriste', de: [1.2, 10.3], rotationY: Math.PI - 0.15, leger: true, parle: true, nomCle: 'touriste.nom', repliqueCle: 'touriste.replique', salue: true },
   // Deux bo'hourim qui attendent devant la descente du Zal
   { id: 'foule-attente-1', modele: 'bochur', de: [24.6, 9.4], rotationY: -1.9 },
   { id: 'foule-attente-2', modele: 'bochur', de: [23.6, 9.0], rotationY: 1.2 },
@@ -83,7 +97,13 @@ export function FouleRue() {
             key={p.id}
             id={p.id}
             modele={p.modele ?? 'adulte'}
-            parle={false}
+            parle={p.parle ?? false}
+            nomCle={p.nomCle}
+            repliqueCle={p.repliqueCle}
+            gestesArret={p.gestesArret}
+            bulleArret={p.bulleArret}
+            pauseArret={p.pauseArret}
+            salueJoueur={p.salue}
             position={[p.de[0], 0, p.de[1]]}
             rotationY={cap}
             chemin={mobile ? [p.de, p.a!] : undefined}

@@ -8,8 +8,12 @@ import { gabaritPnj } from './PnjEnfant'
 import { OmbreSol } from './OmbreSol'
 import { cheminAutorise, pointAutorise } from './routines'
 import { Annule, cheminMonde, useDecalage } from '../world/decalage'
+import { Bulle, montrerBulle, type EtatBulle, type Icone } from './Bulle'
 
 // Petit groupe de PNJ qui discutent ensemble puis se déplacent ensemble.
+// 26/11/2026 : bulles de conversation (sujets en icônes, comme dans les
+// Sims), gestes de l'orateur, auditeurs qui écoutent ou rient, et la
+// conversation continue pendant la marche.
 // Règle de jeu (Samuel, 12/11/2026) : un PNJ est soit en mouvement, soit
 // arrêté pour parler, et jamais plus de 3 à 4 minutes immobile.
 // - « discute » : en cercle autour d'un lieu, chacun tourné vers celui qui
@@ -32,7 +36,13 @@ const VITESSE = 1.1
 const DUREE_MIN = 60
 const DUREE_MAX = 200 // 3 min 20 : jamais plus de 3 à 4 minutes immobile
 
-type EtatMembre = { x: number; z: number; cap: number; arrive: boolean; anim: MutableRefObject<Anim> }
+type EtatMembre = { x: number; z: number; cap: number; arrive: boolean; anim: MutableRefObject<Anim>; bulle: MutableRefObject<EtatBulle>; rire: number }
+
+// Sujets de conversation (bulles, comme dans les Sims) : étude, idée,
+// question, blague… Les enfants parlent aussi de foot.
+const SUJETS_ADULTES: Icone[] = ['livre', 'idee', 'question', 'parole', 'livre', 'coeur']
+const SUJETS_ENFANTS: Icone[] = ['ballon', 'question', 'parole', 'idee', 'rire']
+const tirer = <T,>(l: T[]) => l[Math.floor(Math.random() * l.length)]
 
 function hasard(a: number, b: number) {
   return a + Math.random() * (b - a)
@@ -68,7 +78,7 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
   if (!etats.current.length && route.length) {
     etats.current = membres.map((_, i) => {
       const [x, z] = place(0, i)
-      return { x, z, cap: 0, arrive: true, anim: { current: { etat: 'repos', vitesse: 0 } } }
+      return { x, z, cap: 0, arrive: true, anim: { current: { etat: 'repos', vitesse: 0 } }, bulle: { current: { icone: null, reste: 0 } }, rire: 0 }
     })
   }
   const groupe = useRef({
@@ -78,7 +88,10 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
     orateur: 0,
     resteOrateur: hasard(4, 9),
     t: Math.random() * 10,
+    prochainEchange: hasard(3, 7), // en marchant : une phrase de temps en temps
   })
+  const enfants = membres.every((m) => m.modele === 'enfant' || m.modele === 'fille')
+  const sujets = enfants ? SUJETS_ENFANTS : SUJETS_ADULTES
   const objets = useRef<(THREE.Group | null)[]>([])
   const corps = useRef<(RapierRigidBody | null)[]>([])
 
@@ -94,6 +107,13 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
       if (g.resteOrateur <= 0) {
         g.orateur = (g.orateur + 1 + Math.floor(Math.random() * Math.max(1, n - 1))) % n
         g.resteOrateur = hasard(4, 9)
+        montrerBulle(etats.current[g.orateur].bulle.current, tirer(sujets), 2.8)
+        // Une chance sur trois : la réplique fait rire un auditeur
+        if (n > 1 && Math.random() < 0.35) {
+          const k = (g.orateur + 1 + Math.floor(Math.random() * (n - 1))) % n
+          etats.current[k].rire = 1.8
+          montrerBulle(etats.current[k].bulle.current, 'rire', 2)
+        }
       }
       const o = etats.current[g.orateur]
       etats.current.forEach((e, i) => {
@@ -104,7 +124,10 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
         while (dc > Math.PI) dc -= Math.PI * 2
         while (dc < -Math.PI) dc += Math.PI * 2
         e.cap += dc * Math.min(1, dt * 3)
-        e.anim.current = { etat: 'repos', vitesse: 0 }
+        e.rire -= dt
+        // Gestes : l'orateur parle avec les mains, les autres écoutent ou rient
+        const geste = e.rire > 0 ? 'joie' : i === g.orateur ? (Math.floor(g.t / 6) % 2 ? 'discute' : 'parle') : (i + Math.floor(g.t / 9)) % 3 === 0 ? 'ecoute' : undefined
+        e.anim.current = { etat: 'repos', vitesse: 0, geste }
       })
       if (g.reste <= 0) {
         g.phase = 'marche'
@@ -112,6 +135,13 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
         etats.current.forEach((e) => (e.arrive = false))
       }
     } else {
+      // On continue à parler en marchant ensemble : une bulle de temps en temps
+      g.prochainEchange -= dt
+      if (g.prochainEchange <= 0 && n > 1) {
+        g.prochainEchange = hasard(3, 7)
+        const k = Math.floor(Math.random() * n)
+        montrerBulle(etats.current[k].bulle.current, Math.random() < 0.2 ? 'rire' : tirer(sujets), 2.4)
+      }
       let tous = true
       etats.current.forEach((e, i) => {
         if (e.arrive) return
@@ -171,6 +201,7 @@ function GroupeMonde({ id, y, lieux, membres, rayon }: Props) {
             <group ref={(o) => void (objets.current[i] = o)} position={[e.x, y, e.z]}>
               <CorpsPnj id={m.id} anim={e.anim} peau={m.peau} barbe={m.barbe} modele={m.modele} />
               <OmbreSol rayon={gb.rayon * 1.5} />
+              <Bulle etat={e.bulle} hauteur={m.modele === 'enfant' || m.modele === 'fille' ? 1.45 : 2.15} />
             </group>
           </group>
         )

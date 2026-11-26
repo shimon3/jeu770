@@ -11,7 +11,11 @@ import { AvatarModele } from './AvatarModele'
 // Origine du modèle : entre les pieds. Avant du modèle : +z.
 
 export type EtatAnim = 'repos' | 'marche' | 'course' | 'escalier' | 'assis' | 'saut' | 'balancement'
-export type Anim = { etat: EtatAnim; vitesse: number }
+// Geste joué par-dessus le repos (PNJ) : clips Meshy partagés
+// (npc/animsMeshy.ts) pour les personnages Meshy, petit mouvement en code
+// pour le hassid v6
+export type Geste = 'parle' | 'ecoute' | 'joie' | 'tir' | 'salue' | 'telephone' | 'discute'
+export type Anim = { etat: EtatAnim; vitesse: number; geste?: Geste }
 
 type Props = {
   anim: MutableRefObject<Anim>

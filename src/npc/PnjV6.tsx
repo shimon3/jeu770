@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { DIST_OMBRE_REELLE } from './OmbreSol'
+import { DIST_CACHE } from './PnjEnfant'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
 import { fermerBras, preparerBras, rouvrirBras, usePlafondMipmaps } from '../player/AvatarV6'
@@ -24,6 +25,20 @@ const DIST_OMBRE = DIST_OMBRE_REELLE
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
 const POS = new THREE.Vector3()
+const _AXE = new THREE.Vector3()
+const _Q = new THREE.Quaternion()
+const _Q2 = new THREE.Quaternion()
+
+// Tourne un os autour d'un axe du personnage (x : côté, y : haut, z : avant)
+function tourner(racine: THREE.Object3D, os: THREE.Object3D | undefined, x: number, y: number, z: number, angle: number) {
+  if (!os || !angle) return
+  _AXE.set(x, y, z).transformDirection(racine.matrixWorld)
+  _Q.setFromAxisAngle(_AXE, angle)
+  os.getWorldQuaternion(_Q2).premultiply(_Q)
+  os.parent!.getWorldQuaternion(_Q).invert()
+  os.quaternion.copy(_Q.multiply(_Q2))
+  os.updateMatrixWorld(true)
+}
 
 type DiagnosticPnj = {
   etat: Anim['etat']
@@ -70,6 +85,14 @@ export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRe
   const poses = useMemo(() => creerPosesV6(sk), [sk])
   const bras = useMemo(() => preparerBras(racine, fermetureBrasChoisie('v6sym')), [racine])
   const pieds = useMemo(() => creerPiedsAuSol(racine), [racine])
+  // Os des gestes de conversation (26/11/2026) : le hassid v6 n'a pas de
+  // clips de gestes, ils sont faits en code par-dessus le repos
+  const osGeste = useMemo(() => {
+    const m = new Map<string, THREE.Object3D>()
+    racine.traverse((o) => void m.set(o.name.replace(/mixamorig:?/, ''), o))
+    return { tete: m.get('Head'), dos: m.get('Spine1') ?? m.get('Spine01'), bras: m.get('RightForeArm'), brasG: m.get('LeftForeArm') }
+  }, [racine])
+  const poidsGeste = useRef(0)
 
   useEffect(() => {
     // Actions créées ici (et non dans un useMemo) : compatible avec le double
@@ -109,6 +132,9 @@ export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRe
     // Niveau de détail : loin de la caméra, pas d'ombre et animation moins
     // fréquente (20 i/s au-delà de 15 m, 10 i/s au-delà de 30 m)
     const distance = POS.distanceTo(camera.position)
+    const cache = distance > DIST_CACHE
+    if (racine.visible === cache) racine.visible = !cache
+    if (cache) return
     const ombre = !sousTerre.current && distance < DIST_OMBRE
     if (ombre !== ombreActive.current) {
       racine.traverse((o) => void (o.castShadow = ombre))
@@ -138,6 +164,28 @@ export function PnjV6({ id, anim, etude = false }: { id: string; anim: MutableRe
     mixer.update(dt)
     fermerBras(bras)
     poses.appliquer(etat, t.current, etude)
+    // Gestes de conversation : hochements de tête, main qui accompagne la
+    // parole, rire (buste secoué, tête en arrière), écoute (tête penchée)
+    const geste = anim.current.geste
+    poidsGeste.current = THREE.MathUtils.clamp(poidsGeste.current + (geste ? dt : -dt) * 4, 0, 1)
+    const w = poidsGeste.current
+    if (w > 0 && etat === 'repos') {
+      racine.updateMatrixWorld(true)
+      const tt = t.current
+      if (geste === 'joie') {
+        tourner(racine, osGeste.dos, 1, 0, 0, w * (-0.06 + Math.sin(tt * 15) * 0.05))
+        tourner(racine, osGeste.tete, 1, 0, 0, w * -0.18)
+        tourner(racine, osGeste.bras, 1, 0, 0, w * -0.35)
+      } else if (geste === 'ecoute') {
+        tourner(racine, osGeste.tete, 0, 0, 1, w * 0.12)
+        tourner(racine, osGeste.tete, 1, 0, 0, w * (0.05 + Math.max(0, Math.sin(tt * 1.7)) * 0.1))
+      } else if (geste) {
+        tourner(racine, osGeste.tete, 1, 0, 0, w * Math.sin(tt * 6.5) * 0.08)
+        tourner(racine, osGeste.dos, 0, 1, 0, w * Math.sin(tt * 1.3) * 0.12)
+        tourner(racine, osGeste.bras, 1, 0, 0, w * (-0.55 + Math.sin(tt * 4.2) * 0.25))
+        if (geste === 'discute') tourner(racine, osGeste.brasG, 1, 0, 0, w * (-0.4 + Math.sin(tt * 3.6 + 1) * 0.2))
+      }
+    }
     if (etat === 'marche') pieds.appliquer()
     else racine.position.y = 0
     diagnostics()?.set(id, {

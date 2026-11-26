@@ -380,5 +380,10 @@
   "glossaire.aron.mot": "Aron Kodesh",
   "glossaire.aron.def": "armoire sainte où sont rangés les rouleaux de la Torah",
   "glossaire.zal.mot": "Zal",
-  "glossaire.zal.def": "la grande salle d'étude et de prière"
+  "glossaire.zal.def": "la grande salle d'étude et de prière",
+  "policier.nom": "Un policier du NYPD",
+  "policier.replique": "Bonjour ! Je surveille Eastern Parkway. L'entrée du 770 est derrière moi, le grand Zal se trouve en descendant les marches à gauche, et la bibliothèque est au 766, à droite. Traversez aux passages, la circulation est dense.",
+  "policier.replique2": "Tout est calme aujourd'hui. Les magasins sont juste là, le long du trottoir. Si vous cherchez une mission, le jeune chalia'h sur le trottoir en a toujours une.",
+  "touriste.nom": "Un touriste",
+  "touriste.replique": "Incroyable, cette façade ! Je voulais absolument la photographier. On m'a dit que des milliers de personnes viennent ici chaque année."
 }

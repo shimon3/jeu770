@@ -7,6 +7,7 @@ import { usePrechauffe } from '../world/prechauffage'
 import { clone as clonerAvecSquelette } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import type { Anim } from '../player/Avatar'
 import { VITESSE_NATURELLE } from '../config/avatar'
+import { CLIP_GESTE, URL_GESTES, creerRecibleur, sourceGestes } from './animsMeshy'
 
 // Corps léger d'un PNJ enfant (garçon à la kippa), fille ou femme.
 // Chaque modèle est un seul GLB (< 1 Mo, maillage compressé Draco, textures
@@ -40,6 +41,9 @@ const AVANCE_POUSSETTE = 0.4
 const DIST_OMBRE = DIST_OMBRE_REELLE
 const DIST_MOYEN = 15
 const DIST_LOIN = 30
+// Au-delà, le PNJ n'est plus dessiné ni animé (26/11/2026, performances :
+// 20 000 à 40 000 triangles par personnage Meshy)
+export const DIST_CACHE = 38
 const POS = new THREE.Vector3()
 
 // Gabarit physique : capsule (demi-hauteur, rayon) centrée à centreY
@@ -176,6 +180,9 @@ function Poussette() {
 
 export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string; anim: MutableRefObject<Anim>; modele: ModeleLeger; poussette?: boolean }) {
   const gltf = useGLTF(URLS[modele], DECODEUR_DRACO)
+  // Gestes (parler, rire, tir dans un ballon, course…) : clips Meshy partagés
+  const gestes = useGLTF(URL_GESTES, DECODEUR_DRACO)
+  const source = useMemo(() => sourceGestes(gestes), [gestes])
   const racine = useMemo(() => {
     const r = clonerAvecSquelette(gltf.scene)
     r.traverse((o) => {
@@ -192,6 +199,8 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
   const visible = usePrechauffe(racine)
   const mixer = useMemo(() => new THREE.AnimationMixer(racine), [racine])
   const bras = useMemo(() => (poussette ? trouverBras(racine) : []), [poussette, racine])
+  const recibleur = useMemo(() => creerRecibleur(racine), [racine])
+  const geste = useRef<{ clip: string | null; t: number; poids: number }>({ clip: null, t: 0, poids: 0 })
   const jambes = useMemo(() => (modele === 'enfant' && CORRIGER_JAMBES ? trouverJambes(racine) : []), [modele, racine])
   const actions = useRef<Record<string, THREE.AnimationAction>>({})
   const courant = useRef<string | null>(null)
@@ -225,6 +234,9 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
     // Niveau de détail : loin de la caméra, pas d'ombre et animation moins
     // fréquente (le corps reste visible et bouge, mais coûte moins)
     const d = POS.distanceTo(camera.position)
+    const cache = d > DIST_CACHE
+    if (racine.visible === cache) racine.visible = !cache && visible
+    if (cache) return
     const ombre = !sousTerre.current && d < DIST_OMBRE
     if (ombre !== ombreActive.current) {
       racine.traverse((o) => void (o.castShadow = ombre))
@@ -236,7 +248,7 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
     const dt = Math.min(attente.current, 0.12)
     attente.current = 0
     const { etat, vitesse } = anim.current
-    const clip = etat === 'marche' ? 'Walking' : 'Idle_11'
+    const clip = etat === 'marche' || etat === 'course' ? 'Walking' : 'Idle_11'
     const suivante = actions.current[clip]
     if (suivante && courant.current !== clip) {
       const precedente = courant.current ? actions.current[courant.current] : undefined
@@ -246,9 +258,25 @@ export function PnjEnfant({ id, anim, modele, poussette = false }: { id: string;
       courant.current = clip
     }
     // Pas plus courts que ceux d'un adulte : cadence plus rapide à vitesse égale
-    if (suivante) suivante.timeScale = clip === 'Walking' ? THREE.MathUtils.clamp((vitesse / VITESSE_NATURELLE.Walking) * CADENCE[modele], 0.35, 2.2) : 1
+    if (suivante) suivante.timeScale = clip === 'Walking' ? THREE.MathUtils.clamp((vitesse / VITESSE_NATURELLE.Walking) * CADENCE[modele], 0.35, 2.6) : 1
     mixer.update(dt)
-    if (jambes.length) resserrerJambes(racine, jambes)
+    // Geste par-dessus (fondu de 0,25 s) : clip demandé par la logique du PNJ,
+    // course, ou marche décontractée du touriste et du jeune homme (bo'hour) :
+    // leur marche Meshy d'origine balançait bras et jambes de travers
+    const gs = anim.current.geste
+    const voulu = gs ? CLIP_GESTE[gs] : etat === 'course' ? 'Running' : (modele === 'touriste' || modele === 'bochur') && etat === 'marche' ? 'MarcheTranquille' : null
+    const g = geste.current
+    if (voulu && voulu !== g.clip) {
+      g.clip = voulu
+      g.t = 0
+    }
+    g.poids = THREE.MathUtils.clamp(g.poids + (voulu ? dt : -dt) / 0.25, 0, 1)
+    if (g.clip) {
+      g.t += dt * (g.clip === 'Running' ? THREE.MathUtils.clamp(vitesse / 3.2, 0.6, 1.6) : g.clip === 'MarcheTranquille' ? THREE.MathUtils.clamp(vitesse / 1.15, 0.5, 1.8) : 1)
+      if (g.poids > 0) recibleur.appliquer(source, g.clip, g.t, g.poids, g.clip !== 'Tir')
+      else g.clip = null
+    }
+    if (jambes.length && g.poids === 0) resserrerJambes(racine, jambes)
     if (poussette) mainsSurPoignee(racine, bras)
     diagnostics()?.set(id, { modele, etat, clip: courant.current })
   })

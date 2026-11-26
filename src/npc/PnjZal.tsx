@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CapsuleCollider, RigidBody, type RapierRigidBody } from '@react-three/rapier'
 import * as THREE from 'three'
-import type { Anim, EtatAnim } from '../player/Avatar'
+import type { Anim, EtatAnim, Geste } from '../player/Avatar'
+import { Bulle, montrerBulle, type EtatBulle, type Icone } from './Bulle'
+import { joueur } from '../state/store'
 import { CorpsPnj, type ModelePnj } from './CorpsPnj'
 import { gabaritPnj } from './PnjEnfant'
 import { OmbreSol } from './OmbreSol'
@@ -33,6 +35,13 @@ type Props = {
   etude?: boolean // assis : léger balancement d'étude (havrouta)
   poussette?: boolean // femme : pousse une poussette avec un bébé
   vitesse?: number // marche (m/s), 1,1 par défaut ; plus lente pour le vieux hassid
+  // Aux arrêts d'un trajet : geste joué (radio du policier, photo…), icône
+  // de bulle et durée de l'arrêt (s)
+  gestesArret?: Geste[]
+  bulleArret?: Icone
+  pauseArret?: [number, number]
+  // Salue le joueur qui passe près de lui (se tourne, fait signe)
+  salueJoueur?: boolean
 }
 
 const v = new THREE.Vector3()
@@ -51,13 +60,15 @@ export function PnjZal(props: Props) {
   )
 }
 
-function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false, poussette = false, vitesse = 1.1 }: Props) {
+function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = true, nomCle = 'pnj.nom', repliqueCle = 'zal.pnjRepos', peau = '#c99878', barbe = '#4a3626', modele = 'adulte', etude = false, poussette = false, vitesse = 1.1, gestesArret, bulleArret, pauseArret = [1, 3.5], salueJoueur = false }: Props) {
   const g = gabaritPnj(modele)
   const anim = useRef<Anim>({ etat, vitesse: 0 })
   const groupe = useRef<THREE.Group>(null)
   const corps = useRef<RapierRigidBody>(null)
   const route = useMemo(() => (chemin ? cheminAutorise(chemin) : []), [chemin])
-  const etatRoute = useRef({ i: 0, x: position[0], z: position[2], cap: rotationY, pause: 0 })
+  const etatRoute = useRef({ i: 0, x: position[0], z: position[2], cap: rotationY, pause: 0, salut: 0, geste: undefined as Geste | undefined })
+  const bulle = useRef<EtatBulle>({ icone: null, reste: 0 })
+  const enfant = modele === 'enfant' || modele === 'fille'
   const autorise = pointAutorise(position[0], position[2])
   // Sous terre, l'ombre solaire est inutile ; dehors (PNJ d'entrée), on la garde
   useEffect(() => {
@@ -95,23 +106,45 @@ function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = 
   )
 
   useFrame((_, dtBrut) => {
-    if (!route.length) return
-    // Les pauses suivent le temps rÃ©el, mÃªme si SwiftShader ou un tÃ©lÃ©phone
-    // lent tombe Ã  quelques images/s. Le mouvement reste davantage plafonnÃ©
-    // pour qu'un PNJ ne traverse pas un obstacle aprÃ¨s une image trÃ¨s longue.
     const dt = Math.min(dtBrut, 0.1)
     const e = etatRoute.current
-    if (e.pause > 0) {
-      e.pause -= Math.min(dtBrut, 0.5)
-      anim.current = { etat: 'repos', vitesse: 0 }
+    // Salut au joueur qui passe à moins de 3,5 m (une fois toutes les 25 s)
+    e.salut -= dtBrut
+    if (salueJoueur && e.salut <= 0) {
+      const p = joueur.position
+      const dj = Math.hypot(p[0] - e.x, p[2] - e.z)
+      if (dj < 3.5 && Math.abs(p[1] - 0.85 - position[1]) < 1.5) {
+        e.salut = 25
+        e.pause = Math.max(e.pause, 2.6)
+        e.geste = 'salue'
+        e.cap = Math.atan2(p[0] - e.x, p[2] - e.z)
+        montrerBulle(bulle.current, 'salut', 2.2)
+        if (groupe.current) groupe.current.rotation.y = e.cap
+      }
+    }
+    if (!route.length) {
+      // Immobile : le salut se joue puis le PNJ reprend sa pose
+      if (e.pause > 0) e.pause -= dtBrut
+      anim.current = { etat, vitesse: 0, geste: e.pause > 0 ? e.geste : undefined }
       return
     }
+    // Les pauses suivent le temps réel, même si SwiftShader ou un téléphone
+    // lent tombe à quelques images/s. Le mouvement reste davantage plafonné
+    // pour qu'un PNJ ne traverse pas un obstacle après une image très longue.
+    if (e.pause > 0) {
+      e.pause -= Math.min(dtBrut, 0.5)
+      anim.current = { etat: 'repos', vitesse: 0, geste: e.geste }
+      return
+    }
+    e.geste = undefined
     const [tx, tz] = route[e.i]
     v.set(tx - e.x, 0, tz - e.z)
     const d = v.length()
     if (d < 0.1) {
       e.i = (e.i + 1) % route.length
-      e.pause = 1 + Math.random() * 2.5
+      e.pause = pauseArret[0] + Math.random() * (pauseArret[1] - pauseArret[0])
+      if (gestesArret?.length) e.geste = gestesArret[Math.floor(Math.random() * gestesArret.length)]
+      if (bulleArret) montrerBulle(bulle.current, bulleArret, Math.min(3, e.pause))
       return
     }
     v.multiplyScalar(Math.min(vitesse * dt, d) / d)
@@ -144,6 +177,7 @@ function PnjZalMonde({ id, position, rotationY, etat = 'repos', chemin, parle = 
       )}
       <group ref={groupe} position={position} rotation={[0, rotationY, 0]}>
         <CorpsPnj id={id} anim={anim} peau={peau} barbe={barbe} modele={modele} etude={etude} poussette={poussette} />
+        {(salueJoueur || bulleArret) && <Bulle etat={bulle} hauteur={enfant ? 1.45 : 2.15} />}
         <OmbreSol rayon={g.rayon * 1.5} />
       </group>
     </>

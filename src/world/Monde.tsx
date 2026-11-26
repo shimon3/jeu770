@@ -63,6 +63,7 @@ function PrechauffeScene() {
 }
 import { GroupeDiscussion } from '../npc/GroupeDiscussion'
 import { FouleRue } from '../npc/FouleRue'
+import { FootEnfants } from '../npc/FootEnfants'
 import { MissionTank } from '../missions/MissionTank'
 import { MissionsRue } from '../missions/MissionsRue'
 import * as THREE from 'three'
@@ -107,16 +108,8 @@ function FamillesRue() {
           { id: 'fille-rue-2', modele: 'fille' },
         ]}
       />
-      <GroupeDiscussion
-        id="groupe-garcons"
-        y={0}
-        lieux={LIEUX_GARCONS}
-        membres={[
-          { id: 'enfant-rue-2', modele: 'enfant' },
-          { id: 'enfant-rue-4', modele: 'enfant' },
-          { id: 'enfant-rue-5', modele: 'enfant' },
-        ]}
-      />
+      {/* Trois garçons jouent au foot sur le trottoir (26/11/2026) */}
+      <FootEnfants centre={[-21, 9.2]} />
       <PnjZal id="femme-rue-2" modele="femme" parle={false} position={[36, 0, 8.2]} rotationY={-Math.PI / 2} chemin={[[36, 8.2], [22, 8.2]]} />
       <PnjZal id="fille-rue-3" modele="fille" parle={false} position={[36, 0, 8.9]} rotationY={-Math.PI / 2} chemin={[[36, 8.9], [22, 8.9]]} />
       {/* Vieux hassid : marche lente */}
@@ -130,9 +123,8 @@ function FamillesRue() {
 
 // Lieux de discussion sur le trottoir (z 8,2 à 9,4) : loin des bancs, des
 // arbres, des lampadaires et des panneaux
-const LIEUX_HOMMES: [number, number][] = [[-8.0, 8.6], [-23.5, 9.0], [-33.0, 8.8], [-12.0, 9.2]]
+const LIEUX_HOMMES: [number, number][] = [[-8.0, 8.6], [-30.5, 9.0], [-36.0, 8.8], [-12.0, 9.2]]
 const LIEUX_MERE_FILLES: [number, number][] = [[14.8, 9.2], [24.0, 9.0], [32.0, 9.4], [19.0, 8.8]]
-const LIEUX_GARCONS: [number, number][] = [[-17.6, 8.4], [-29.0, 8.6], [-11.0, 8.2], [-2.0, 9.0]]
 
 // Le soleil vise le centre du complexe (770 + grand Zal) et son ombre couvre
 // tout le grand Zal souterrain, sinon le sol du Zal serait éclairé à travers
