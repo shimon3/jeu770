@@ -35,7 +35,7 @@ type Props = {
 
 // Portes actuellement ouvertes (hors porte fixe) : utilisé par la touche F
 // et le bouton « Fermer la porte » du HUD
-export const portesOuvertes = new Map<string, { centre: V3; fermer: () => void }>()
+export const portesOuvertes = new Map<string, { centre: V3; fermer: () => void; groupe?: string }>()
 
 export function porteOuverteProche(): boolean {
   const p = joueur.position
@@ -46,7 +46,7 @@ export function porteOuverteProche(): boolean {
 // Ferme la porte ouverte la plus proche du joueur (rayon 3 m). Renvoie vrai si une porte a été fermée.
 export function fermerPorteProche(): boolean {
   const p = joueur.position
-  let meilleure: { fermer: () => void } | null = null
+  let meilleure: { fermer: () => void; groupe?: string } | null = null
   let dMin = 3
   for (const pt of portesOuvertes.values()) {
     const d = Math.hypot(pt.centre[0] - p[0], (pt.centre[1] - p[1]) * 0.6, pt.centre[2] - p[2])
@@ -56,7 +56,19 @@ export function fermerPorteProche(): boolean {
     }
   }
   meilleure?.fermer()
+  // L'autre battant d'une porte double se ferme aussi
+  if (meilleure) for (const pt of portesOuvertes.values()) if (pt !== meilleure && pt.groupe === meilleure.groupe && pt.groupe) pt.fermer()
   return !!meilleure
+}
+
+// Battants d'une même porte double (ids « …-g » et « …-d ») : E sur l'un
+// ouvre les deux, F ferme les deux
+const ouvreurs = new Map<string, () => void>()
+const groupeDe = (id: string) => id.replace(/-(g|d)$/, '')
+function ouvrirJumeaux(id: string) {
+  const g = groupeDe(id)
+  if (g === id) return
+  for (const [autre, ouvrir] of ouvreurs) if (autre !== id && groupeDe(autre) === g) ouvrir()
 }
 
 // Poignée chromée des portes du Zal (photo de l'intérieur, Samuel 12/11/2026)
@@ -96,22 +108,25 @@ function PorteMonde({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, a
   const [cx, cy, cz] = centre
   useEffect(() => {
     if (!ouverte || fixe) return
-    portesOuvertes.set(id, { centre: [cx, cy, cz], fermer: () => setOuverte(false) })
+    portesOuvertes.set(id, { centre: [cx, cy, cz], fermer: () => setOuverte(false), groupe: groupeDe(id) !== id ? groupeDe(id) : undefined })
     return () => void portesOuvertes.delete(id)
   }, [ouverte, fixe, id, cx, cy, cz])
 
+  useEffect(() => {
+    if (fixe || verrouillee || cle) return
+    ouvreurs.set(id, () => setOuverte(true))
+    return () => void ouvreurs.delete(id)
+  }, [id, fixe, verrouillee, cle])
+
+  // E ouvre seulement ; F (ou le bouton du HUD) ferme. Une porte ouverte
+  // n'est plus une cible de E : la touche reste libre pour le reste.
   useInteractif(
     id,
     centre,
-    fixe ? 0 : rayon,
-    () =>
-      verrouillee || !aLaCle
-        ? t('action.porteVerrouillee')
-        : cle
-          ? ouverte ? t('action.fermerPorteCle') : t('action.ouvrirPorteCle')
-          : ouverte ? t('action.fermerPorte') : t('action.ouvrirPorte'),
+    fixe || ouverte ? 0 : rayon,
+    () => (verrouillee || !aLaCle ? t('action.porteVerrouillee') : cle ? t('action.ouvrirPorteCle') : t('action.ouvrirPorte')),
     () => {
-      if (fixe) return
+      if (fixe || ouverte) return
       if (verrouillee) {
         useGame.getState().set({ panneau: { type: 'message', cle: verrouillee } })
         return
@@ -120,10 +135,16 @@ function PorteMonde({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, a
         useGame.getState().set({ panneau: { type: 'message', cle: messageSansCle } })
         return
       }
-      setOuverte((o) => !o)
+      setOuverte(true)
+      ouvrirJumeaux(id)
       evenementMission('interagir', id)
     },
   )
+
+  // Le battant ne bloque le joueur que fermé : pendant l'ouverture, ouvert et
+  // pendant la fermeture, il ne pousse ni ne coince personne (le joueur collé
+  // à la porte restait bloqué contre le battant qui pivotait).
+  const [solide, setSolide] = useState(!ouverteInitiale)
 
   useFrame((_, dt) => {
     // Fermeture automatique : quand le joueur est à plus de 2,5 m de la porte
@@ -138,6 +159,12 @@ function PorteMonde({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, a
       }
     }
     const cible = ouverte ? angleOuverture : 0
+    // Fermée, mais pas tant que le joueur se tient dans l'embrasure (il serait
+    // pris dans le battant)
+    const pj = joueur.position
+    const dansEmbrasure = Math.hypot(pj[0] - centre[0], pj[2] - centre[2]) < largeur / 2 + 0.35 && Math.abs(pj[1] - 0.85 - charniere[1]) < 2
+    const fermee = !ouverte && Math.abs(angle.current) < 0.03 && !(dansEmbrasure && !solide)
+    if (fermee !== solide) setSolide(fermee)
     const avant = angle.current
     angle.current = THREE.MathUtils.damp(angle.current, cible, 4, Math.min(dt, 0.05))
     if (Math.abs(angle.current - avant) < 1e-5 && Math.abs(angle.current - cible) < 1e-4) return
@@ -246,7 +273,7 @@ function PorteMonde({ id, charniere, largeur, hauteur, epaisseur = 0.06, sens, a
         <boxGeometry args={[largeur, hauteur, epaisseur]} />
       </mesh>
       {details}
-      <CuboidCollider args={[largeur / 2, hauteur / 2, epaisseur / 2 + 0.01]} position={[(sens * largeur) / 2, hauteur / 2, 0]} />
+      {solide && <CuboidCollider args={[largeur / 2, hauteur / 2, epaisseur / 2 + 0.01]} position={[(sens * largeur) / 2, hauteur / 2, 0]} />}
     </RigidBody>
   )
 }
