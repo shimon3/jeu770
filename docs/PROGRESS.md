@@ -1,5 +1,32 @@
 # Progression
 
+## Corrections du dossier problemes/ — 26 novembre 2026 (branche `corrections-problemes`)
+
+### Fait
+- **Portes** : E ouvre seulement, F ferme. Le battant ne bloque plus le joueur pendant qu'il pivote ni quand il est ouvert (collision seulement porte fermée, et pas tant que le joueur est dans l'embrasure). Les deux battants d'une porte double s'ouvrent et se ferment ensemble.
+- **Banderole Yechi** : texte complet « יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד », suspendue sous le plafond devant la rangée des grands piliers ; plus aucune colonne ne la coupe depuis la salle.
+- **Grand Zal** : longues tables avec un banc de chaque côté (on se fait face), comme au vrai 770, au lieu de rangées tournées vers l'avant. Livres sur toutes les tables (ouverts, en piles, siddourim) et siddour ouvert sur chaque shtender. PNJ assis face à face. Gradins retirés.
+- **Prière** : balancement plus ample et plus rapide (posesV6.ts).
+- **Nouveau personnage principal** (Meshy + Blender) : hassid à barbe auburn, lunettes rondes, sirtouk, gartel, tsitsit, distinct des PNJ. `?avatar=v6sym` : retour à l'ancien.
+- **Gestes Meshy partagés** (`npc/animsMeshy.ts`) : chaque os de la cible est orienté comme l'os du clip, ce qui marche aussi sur l'enfant, dont le squelette est orienté autrement.
+- **Enfants** : 3 garçons jouent au foot sur le trottoir (ballon qui roule et rebondit, contrôles, passes, tirs, course, joie). Le joueur peut taper dans le ballon.
+- **Discussions** : bulles d'icônes comme dans les Sims (livre, idée, question, rire, ballon…), gestes de l'orateur, auditeurs qui écoutent ou rient, la conversation continue en marchant.
+- **Policier** : patrouille au bord du trottoir (ne bloque plus le portail), radio aux arrêts, salue le joueur, répond avec E (indications). Le second policier et le touriste photographe parlent aussi.
+- **Jeune homme et touriste** : marche décontractée Meshy à la place de leur marche bancale.
+- **Performances** : 46 platanes et 15 féviers, hassid PNJ et enfant allégés (meshoptimizer) ; PNJ à plus de 38 m ni dessinés ni animés.
+
+### Vérifié (Chrome réel, ordinateur de Samuel)
+- `tsc -b` et `vite build` sans erreur ; `verifier-missions.mjs` 23/23 ; `verifier-promenade.mjs` 10/10.
+- `tools/captures/verifier-problemes.mjs` : porte (E collé à la porte, puis 2 m parcourus dans le Zal), tables et livres, banderole, foot, policier, touriste, nouveau joueur (repos, marche, course).
+- Build de production, rue (1280×720) : 34 → 45 images/s, 945 000 → 605 000 triangles.
+
+### Non vérifié / reste
+- La marche du jeune homme (bo'hour) avec le nouveau clip n'a pas été regardée en capture.
+- Pose assise du nouveau joueur sur un banc : non regardée (décalage du bassin à calibrer).
+- Vitesse naturelle des clips du nouveau joueur (`NATUREL` dans AvatarMeshy.tsx) : ESTIMÉE, à calibrer (glissement des pieds possible).
+- Téléphone réel.
+- Images du générique : à refaire.
+
 ## Grand Zal à gauche du 770, crédits, missions plus claires, performance — 22 novembre 2026 (branche `inversion-zal`)
 
 ### Fait
