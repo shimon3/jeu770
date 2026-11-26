@@ -121,13 +121,13 @@ Toutes les photos d'actualité restent dans `references/` (exclu de git) : réf�
 | Galerie lambrissée et vitrée en hauteur | COLlive 2025 (021, 031, 037) ; Commons 8, 9 | Lambris foncé, bandeau de vitres sombres en haut des murs | Identification comme galerie des femmes probable (Wikipedia), non vérifiée sur photo |
 | Plafonds bas périphériques avec bibliothèques | COLlive 2025 (037) | Présents | Profondeur, longueur |
 | Murs de brique peinte en blanc (côté Aron) | COLlive 2025 (005, 016, 038) ; Commons 10 | Présents | Étendue |
-| Bancs à dossier et tablette à livres | Commons 8 | Forme | Nombre, rangées, orientation (en attente des images A à D) |
+| Longues tables avec un banc de chaque côté (on se fait face) | Samuel, 26/11/2026 (connaissance du lieu) ; remplace les rangées de bancs à dossier tournées vers l'avant | Disposition « de part et d'autre » | Nombre de tables, longueur, positions : **reconstitution artistique** ; livres posés dessus : décor de jeu |
 | Tables d'étude, pupitres | COLlive 2025 ; The Revolutionaries | Présents | Positions |
-| Gradins | chabad.org (« bleachers ») | Leur existence | **Position et forme : reconstitution artistique** |
+| Gradins | chabad.org (« bleachers ») ; shabboshouse.org, « Sicha ends absorbed on the bleachers » (souvenir : gradins de bois contre le mur ouest, « no longer there ») | Ont existé (années 1980) | **Retirés du jeu le 26/11/2026** (Samuel : ils menaient au mur ; source : plus en place aujourd'hui) |
 | Bimah | Commons 8 ; COLlive 2025 (032-034) | Enceinte de bois à balustres, sur roulettes, table couverte de bordeaux | Dimensions, position |
 | Aron Kodesh | COLlive 2025 (005, 006, 016) | Bois doré sculpté, couronnement en gradins, pilastres marquetés en chevrons, parokhet **blanc** et cantonnière frangée d'or (Tichri 2025), estrade avec marches et garde-corps | Dimensions ; broderies simplifiées ; aucune inscription (illisible sur les photos de 2025) |
 | Place du Rebbe, **VIDE** | Commons 10 ; COLlive 2025 (020) | Estrade, lambris, fauteuil de velours rouge, pupitre à housse blanche frangée d'or, tapis | Position au sud de l'Aron : ESTIMÉE (« angle sud-est » à l'époque du shalash, ChabadInfo ; estrade à droite de l'Aron sur COLlive 016) |
-| Banderole « יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד » | COLlive 13/10/2025 (photo 036) ; même texte sur Commons 11 | **Texte vérifié sur deux sources** | Position, taille, police |
+| Banderole « יחי אדוננו מורנו ורבינו מלך המשיח לעולם ועד » | COLlive 13/10/2025 (photo 036) ; même texte sur Commons 11 | **Texte vérifié sur deux sources** | Position, taille, police. 26/11/2026 : suspendue sous le plafond devant la rangée des grands piliers pour qu'aucune colonne ne la coupe (choix de jeu) |
 | Autres banderoles | COLlive 2025 | Présentes | **Non reproduites** : textes non relevés avec certitude |
 | Horloge murale, panneau EXIT | Commons 9 | Présents | Positions |
 | Bâtiment 784-788 en surface | Clio ; COLlive 11/2025 | Pignon, portail de pierre, parapet à balustres | Volume, fenêtres |

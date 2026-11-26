@@ -3,7 +3,7 @@ import { useChargement } from '../../state/chargement'
 import { ZAL } from '../../config/grandZal'
 import { useMateriauxZal } from './materiauxZal'
 import { EnveloppeZal } from './EnveloppeZal'
-import { MobilierZal } from './MobilierZal'
+import { ECART_BANC, MobilierZal } from './MobilierZal'
 import { BimahZal } from './BimahZal'
 import { AronKodesh } from './AronKodesh'
 import { PlaceVide } from './PlaceVide'
@@ -60,10 +60,10 @@ export function GrandZal() {
       <PnjZal id="pnj-etudiant" position={[3.6, S, -26.4]} rotationY={0} etat="assis" nomCle="zal.etudiantNom" repliqueCle="zal.etudiantRepos" peau="#c58f6c" barbe="#1f1712" />
       <PnjZal id="pnj-balancement-1" position={[10.0, S, -16.0]} rotationY={Math.PI / 2} etat="balancement" parle={false} barbe="#6b6b6b" />
       <PnjZal id="pnj-balancement-2" position={[2.0, S, -29.4]} rotationY={Math.PI} etat="balancement" parle={false} peau="#b98466" />
-      <PnjZal id="pnj-assis-1" position={[13.8, S, -12.0]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#2b1d14" />
-      <PnjZal id="pnj-assis-2" position={[17.4, S, -19.5]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#d9b08f" barbe="#8a6a4a" />
-      <PnjZal id="pnj-assis-3" position={[29.6, S, -18.5]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#3d2b1f" />
-      <PnjZal id="pnj-assis-4" position={[32.0, S, -13.0]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#c89a7a" barbe="#555" />
+      <PnjZal id="pnj-assis-1" position={[12.4 - ECART_BANC, S, -11.6]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#2b1d14" />
+      <PnjZal id="pnj-assis-2" position={[18.4 + ECART_BANC, S, -19.0]} rotationY={-Math.PI / 2} etat="assis" parle={false} peau="#d9b08f" barbe="#8a6a4a" />
+      <PnjZal id="pnj-assis-3" position={[29.2 - ECART_BANC, S, -18.0]} rotationY={Math.PI / 2} etat="assis" parle={false} barbe="#3d2b1f" />
+      <PnjZal id="pnj-assis-4" position={[32.2 - ECART_BANC, S, -13.0]} rotationY={Math.PI / 2} etat="assis" parle={false} peau="#c89a7a" barbe="#555" />
       <PnjZal
         id="pnj-marcheur-1"
         position={[21.0, S, -3.0]}

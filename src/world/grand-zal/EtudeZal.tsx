@@ -1,5 +1,6 @@
 import { ZAL } from '../../config/grandZal'
 import { PnjZal } from '../../npc/PnjZal'
+import { ECART_BANC } from './MobilierZal'
 
 // Hommes qui étudient ensemble (havrouta) : groupes de 4 autour des tables
 // de l'aile ouest et binômes assis sur les bancs, tournés l'un vers l'autre,
@@ -9,7 +10,6 @@ import { PnjZal } from '../../npc/PnjZal'
 // de l'allée centrale (z ≈ -16) restent libres.
 
 const S = ZAL.sol
-const TOURNE = 0.5 // rotation vers le partenaire, sur les bancs
 
 type Etudiant = { id: string; x: number; z: number; r: number; peau?: string; barbe?: string }
 
@@ -26,17 +26,18 @@ function construire(): Etudiant[] {
     }
   // Partenaire de l'étudiant déjà assis à la table du milieu (3,6 ; -26,4)
   res.push({ x: 3.6, z: -24.8, r: Math.PI })
-  // Binômes sur les bancs (regard +x), tournés l'un vers l'autre
+  // Binômes face à face de part et d'autre des longues tables (26/11/2026) :
+  // l'un sur le banc ouest (regard +x), l'autre sur le banc est (regard -x)
   for (const [x, z] of [
-    [12.6, -6.4],
-    [15.0, -12.2],
-    [16.2, -19.0],
-    [18.6, -24.4],
-    [30.8, -12.6],
-    [33.2, -19.4],
+    [12.4, -6.6],
+    [15.4, -12.4],
+    [15.4, -19.4],
+    [18.4, -24.6],
+    [29.2, -12.4],
+    [32.2, -19.4],
   ] as const) {
-    res.push({ x, z, r: Math.PI / 2 + TOURNE })
-    res.push({ x, z: z - 0.7, r: Math.PI / 2 - TOURNE })
+    res.push({ x: x - ECART_BANC, z, r: Math.PI / 2 })
+    res.push({ x: x + ECART_BANC, z: z - 0.15, r: -Math.PI / 2 })
   }
   return res.map((e, i) => ({ ...e, id: `etude-${i + 1}`, peau: PEAUX[i % PEAUX.length], barbe: BARBES[(i * 3) % BARBES.length] }))
 }

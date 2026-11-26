@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
-import { ENTREE, ZAL } from '../../config/grandZal'
+import { COLONNES, ENTREE, ZAL } from '../../config/grandZal'
 import { PiecesLibres, type PieceLibre } from './PiecesLibres'
 import type { MateriauxZal } from './materiauxZal'
 import { BORD_NORD, BORD_SUD, Z_SUD } from './EnveloppeZal'
@@ -150,12 +150,25 @@ export function EclairageZal() {
 // Décor vérifié : banderole (inscription relevée sur photo), horloge
 // (Commons 9), panneau EXIT au-dessus de chaque porte d'entrée (Commons 9).
 export function DecorZal({ m }: { m: MateriauxZal }) {
-  const yB = ZAL.soffite + 1.3
   return (
     <>
-      <mesh position={[24.0, yB, BORD_NORD + 0.1]} material={m.banderole}>
-        <planeGeometry args={[11, 1.05]} />
-      </mesh>
+      {/* Banderole suspendue sous le plafond, juste devant (côté rue) la
+          rangée des grands piliers (z −22) : depuis la salle, aucune colonne
+          ni aucun pilier ne cache plus une partie de l'inscription (captures
+          de Samuel, 26/11/2026). Deux faces : l'inscription se lit dans le
+          bon sens des deux côtés. Position : choix de jeu. */}
+      <group position={[24.0, ZAL.plafond - 0.62, COLONNES.zs[2] + 0.62]}>
+        <mesh material={m.banderoleFace}>
+          <planeGeometry args={[11, 1.05]} />
+        </mesh>
+        <mesh rotation={[0, Math.PI, 0]} material={m.banderoleFace}>
+          <planeGeometry args={[11, 1.05]} />
+        </mesh>
+        {/* Tringle et suspentes */}
+        <mesh position={[0, 0.56, 0]} rotation={[0, 0, Math.PI / 2]} material={m.suspente}>
+          <cylinderGeometry args={[0.02, 0.02, 11.2, 6]} />
+        </mesh>
+      </group>
       <mesh position={[31.5, ZAL.soffite + 0.5, BORD_NORD + 0.08]} material={m.horloge}>
         <circleGeometry args={[0.32, 24]} />
       </mesh>

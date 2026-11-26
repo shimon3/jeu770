@@ -21,7 +21,8 @@ function useEtape(missionId: string) {
 function Siddour({ m }: { m: MateriauxZal }) {
   const etat = useEtape('siddour-zal')
   const visible = etat?.etat === 'active' && etat.etape === 0
-  const pos: [number, number, number] = [30.8, S + 0.49, -17.25]
+  // Sur le banc ouest de la table x 29,2 (bancs de part et d'autre des tables)
+  const pos: [number, number, number] = [29.92, S + 0.49, -17.6]
   useInteractif('siddour-perdu', [pos[0], pos[1] + 0.3, pos[2]], visible ? 1.9 : 0, () => t('action.prendreSiddour'), () => {
     if (!visible) return
     evenementMission('interagir', 'siddour-perdu')

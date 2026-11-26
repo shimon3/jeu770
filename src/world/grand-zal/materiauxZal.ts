@@ -49,6 +49,9 @@ export function useMateriauxZal() {
       ventilateur: new THREE.MeshStandardMaterial({ color: '#f2f2f0', roughness: 0.6 }),
       metal: new THREE.MeshStandardMaterial({ color: '#555', metalness: 0.7, roughness: 0.4 }),
       banderole: new THREE.MeshStandardMaterial({ map: textureBanderole(INSCRIPTION_BANDEROLE), roughness: 0.9, side: THREE.DoubleSide }),
+      // Banderole suspendue : une face par côté (texte à l'endroit des deux côtés)
+      banderoleFace: new THREE.MeshStandardMaterial({ map: textureBanderole(INSCRIPTION_BANDEROLE), roughness: 0.9 }),
+      suspente: new THREE.MeshStandardMaterial({ color: '#9a9a9a', metalness: 0.6, roughness: 0.4 }),
       exit: new THREE.MeshStandardMaterial({ map: textureExit(), emissive: '#ff2a1a', emissiveIntensity: 0.25, emissiveMap: textureExit() }),
       horloge: new THREE.MeshStandardMaterial({ map: textureHorloge(), roughness: 0.6 }),
       beton: teinte(m.trottoir, '#bdb7ad'),

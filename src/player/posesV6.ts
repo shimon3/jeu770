@@ -15,7 +15,9 @@ import type { EtatAnim } from './Avatar'
 export const ASSIS = { baisseBassin: 0.33, cuisse: -88, genou: 88, bras: -30, brasVersCorps: 6, buste: 6 }
 // Balancement d'étude ou de prière, comme l'avatar d'origine :
 // inclinaison 0,12 ± 0,12 rad, 2,4 rad/s, répartie sur les trois vertèbres.
-export const BALANCEMENT = { moyenne: 0.12, amplitude: 0.12, pulsation: 2.4, part: [0.4, 0.3, 0.3] }
+// 26/11/2026 (Samuel : « le religieux ne prie pas ») : balancement plus ample
+// et plus rapide, bien visible de loin.
+export const BALANCEMENT = { moyenne: 0.17, amplitude: 0.17, pulsation: 3.1, part: [0.4, 0.3, 0.3] }
 
 // Étude assise : balancement plus doux que debout
 export const ETUDE_ASSIS = { moyenne: 0.06, amplitude: 0.08, pulsation: 2.1 }
