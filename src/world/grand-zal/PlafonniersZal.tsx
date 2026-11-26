@@ -40,7 +40,12 @@ const VENTILATEURS: [number, number][] = []
 for (const x of [12.7, 17.7, 23.5, 29.3, 34.8]) for (const z of [-7.0, -13.0, -19.0, -25.0]) VENTILATEURS.push([x, z])
 VENTILATEURS.push([-2.0, -25.5], [4.0, -25.5])
 
+// Trois lustres de cristal devant l'Aron (photos anash.org, 26/11/2026)
+// et quelques-uns dans la salle. Positions ESTIMÉES.
 const LUSTRES: [number, number][] = [
+  [37.6, -17.7],
+  [37.6, -14.3],
+  [36.3, -16.0],
   [13.0, -16.0],
   [18.4, -16.0],
   [30.0, -16.0],
@@ -51,10 +56,14 @@ export function PlafonniersZal({ m }: { m: MateriauxZal }) {
   const pieces = useMemo(() => {
     const pc: PieceLibre[] = []
     // Dalles lumineuses encadrées plutôt que rectangles uniformes.
-    for (const [x, z] of DALLES) {
-      pc.push({ t: [0.88, 0.035, 0.88], p: [x, P - 0.022, z], mat: m.metal, ombre: false })
-      pc.push({ t: [0.76, 0.018, 0.76], p: [x, P - 0.048, z], mat: m.neon, ombre: false })
-    }
+    // Photos anash.org (26/11/2026) : grands panneaux LED rectangulaires
+    // (≈ 60 × 120 cm) affleurant le faux plafond blanc, cadre blanc fin ; pas
+    // de cadre sombre. Une grille d'aération grise entre deux panneaux.
+    DALLES.forEach(([x, z], i) => {
+      pc.push({ t: [0.7, 0.03, 1.3], p: [x, P - 0.016, z], mat: m.cadreDalle, ombre: false })
+      pc.push({ t: [0.62, 0.012, 1.22], p: [x, P - 0.036, z], mat: m.neon, ombre: false })
+      if (i % 3 === 1) pc.push({ t: [0.45, 0.012, 0.45], p: [x + 1.2, P - 0.008, z], mat: m.grille, ombre: false })
+    })
     // Les réglettes suivent le plafond bas en périphérie, pas le plafond haut.
     for (const [x, z, y] of REGLETTES) {
       pc.push({ t: [1.72, 0.035, 0.19], p: [x, y + 0.02, z], mat: m.metal, ombre: false })

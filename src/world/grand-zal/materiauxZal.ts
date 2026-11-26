@@ -5,6 +5,7 @@ import {
   textureBanderole,
   textureCarrelage,
   textureChevrons,
+  textureDamierAmud,
   textureExit,
   textureHorloge,
   textureLambris,
@@ -26,14 +27,28 @@ export function useMateriauxZal() {
       return c
     }
     return {
-      carrelage: new THREE.MeshStandardMaterial({ map: textureCarrelage(), roughness: 0.35 }),
+      // Carrelage vinyle ciré, très brillant (photos anash.org fournies par
+      // Samuel, 26/11/2026) : reflets nets des plafonniers sur le sol.
+      carrelage: new THREE.MeshStandardMaterial({ map: textureCarrelage(), roughness: 0.22, envMapIntensity: 0.35 }),
       plafond: new THREE.MeshStandardMaterial({ map: texturePlafond(), roughness: 0.95 }),
       lambris: new THREE.MeshStandardMaterial({ map: textureLambris(), roughness: 0.4 }),
       // Brique peinte en blanc : relief de la brique, couleur de peinture
       briqueBlanche: new THREE.MeshStandardMaterial({ color: '#eceae4', normalMap: m.briqueVoisin.normalMap, roughness: 0.9 }),
       peintureBlanche: new THREE.MeshStandardMaterial({ color: '#f1ede4', roughness: 0.8 }),
-      bancs: teinte(m.chene, '#8c5a35', { roughness: 0.5 }),
-      boisFonce: teinte(m.chene, '#6a3a1c', { roughness: 0.5 }),
+      // Photos anash.org (26/11/2026) : bancs et tables d'un bois brun-roux
+      // moyen, verni ; bimah et estrade à roulettes en chêne miel clair.
+      bancs: teinte(m.chene, '#bd8152', { roughness: 0.42 }),
+      boisMeuble: teinte(m.chene, '#8f5a37', { roughness: 0.45 }),
+      boisMiel: teinte(m.chene, '#d19a5a', { roughness: 0.4 }),
+      boisMielFonce: teinte(m.chene, '#b07a40', { roughness: 0.42 }),
+      // Socle sombre des colonnes (bande noire/brune au pied, photos 2026)
+      socleColonne: new THREE.MeshStandardMaterial({ color: '#2a201a', roughness: 0.5 }),
+      // Cadre blanc des dalles lumineuses (pas de cadre sombre sur les photos)
+      cadreDalle: new THREE.MeshStandardMaterial({ color: '#e9e6df', roughness: 0.6 }),
+      grille: new THREE.MeshStandardMaterial({ color: '#8d8a84', roughness: 0.7 }),
+      plaqueArgent: new THREE.MeshStandardMaterial({ color: '#c9ccd0', metalness: 0.7, roughness: 0.3 }),
+      damierAmud: new THREE.MeshStandardMaterial({ map: textureDamierAmud(), roughness: 0.45 }),
+      boisFonce: teinte(m.chene, '#734222', { roughness: 0.45 }),
       boisDore: teinte(m.chene, '#e2a24e', { roughness: 0.45 }),
       chevrons: new THREE.MeshStandardMaterial({ map: textureChevrons(), roughness: 0.5 }),
       parokhet: new THREE.MeshStandardMaterial({ color: '#f4f1e8', roughness: 0.85 }),
